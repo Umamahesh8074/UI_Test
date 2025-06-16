@@ -1,0 +1,402 @@
+<div class="customer-component-bg">
+  <div class="customer-component-bg-color">
+    <div class="pac-header">CUSTOMER PAYMENT DETAILS</div>
+    <div class="filters-div">
+      <div class="search-container stages-mdc-text-field">
+        <mat-form-field class="display-reports-search-class" style="margin-left: 30px" appearance="outline">
+          <mat-label>Search/Select Stages</mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="searchStage($event)"
+            [matAutocomplete]="stageAuto"
+          />
+          <mat-autocomplete
+            #stageAuto="matAutocomplete"
+            (optionSelected)="onStageSelectSelect($event)"
+            [displayWith]="displayStage"
+          >
+            <mat-option *ngFor="let option of stages" [value]="option">
+              {{ option.stageName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="display-reports-search-class" style="margin-left: 30px">
+          <mat-label>Search Action By</mat-label>
+          <input
+            matInput
+            (input)="onSearchActionBy($any($event).target?.value)"
+            placeholder="Search Action By"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="display-reports-search-class" style="margin-left: 30px">
+          <mat-label>Select Status</mat-label>
+          <mat-select
+            [(value)]="selectedStatus"
+            (selectionChange)="onActionStatusSelect($event)"
+          >
+          <mat-option value="All">All</mat-option>
+            <mat-option *ngFor="let status of actionStatusNames" [value]="status">
+              {{ status.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="display-reports-search-class" style="margin-left: 30px">
+          <mat-label>Select Date Range</mat-label>
+          <mat-date-range-input
+            [formGroup]="formData"
+            [rangePicker]="picker"
+            (click)="picker.open()"
+          >
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="customStartDate"
+              (focus)="picker.open()"
+              (dateChange)="onDateChange()"
+            />
+            <input
+              matEndDate
+              placeholder="End date"
+              formControlName="customEndDate"
+              (focus)="picker.open()"
+              (dateChange)="onDateChange()"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <mat-icon
+          matTooltip="Clear Date"
+          (click)="clearDateRange()"
+          class="clear-date-div"
+          >sync</mat-icon
+        >
+
+        <!-- <div class="add-button-div">
+          <button
+            mat-flat-button
+            (click)="AddCustomerPayment()"
+            class="btn-class primary"
+          >
+            <mat-icon class="font">add</mat-icon> Add Payment Details
+          </button>
+        </div> -->
+      </div>
+
+      <mat-card class="customer-cmn-card">
+        <mat-card-content class="cmn-card-content">
+          <div class="tab-head">
+            <table
+              matSort
+              mat-table
+              [dataSource]="paymentDetails"
+              class="mat-elevation-z8"
+            >
+              <ng-container matColumnDef="rowNumber">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let i = index">
+                  {{ pageIndex * pageSize + i + 1 }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.createdDate | date : "MMM-dd-yyyy " }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="referenceNumber">
+                <th mat-header-cell *matHeaderCellDef>Ref Number</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.referenceNumber }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="projectName">
+                <th mat-header-cell *matHeaderCellDef>Project</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.projectName }}
+                </td>
+              </ng-container>
+
+              <!-- <ng-container matColumnDef="block">
+                <th mat-header-cell *matHeaderCellDef>Block</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.blockName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="level">
+                <th mat-header-cell *matHeaderCellDef>Level</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.levelName }}
+                </td>
+              </ng-container> -->
+
+              <ng-container matColumnDef="unit">
+                <th mat-header-cell *matHeaderCellDef>Unit</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.unitName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="stageName">
+                <th mat-header-cell *matHeaderCellDef>Stage Name</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.stageName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="paymentDate">
+                <th mat-header-cell *matHeaderCellDef>Payment Date</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.paymentDate | date : "MMM-dd-yyyy" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="paidAmount">
+                <th mat-header-cell *matHeaderCellDef>Paid Amount</th>
+                <td mat-cell *matCellDef="let charge" [ngClass]="{ pending: charge.paidAmount }">
+                  <ng-container *ngIf="charge.actionStatus === 'Approved'; else pendingApproval">
+                   {{ charge.paidAmount | currency : 'INR' }}
+                  </ng-container>
+                  <ng-template #pendingApproval>
+                   {{ charge.paidAmountForApproval | currency : 'INR' }}
+                  </ng-template>
+                </td>
+              </ng-container>
+              
+
+              <ng-container matColumnDef="bankName">
+                <th mat-header-cell *matHeaderCellDef>Bank Name</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.bankName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="branchName">
+                <th mat-header-cell *matHeaderCellDef>Branch Name</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.branchName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ifscCode">
+                <th mat-header-cell *matHeaderCellDef>IFSC</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.ifcCode }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actionStatus">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td
+                  mat-cell
+                  *matCellDef="let charge"
+                  [ngClass]="getStatusClass(charge.actionStatus)"
+                >
+                  {{ charge.actionStatus }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.remarks }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actionDate">
+                <th mat-header-cell *matHeaderCellDef>Action Date</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.actionDate | date : "MMM dd, yyyy" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actionDoneBy">
+                <th mat-header-cell *matHeaderCellDef>Action By</th>
+                <td mat-cell *matCellDef="let charge">
+                  {{ charge.actionDoneBy }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon
+                    matTooltip="Edit"
+                    (click)="editCustomerPayment(element)"
+                    class="font icon-spacing work-order-icon"
+                    *ngIf="element.actionStatus === 'Pending'"
+                    >edit</mat-icon
+                  >
+
+                  <mat-icon
+                    matTooltip="Remarks"
+                    (click)="goToApprovals(element)"
+                    class="font icon-spacing work-order-icon"
+                    *ngIf="element.actionStatus != 'Pending'"
+                    >visibility</mat-icon
+                  >
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="check">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  style="background-color: #004869; color: white"
+                >
+                  Check
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon
+                    *ngIf="element.checkUrl"
+                    matTooltip="Download Check"
+                    class="font icon-spacing work-order-icon"
+                    (click)="download(element.checkUrl, 'check')"
+                  >
+                    download</mat-icon
+                  >
+                  <b [ngClass]="!element.checkUrl ? 'text-danger' : ''">
+                    {{ !element.checkUrl ? "No" : "" }}
+                  </b>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="email">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  style="background-color: #004869; color: white"
+                >
+                  Email
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon
+                    *ngIf="element.emailUrl"
+                    matTooltip="Download Email"
+                    class="font icon-spacing work-order-icon"
+                    (click)="download(element.emailUrl, 'email')"
+                  >
+                    download</mat-icon
+                  >
+
+                  <b [ngClass]="!element.emailUrl ? 'text-danger' : ''">
+                    {{ !element.emailUrl ? "No" : "" }}
+                  </b>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="challana">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  style="background-color: #004869; color: white"
+                >
+                  Challana
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon
+                    *ngIf="element.challanaUrl"
+                    matTooltip="Download Challana"
+                    class="font icon-spacing work-order-icon"
+                    (click)="download(element.challanaUrl, 'challana')"
+                  >
+                    download</mat-icon
+                  >
+                  <b [ngClass]="!element.challanaUrl ? 'text-danger' : ''">
+                    {{ !element.challanaUrl ? "No" : "" }}
+                  </b>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr
+                class="table-row"
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+              ></tr>
+            </table>
+          </div>
+        </mat-card-content>
+        <b>
+          <hr style="margin: 0" />
+        </b>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </mat-card>
+
+      <div *ngIf="isModelView">
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="remarksModal"
+          tabindex="-1"
+          aria-labelledby="remarksModalLabel"
+          aria-hidden="true"
+          [ngClass]="{ show: isModelView }"
+          [style.display]="isModelView ? 'block' : 'none'"
+        >
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5
+                  class="modal-title"
+                  id="remarksModalLabel"
+                  class="radio-button"
+                >
+                  VIEW REMARKS
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  (click)="close()"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <textarea
+                      class="form-control"
+                      id="remarks"
+                      [(ngModel)]="remarks"
+                      name="remarks"
+                      rows="4"
+                      (input)="resizeTextarea($event)"
+                      [readonly]="true"
+                    ></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  (click)="close()"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

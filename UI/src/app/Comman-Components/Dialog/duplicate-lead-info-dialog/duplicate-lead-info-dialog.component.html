@@ -1,0 +1,63 @@
+<div  mat-dialog-content>
+  <table
+    matSort
+    mat-table
+    [dataSource]="leadHistories"
+    class="mat-elevation-z8"
+  >
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+      <td mat-cell *matCellDef="let lead">
+        {{ lead.name }}
+      </td>
+    </ng-container>
+
+    <!-- Project Column -->
+    <ng-container matColumnDef="projectName">
+      <th mat-header-cell *matHeaderCellDef>Project</th>
+      <td mat-cell *matCellDef="let lead">{{ lead.projectName }}</td>
+    </ng-container>
+
+    <!-- Source Column -->
+    <ng-container matColumnDef="sourceName">
+      <th mat-header-cell *matHeaderCellDef>Source</th>
+      <td mat-cell *matCellDef="let lead">{{ lead.sourceName }}</td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let lead">{{ lead.status }}</td>
+    </ng-container>
+
+    <!-- Created Date Column -->
+    <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef>Created Date</th>
+      <td mat-cell *matCellDef="let lead">
+        {{ lead.createdDate | date : "medium" }}
+      </td>
+    </ng-container>
+
+  
+
+    <!-- Opportunity Id Column -->
+    <ng-container matColumnDef="opportunityId">
+      <th mat-header-cell *matHeaderCellDef>Opportunity Id</th>
+      <td mat-cell *matCellDef="let lead">{{ lead.opportunityId }}</td>
+    </ng-container>
+
+    <!-- Mobile Number Column -->
+    <ng-container matColumnDef="mobileNumber">
+      <th mat-header-cell *matHeaderCellDef>Mobile Number</th>
+      <td mat-cell *matCellDef="let lead">{{ lead.phoneNumber }}</td>
+    </ng-container>
+
+    <!-- Define header row and data rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let lead; columns: displayedColumns"></tr>
+    <div mat-dialog-actions >
+        <button mat-button (click)="onClose()">Close</button>
+      </div>
+  </table>
+</div>
+

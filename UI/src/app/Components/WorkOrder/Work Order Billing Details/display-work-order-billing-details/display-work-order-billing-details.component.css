@@ -1,0 +1,100 @@
+
+.card {
+  margin: 0px;
+  text-align: left;
+  width: 97%;
+  margin: auto;
+  padding: 10px;
+}
+
+.column1 div {
+  margin-top: 0px;
+}
+
+.column2 div {
+  margin-bottom: 5px;
+}
+.mat-table {
+  margin-top: 20px;
+}
+
+.column1 {
+  width: 34%;
+}
+.column2 {
+  width: 33%;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  text-align: start;
+  margin: 0.5rem 2rem;
+}
+.row2 {
+  margin-top: 20px;
+}
+.woQuantities {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0rem 1rem;
+}
+.heading {
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+.upload-doc-div {
+  padding: 0 2rem;
+  margin-top: 10px;
+  align-items: end;
+  text-align: end;
+}
+.amount-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+}
+
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+
+.green-amount {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.stages-display {
+  width: 100%;
+  display: flex;
+  color: #333;
+  font-size: 13px;
+  line-height: 22px;
+}
+.stages-display-div {
+  width: 18%;
+}
+.txt-center {
+  text-align: center;
+}
+.stages-div {
+  width: 80%;
+  margin: auto;
+}
+.flex-display {
+  display: flex;
+}
+.stages-accordion {
+  width: 100%;
+  margin: 10px;
+}
+.wob-cmn-mat-content {
+  margin-top: 3% !important;
+  height: 70vh;
+  overflow-y: auto;
+}

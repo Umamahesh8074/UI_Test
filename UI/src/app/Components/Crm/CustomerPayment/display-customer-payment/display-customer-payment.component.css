@@ -1,0 +1,150 @@
+.pac-header {
+  font-weight: bold;
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  letter-spacing: 0.1;
+}
+.mat-45 {
+  margin-left: 10px;
+}
+
+.search-class-date {
+  width: 17%;
+  margin-right: 15px;
+}
+
+.search-class {
+  width: 30%;
+  margin-right: 10px;
+}
+
+.Completed {
+  color: green;
+  font-weight: bold;
+}
+
+.Pending {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+
+.Not {
+  color: rgb(185, 123, 6);
+  font-weight: bold;
+}
+
+.pending {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+}
+
+.approved {
+  color: green;
+  font-weight: bold;
+}
+
+.rejected {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+
+.work-order-icon {
+  height: 18px !important;
+  width: 25px !important;
+  font-size: 18px !important;
+}
+.radio-button {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.filters-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 96%;
+  margin: auto;
+}
+.customer-cmn-card {
+  width: 100%;
+  height: 68vh;
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.4);
+}
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  width: 90%;
+  margin: auto;
+  justify-content: center;
+}
+.search-class-stage {
+  width: 30%;
+  margin-right: 10px;
+}
+.search-class-owner {
+  width: 15%;
+  margin-right: 10px;
+}
+.search-class-status {
+  width: 10.5%;
+  margin-right: 10px;
+}
+.clear-date-div {
+  color: white;
+  cursor: pointer;
+  border: 1px solid #333;
+  height: 26px !important;
+  font-size: 25px;
+  background: #fff;
+  width: 30px;
+  margin-left: 4px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: #004869;
+}
+.add-button-div {
+  text-align: right;
+  width: 22%;
+}
+.mat-mdc-table {
+  background: none !important;
+  box-shadow: none !important;
+}
+tr:nth-child(even) {
+  background: none !important;
+}
+tr:hover {
+  background: rgba(251, 251, 251, 0.4) !important;
+}
+.mdc-data-table__row:last-child .mdc-data-table__cell {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.mat-mdc-paginator {
+  background: rgba(255, 255, 255, 0.6);
+}
+/* Mobile responsiveness */
+@media screen and (max-device-width: 480px) {
+  .pac-header {
+    font-size: 18px;
+  }
+  .filters-div {
+    margin-right: 0px;
+    width: 99%;
+    margin: auto;
+    margin-bottom: 50px;
+  }
+  .search-container {
+    margin: 0px 0px 15px 15px;
+  }
+  .add-button-div {
+    margin-bottom: 15px;
+    margin-left: 0px;
+  }
+}

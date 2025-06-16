@@ -1,0 +1,224 @@
+<mat-toolbar class="mat-elevation-z3">
+  <div class="toolbar-div">
+    <div class="toolbar-div-left">
+      <h2 class="brand-h2">Building Reality</h2>
+    </div>
+    <div class="toolbar-div-right">
+      <button mat-icon-button (click)="collapse()">
+        <mat-icon>menu_open</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Center Section -->
+  <div class="head-div">
+    <div class="heading">
+      <h2 class="heading-h2" (click)="onGroupClick()">
+        <img
+          src="../../assets/sbrLogo.png"
+          alt="NOt Found"
+          width="26px"
+          height="26px"
+          class="me-2"
+        />
+        SBR Group
+      </h2>
+    </div>
+
+    <!-- Right Section -->
+    <div class="user-div">
+      <span class="notification-wrapper">
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="notificationMenu"
+          aria-label="Notifications"
+        >
+          <mat-icon class="nav-bell-icon">notifications</mat-icon>
+          <span class="notification-badge" *ngIf="unreadCount > 0">{{
+            unreadCount
+          }}</span>
+        </button>
+      </span>
+      <mat-menu #notificationMenu="matMenu">
+        <ng-container *ngIf="notifications.length > 0; else noNotifications">
+          <button
+            mat-menu-item
+            *ngFor="let note of notifications"
+            (click)="openNotification(note)"
+          >
+            <mat-icon class="me-2 bell-icon">notifications</mat-icon>
+            <span
+              [ngClass]="{
+                'read-msg': note.status === 'Read',
+                'unread-msg': note.status === 'A',
+              }"
+            >
+              {{ note.messageBody }}
+            </span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="viewAllNotifications()">
+            View All
+          </button>
+        </ng-container>
+        <ng-template #noNotifications>
+          <button mat-menu-item disabled>No notifications</button>
+        </ng-template>
+      </mat-menu>
+
+      <button mat-button [matMenuTriggerFor]="menu" class="user">
+        <img
+          *ngIf="imageUrl"
+          [src]="imageUrl"
+          alt="Profile Picture"
+          class="user-img"
+        />
+        <img
+          *ngIf="!imageUrl"
+          class="user-img"
+          src="../../../../assets/user.jpg"
+          alt="not found"
+        />
+        <span class="user-name"
+          >{{ this.user.userName | uppercase }}{{ roleName }}</span
+        >
+        <!-- <mat-icon class="person-profile">account_circle</mat-icon> -->
+        <span class="bi bi-chevron-down ms-1 usericon"></span>
+      </button>
+
+      <mat-menu #menu="matMenu" style="color: rgba(0, 0, 0, 0.87)">
+        <button mat-menu-item (click)="profile()">
+          <img
+            *ngIf="imageUrl"
+            [src]="imageUrl"
+            alt="Profile Picture"
+            class="user-img"
+          />
+          <img
+            *ngIf="!imageUrl"
+            class="user-img"
+            src="../../../../assets/user.jpg"
+            alt="not found"
+          />
+          Profile
+        </button>
+        <button
+          mat-menu-item
+          *ngFor="let multilogin of multilogins"
+          (click)="switchLogin(multilogin)"
+        >
+          <span>
+            <span class="bold-text">Switch To :</span>
+            <span class="small-text">{{ multilogin.userName }}</span>
+          </span>
+        </button>
+        <button mat-menu-item (click)="logOut()">
+          <mat-icon>exit_to_app</mat-icon>
+          Logout
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div style="display: flex">
+  <div
+    opened
+    mode="side"
+    class="sidenav"
+    [ngClass]="collapsed ? 'sidenav-icon-bar' : ''"
+  >
+    <mat-form-field appearance="fill" style="width: 100%; margin-top: 16px">
+      <mat-label>Search menu</mat-label>
+      <input
+        matInput
+        placeholder="Type to filter..."
+        [(ngModel)]="menuSearch"
+        (ngModelChange)="filterMenuItems()"
+      />
+      <button mat-icon-button matSuffix tabindex="-1" aria-label="Search icon">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-nav-list style="padding: 0">
+      <mat-list-item
+        (click)="goToHome()"
+        [ngClass]="isHomeActive ? 'home-tab' : ''"
+      >
+        <mat-icon
+          (click)="toggleHomeMenu()"
+          class="menu-icon"
+          [ngClass]="isHomeActive ? 'active-icon' : ''"
+          [title]="'Home'"
+          >{{ "home" }}</mat-icon
+        >
+
+        <a
+          mat-subheader
+          class="menu-header"
+          [routerLink]="homePath"
+          routerLinkActive="active"
+          style="text-decoration: none"
+          >{{ "Home" }}</a
+        >
+      </mat-list-item>
+      <ng-container *ngFor="let menu of filteredMenuItems">
+        <mat-list-item class="main-header" (click)="toggleMenu(menu.menuId)">
+          <mat-icon
+            (click)="toggleMenu(menu.menuId); $event.stopPropagation()"
+            class="menu-icon"
+            [ngClass]="{
+              'active-icon':
+                expandedMenu === menu.menuId || isSubMenuActive(menu)
+            }"
+            [title]="menu.menuName"
+          >
+            {{ menu.icon }}
+          </mat-icon>
+          <span mat-subheader class="menu-header">
+            {{ menu.menuName }}
+            <mat-icon class="ps-1 float-end pt-1" *ngIf="!collapsed">
+              {{
+                expandedMenu === menu.menuId ? "expand_more" : "chevron_right"
+              }}
+            </mat-icon>
+          </span>
+        </mat-list-item>
+
+        <ng-container
+          *ngIf="
+            tempExpandedMenus.has(menu.menuId) || expandedMenu === menu.menuId
+          "
+        >
+          <a
+            mat-list-item
+            *ngFor="let item of menu.menuItems"
+            [routerLink]="item.path || ''"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="setActiveSubMenu(item.path); inActiveHome()"
+            [ngClass]="{ 'active-sub-menu': activeSubMenu === item.path }"
+          >
+            <span class="sub-menu-item">{{
+              item.menuItemName || "Unnamed"
+            }}</span>
+            <!-- Handle undefined names -->
+          </a>
+        </ng-container>
+      </ng-container>
+    </mat-nav-list>
+  </div>
+  <div class="content" [style.margin-left]="collapsed ? '1px' : ''">
+    <router-outlet></router-outlet>
+    <div class="footer-main">
+      <a
+        href="https://www.corenuts.com/"
+        style="color: rgb(102, 99, 99); text-decoration: none"
+        >Powered by <span style="color: #69a949; font-size: 13px">Core</span
+        ><span style="color: #db483e; font-size: 13px">Nuts</span>
+        Technologies</a
+      >
+    </div>
+  </div>
+</div>

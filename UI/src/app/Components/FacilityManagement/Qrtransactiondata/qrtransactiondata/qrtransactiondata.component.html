@@ -1,0 +1,89 @@
+<h4 class="header"><b>QR TRANSACTION</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header *ngIf="!isView">
+        <b>{{ isAdding ? "ADD QR TRANSACTION DATA" : "EDIT PROJECT" }}</b>
+      </mat-card-header>
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Building Name</mat-label>
+          <mat-select formControlName="projectId">
+            <mat-option
+              *ngFor="let item of building"
+              [value]="item.projectId"
+              [disabled]="isView"
+            >
+              {{ item.projectName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Role</mat-label>
+          <input matInput formControlName="roleId" [readonly]="isView" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Location</mat-label>
+          <input matInput formControlName="location" [readonly]="isView" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" [readonly]="isView" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Latitude</mat-label>
+          <input matInput formControlName="latitude" [readonly]="isView" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Longitude</mat-label>
+          <input matInput formControlName="longitude" [readonly]="isView" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Radius</mat-label>
+          <input matInput formControlName="radius" [readonly]="isView" />
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <!-- If isView is true, display only the CLOSE button -->
+          <button
+            *ngIf="isView"
+            mat-flat-button
+            style="color: white; background-color: rgb(97, 97, 38)"
+            class="btn-class"
+            (click)="clearForm()"
+          >
+            CLOSE
+          </button>
+
+          <!-- If isView is false, display ADD or UPDATE button along with RESET and BACK buttons -->
+          <ng-container *ngIf="!isView">
+            <button mat-flat-button class="btn-class primary">
+              {{ isAdding ? "ADD" : "UPDATE" }}
+            </button>
+            <button
+              mat-flat-button
+              class="btn-class warn"
+              (click)="clearForm()"
+            >
+              RESET
+            </button>
+            <button
+              mat-flat-button
+              class="btn-class accent"
+              (click)="gotoQrtransactiondatas()"
+            >
+              BACK
+            </button>
+          </ng-container>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

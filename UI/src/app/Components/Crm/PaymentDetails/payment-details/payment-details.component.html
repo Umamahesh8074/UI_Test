@@ -1,0 +1,404 @@
+<h4 class="header">
+  <b>{{ isAdding ? "ADD PAYMENT" : "EDIT PAYMENT" }}</b>
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-content class="cmn-mat-content mat-card-scroll">
+        <div class="row">
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Project</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedProject.projectName ? selectedProject.projectName : ''
+              "
+              (input)="searchProject($event)"
+              [formControl]="projectFc"
+              [matAutocomplete]="projectAuto"
+            />
+            <mat-autocomplete
+              #projectAuto="matAutocomplete"
+              (optionSelected)="onProjectSelect($event)"
+              [displayWith]="displayProject"
+            >
+              <mat-option *ngFor="let option of projectsData" [value]="option">
+                {{ option.projectName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Block</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="selectedBlock.name ? selectedBlock.name : ''"
+              (input)="searchBlock($event)"
+              [formControl]="projectFc"
+              [matAutocomplete]="blockAuto"
+            />
+            <mat-autocomplete
+              #blockAuto="matAutocomplete"
+              (optionSelected)="onBlockSelect($event)"
+              [displayWith]="displayBlock"
+            >
+              <mat-option *ngFor="let option of blockData" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Level</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="selectedLevel.name ? selectedLevel.name : ''"
+              (input)="searchLevel($event)"
+              [formControl]="applicantFc"
+              [matAutocomplete]="levelAuto"
+            />
+            <mat-autocomplete
+              #levelAuto="matAutocomplete"
+              (optionSelected)="onLevelSelect($event)"
+              [displayWith]="displayLevel"
+            >
+              <mat-option *ngFor="let option of levelData" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select unit</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="selectedUnit.unitName ? selectedUnit.unitName : ''"
+              (input)="searchLevel($event)"
+              [formControl]="applicantFc"
+              [matAutocomplete]="unitAuto"
+            />
+            <mat-autocomplete
+              #unitAuto="matAutocomplete"
+              (optionSelected)="onUnitSelect($event)"
+              [displayWith]="displayUnit"
+            >
+              <mat-option *ngFor="let option of unitData" [value]="option">
+                {{ option.unitName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <!-- <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Unit Type</mat-label>
+            <input matInput formControlName="unitTypeName" type="text" />
+          </mat-form-field> -->
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Applicant</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedApplicant.firstApplicantName
+                  ? selectedApplicant.firstApplicantName
+                  : ''
+              "
+              (input)="searchApplicant($event)"
+              [formControl]="applicantFc"
+              [matAutocomplete]="applicantAuto"
+            />
+            <mat-autocomplete
+              #applicantAuto="matAutocomplete"
+              (optionSelected)="onApplicantSelectSelect($event)"
+              [displayWith]="displayApplicant"
+            >
+              <mat-option
+                *ngFor="let option of applicantDetails"
+                [value]="option"
+              >
+                {{ option.firstApplicantName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Stages</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="selectedStage.stageName ? selectedStage.stageName : ''"
+              (input)="searchStage($event)"
+              [formControl]="stageFc"
+              [matAutocomplete]="stageAuto"
+            />
+            <mat-autocomplete
+              #stageAuto="matAutocomplete"
+              (optionSelected)="onStageSelectSelect($event)"
+              [displayWith]="displayStage"
+            >
+              <mat-option
+                *ngFor="let option of customerStageDetails"
+                [value]="option"
+              >
+                {{ option.stageName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Payment Source</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedPaymnetSource.commonRefValue
+                  ? selectedPaymnetSource.commonRefValue
+                  : ''
+              "
+              (input)="searchPaymentSource($event)"
+              [formControl]="paymentTypeSourceFc"
+              [matAutocomplete]="paymentSourceAuto"
+            />
+            <mat-autocomplete
+              #paymentSourceAuto="matAutocomplete"
+              (optionSelected)="onPaymentSourceSelect($event)"
+              [displayWith]="displayPaymentSource"
+            >
+              <mat-option
+                *ngFor="let option of paymentSources"
+                [value]="option"
+              >
+                {{ option.commonRefValue }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <mat-label>Search/Select Payment Mode</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedPaymnetMode.commonRefValue
+                  ? selectedPaymnetMode.commonRefValue
+                  : ''
+              "
+              (input)="searchPayments($event)"
+              [formControl]="paymentTypeModeFc"
+              [matAutocomplete]="paymentAuto"
+            />
+            <mat-autocomplete
+              #paymentAuto="matAutocomplete"
+              (optionSelected)="onPaymentTypeSelect($event)"
+              [displayWith]="displayPaymentMode"
+            >
+              <mat-option *ngFor="let option of paymentTypes" [value]="option">
+                {{ option.commonRefValue }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Enter Reference Number</mat-label>
+            <input matInput type="text" formControlName="referenceNumber" />
+            <mat-error *ngIf="formData.get('bankName')?.hasError('required')">
+              Reference Number is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Payment Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              (click)="picker.open()"
+              formControlName="paymentDate"
+            />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="formData.get('paymentDate')?.hasError('required')"
+              >PaymentDate is required</mat-error
+            >
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Bank Name</mat-label>
+            <input matInput formControlName="bankName" type="text" />
+            <mat-error *ngIf="formData.get('bankName')?.hasError('required')">
+              Bank Name is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Branch Name</mat-label>
+            <input matInput formControlName="branchName" type="text" />
+            <mat-error *ngIf="formData.get('branchName')?.hasError('required')">
+              Branch Name is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>IFSC Code</mat-label>
+            <input matInput formControlName="ifcCode" type="text" />
+            <mat-error *ngIf="formData.get('ifcCode')?.hasError('required')">
+              IFSC Code required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Account Number</mat-label>
+            <input matInput formControlName="accountNumber" type="text" />
+            <mat-error
+              *ngIf="formData.get('accountNumber')?.hasError('required')"
+            >
+              Account Number is required.
+            </mat-error>
+            <mat-error
+              *ngIf="formData.get('accountNumber')?.hasError('pattern')"
+            >
+              Account Number must contain only digits.
+            </mat-error>
+            <mat-error
+              *ngIf="formData.get('accountNumber')?.hasError('minlength')"
+            >
+              Account Number must be at least 9 digits long.
+            </mat-error>
+            <mat-error
+              *ngIf="formData.get('accountNumber')?.hasError('maxlength')"
+            >
+              Account Number must not exceed 18 digits.
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Total Amount</mat-label>
+            <input
+              matInput
+              formControlName="stageTotalAmount"
+              type="text"
+              readonly
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Paid Amount</mat-label>
+            <input
+              matInput
+              formControlName="paidAmount"
+              type="text"
+              (keydown)="restrictToNumbers($event)"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Pending Amount</mat-label>
+            <input
+              matInput
+              formControlName="balanceAmount"
+              type="text"
+              readonly
+              (keydown)="restrictToNumbers($event)"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Total TDS</mat-label>
+            <input matInput formControlName="stageTds" type="text" readonly />
+          </mat-form-field>
+          <!-- <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Paid TDS</mat-label>
+            <input matInput formControlName="pendingTds" type="text" readonly />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Pending TDS</mat-label>
+            <input matInput formControlName="paidTds" type="text" readonly />
+          </mat-form-field> -->
+
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Check</mat-label>
+            <input
+              matInput
+              [attr.placeholder]="'Choose File'"
+              [attr.type]="'text'"
+              [attr.readonly]="true"
+              (click)="checkFileInput.click()"
+              [value]="fileNames.check || 'No file chosen'"
+            />
+            <input
+              type="file"
+              #checkFileInput
+              (change)="onCheckFileChange($event)"
+              style="display: none"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="checkFileInput.click()"
+              type="button"
+            >
+              <mat-icon>attach_file</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            (click)="goToPayments()"
+            class="btn-class accent"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

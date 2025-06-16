@@ -1,0 +1,80 @@
+<h4 class="header">Sales Agreement Templates</h4>
+<div class="example-button-row">
+  <div class="button-container">
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search Sales Agreement Template</mat-label>
+      <input
+        matInput
+        (input)="getAllTemplates($any($event).target?.value)"
+        placeholder="Enter template name"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="button-container">
+    <button mat-flat-button class="btn-class-add" (click)="addTemplate()">
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div>
+      <table
+        matSort
+        mat-table
+        [dataSource]="salesAggrementTemplateDto"
+        class="mat-elevation-z8"
+      >
+        <!-- Project Name Column -->
+        <ng-container matColumnDef="projectName">
+          <th mat-header-cell *matHeaderCellDef class="header-cell">
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let template">
+            {{ template.projectName }}
+          </td>
+        </ng-container>
+
+        <!-- Template Name Column -->
+        <ng-container matColumnDef="salesAggrementTemplateName">
+          <th mat-header-cell *matHeaderCellDef class="header-cell">
+            Template Name
+          </th>
+          <td mat-cell *matCellDef="let template">
+            {{ template.salesAggrementTemplateName }}
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="header-cell">Actions</th>
+          <td mat-cell *matCellDef="let template">
+            <i
+              class="bi bi-trash delete-icon me-3"
+              (click)="openConfirmDialog(template.salesAggrementTemplateId)"
+              style="color: red"
+            ></i>
+          </td>
+        </ng-container>
+
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <!-- Data Row -->
+        <tr mat-row *matRowDef="let template; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

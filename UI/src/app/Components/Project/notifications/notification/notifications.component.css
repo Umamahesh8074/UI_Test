@@ -1,0 +1,48 @@
+.pr-mat-50 {
+  width: 48%;
+  margin-left: 1%;
+}
+.pr-mat-20 {
+  width: 20%;
+  margin-top: 2%;
+}
+.pr-mat-30 {
+  width: 29%;
+  margin-top: 2%;
+}
+
+.large-textarea {
+  height: 200px; /* Adjust the height for a larger textarea */
+  resize: vertical; /* Allows users to resize the box vertically */
+  overflow-y: auto; /* Ensures overflow content is scrollable */
+}
+.form-field {
+  width:50%;
+  padding-right: 20px;
+}
+/* .pr-mat-card-header {
+  margin-left: 1%;
+}
+.pr-mat-card-content {
+  margin-top: 2%;
+} */
+/*
+.card {
+  margin: 2%;
+  text-align: left;
+  width: 85%;
+  margin-left: 7%;
+}
+.button {
+  margin: 2%;
+}
+.mat-content {
+  margin-top: 20px;
+}
+.btn-class {
+  margin-left: 6px;
+}
+.header {
+  text-align: center;
+  margin-top: 3%;
+} */

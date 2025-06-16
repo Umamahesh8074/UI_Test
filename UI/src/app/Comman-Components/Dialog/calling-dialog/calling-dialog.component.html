@@ -1,0 +1,39 @@
+<mat-dialog-title class="calling-dialog-title">
+  <span
+    ><mat-icon style="vertical-align: middle; margin-right: 8px; color: #fff"
+      >call</mat-icon
+    >Calling</span
+  >
+  <button
+    mat-icon-button
+    class="close-btn"
+    (click)="dialogRef.close()"
+    aria-label="Close"
+    style="
+      color: #fff;
+      background: rgba(25, 118, 210, 0.12);
+      border-radius: 50%;
+      transition: background 0.2s;
+    "
+    onmouseover="this.style.background='#e3eafc'"
+    onmouseout="this.style.background='rgba(25, 118, 210, 0.12)'"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-dialog-title>
+<mat-dialog-content class="calling-dialog-content">
+  <div class="calling-loader-text">
+    <span style="font-weight: 500; color: #1976d2">Calling</span>
+    <span class="passing-dots"><span></span><span></span><span></span></span>
+  </div>
+  <div class="calling-title" style="color: #388e3c; font-weight: 600">
+    <mat-icon style="vertical-align: middle; color: #388e3c; margin-right: 4px"
+      >person</mat-icon
+    >
+    <span>{{ data.customerName || "Customer" }}</span>
+  </div>
+  <div *ngIf="data?.phoneNumber" class="calling-phone">
+    <mat-icon style="vertical-align: middle; color: #000000">phone</mat-icon>
+    <span style="font-weight: 500">{{ data.phoneNumber }}</span>
+  </div>
+</mat-dialog-content>

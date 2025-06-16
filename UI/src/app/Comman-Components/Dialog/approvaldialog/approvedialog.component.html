@@ -1,0 +1,36 @@
+<h6 mat-dialog-title>Enter Comments</h6>
+
+<div>
+  <mat-dialog-content>
+    <div appearance="outline" class="mat-50">
+      <textarea
+        matInput
+        [(ngModel)]="remarks"
+        rows="1"
+        placeholder="Enter Comments"
+        style="flex: 1; width: 100%; padding: 5px 10px; font-size: 13px"
+        (input)="autoResizeRemarks()"
+        #remarksTextarea
+      ></textarea>
+    </div>
+  </mat-dialog-content>
+</div>
+
+<div style="text-align: right; margin-top: 1%" class="button">
+  <button
+    mat-button
+    (click)="onCancelDialog('cancel')"
+    type="button"
+    class="btn-class"
+    style="background-color: brown; color: white"
+  >
+    CANCEL
+  </button>
+  <button
+    (click)="onApprove()"
+    class="btn-class"
+    style="background-color: #004869; color: white"
+  >
+    SUBMIT
+  </button>
+</div>

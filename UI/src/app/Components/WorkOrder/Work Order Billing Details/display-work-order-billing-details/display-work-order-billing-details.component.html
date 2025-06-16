@@ -1,0 +1,123 @@
+<div class="pac-header">VIEW WORK ORDER BILLING</div>
+
+<form [formGroup]="formData">
+  <div>
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="wob-cmn-mat-content mat-card-scroll">
+        <mat-accordion class="row woQuantities">
+          <mat-expansion-panel
+            (opened)="panelOpenState = true"
+            (closed)="panelOpenState = false"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <div style="color: #004869">WON:</div>
+                {{ workOrderBillingsData.workOrderNumber }}
+              </mat-panel-title>
+
+              <mat-panel-title>
+                <div style="color: #004869">PROJECT :</div>
+                {{ workOrderBillingsData.projectName }}
+              </mat-panel-title>
+
+              <mat-panel-title>
+                <div style="color: #004869">VENDOR NAME :</div>
+                {{ workOrderBillingsData.vendorName }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <wob-additional-info
+              [workOrderBilling]="workOrderBillingsData"
+            ></wob-additional-info>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <div style="padding: 0rem 1rem">
+          <div class="text-color-div">WORK ORDER BILLING QUANTITIES</div>
+          <app-workorder-billing-quantity
+            [workOrderBillingData]="
+              workOrderBillingsData.workOrderBillingQuantities
+            "
+          ></app-workorder-billing-quantity>
+
+          <!-- <ng-container
+            *ngIf="
+              workOrderBillingsData.workOrderBillingQuantities &&
+              workOrderBillingsData.workOrderBillingQuantities.length > 0
+            "
+          >
+            <ng-container
+              *ngIf="
+                workOrderBillingsData.workOrderBillingQuantities[0].workOrderQuantityStatus.includes(
+                  'Amendment'
+                )
+              "
+            >
+              <div class="radio-button">
+                AMENDMENT WORK ORDER BILLING QUANTITIES
+              </div>
+              <app-workorder-billing-quantity
+                [workOrderBillingData]="
+                  workOrderBillingsData.workOrderBillingQuantities
+                "
+              >
+              </app-workorder-billing-quantity>
+            </ng-container>
+
+            <ng-container
+              *ngIf="
+                !workOrderBillingsData.workOrderBillingQuantities[0].workOrderQuantityStatus.includes(
+                  'Amendment'
+                )
+              "
+            >
+              <div class="radio-button">WORK ORDER BILLING QUANTITIES</div>
+              <app-workorder-billing-quantity
+                [workOrderBillingData]="
+                  workOrderBillingsData.workOrderBillingQuantities
+                "
+              >
+              </app-workorder-billing-quantity>
+            </ng-container>
+          </ng-container> -->
+
+          <div *ngIf="stages.length > 0">
+            <div class="text-color-div">STAGE DETAILS</div>
+            <ng-container>
+              <app-workorder-stage
+                [stagesDto]="stages"
+                [status]="status"
+              ></app-workorder-stage>
+            </ng-container>
+          </div>
+
+          <div
+            *ngIf="
+              workOrderBillingsData.previousWorkOrderBillingQuantities as previousQuantities
+            "
+          >
+            <div class="text-color-div" *ngIf="previousQuantities.length > 0">
+              PREVIOUS WORK ORDER BILLING QUANTITIES
+            </div>
+            <app-workorder-billing-quantity
+              *ngIf="previousQuantities.length > 0"
+              [workOrderBillingData]="previousQuantities"
+            ></app-workorder-billing-quantity>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="gotoApprovals()"
+          >
+            BACK
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

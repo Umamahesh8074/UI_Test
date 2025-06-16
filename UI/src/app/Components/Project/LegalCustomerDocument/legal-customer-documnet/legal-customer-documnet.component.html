@@ -1,0 +1,80 @@
+<h4 class="header">
+  <b>{{ isAdding ? 'Add Legal Document' : 'Edit Legal Document' }}</b>
+</h4>
+<div class="form-container">
+  <form [formGroup]="formData" (ngSubmit)="save()">
+    <mat-card class="card">
+      <mat-card-content class="cmn-mat-card-content">
+        <div class="row">
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Project</mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchProject($event)"
+              [formControl]="project"
+              [matAutocomplete]="projectAuto"
+            />
+            <mat-autocomplete
+              #projectAuto="matAutocomplete"
+              (optionSelected)="onProjectSelect($event)"
+              [displayWith]="displayProject"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let option of projects" [value]="option">
+                {{ option.projectName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Document Name</mat-label>
+            <input matInput formControlName="documentName" />
+          </mat-form-field>
+        </div>
+        <div class="row align-center" style="margin-top: 8px;">
+          <div class="file-upload-col" style="min-width:220px;">
+            <label class="file-label">Upload Document</label>
+            <div class="file-upload-box" style="background:#f5f7fa; border:1px dashed #b3b3b3; border-radius:5px; padding:10px 12px;">
+              <button mat-stroked-button color="primary" type="button" (click)="fileInput.click()">
+                <mat-icon>attach_file</mat-icon> Choose File
+              </button>
+              <input
+                type="file"
+                (change)="onLogoSelected($event)"
+                #fileInput
+                style="display: none"
+              />
+              <span class="file-name">{{ selectedFile?.name || 'No file chosen' }}</span>
+            </div>
+          </div>
+          <div class="checkbox-col" style="min-width:220px; margin-top:18px;">
+            <mat-checkbox
+              [checked]="isCheckBoxChecked"
+              (change)="onCheckBoxChecked($event)"
+              class="box"
+            >
+              This document will be visible to both customers and the CRM Team.
+            </mat-checkbox>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end" class="add-mat-card-footer">
+        <button mat-flat-button class="btn-class accent" (click)="goBack()" type="button">
+        BACK
+        </button>
+        <button
+           mat-flat-button
+                class="btn-class warn"
+          (click)="clearForm()"
+          *ngIf="isAdding"
+          type="button"
+        >
+          RESET
+        </button>
+        <button mat-flat-button class="btn-class primary" type="submit">
+          {{ isAdding ? 'ADD' : 'UPDATE ' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

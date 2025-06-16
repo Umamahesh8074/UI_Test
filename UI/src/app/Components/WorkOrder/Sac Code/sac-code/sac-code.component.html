@@ -1,0 +1,80 @@
+<h4 class="pac-header">
+  {{ isAdding ? "ADD SAC CODE" : "EDIT SAC CODE" }}
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="cmn-mat-content mat-card-scroll">
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-50">
+            <mat-label>Sac Code</mat-label>
+            <input matInput formControlName="sacCode" type="text" />
+            <mat-error *ngIf="formData.get('sacCode')?.hasError('required')"
+              >Sac is required</mat-error
+            >
+          </mat-form-field>
+
+          <div class="row" style="padding: 0 15px">
+            <mat-label>Sac Code Description</mat-label>
+            <div appearance="outline" class="mat-100">
+              <textarea
+                matInput
+                formControlName="sacCodeDescription"
+                rows="1"
+                placeholder="SAC Code Description"
+                style="flex: 1; width: 100%; padding: 5px 5px; font-size: 13px"
+                (input)="autoResizeSacCodeDesc()"
+                #sacCodeTextarea
+              ></textarea>
+
+              <mat-error
+                *ngIf="formData.get('sacCodeDescription')?.hasError('required')"
+              >
+                Sac Code Description is required
+              </mat-error>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-45" *ngIf="!isAdding">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option value="">Select Status</mat-option>
+              <mat-option
+                *ngFor="let element of statuses"
+                [value]="element.commonRefKey"
+              >
+                {{ element.commonRefValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoSacCodes()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

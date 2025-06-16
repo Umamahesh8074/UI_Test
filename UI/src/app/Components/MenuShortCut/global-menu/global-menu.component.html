@@ -1,0 +1,12 @@
+
+<div
+  *ngIf="visible"
+  class="menu"
+  [style.top.px]="y"
+  [style.left.px]="x"
+>
+  <ul>
+    <li (click)="onOptionClick('Option A')">Option A</li>
+    <li (click)="onOptionClick('Option B')">Option B</li>
+  </ul>
+</div>

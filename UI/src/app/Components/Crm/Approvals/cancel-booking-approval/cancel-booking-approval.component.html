@@ -1,0 +1,333 @@
+<div class="pac-header">CancelBookings</div>
+<div class="filters-div">
+  <div class="search-container">
+    <mat-form-field class="search-class" appearance="outline">
+      <mat-label>Search/Select Project</mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchProject($event)"
+        [formControl]="project"
+        [matAutocomplete]="projectAuto"
+      />
+      <mat-autocomplete
+        #projectAuto="matAutocomplete"
+        (optionSelected)="onProjectSelect($event)"
+        [displayWith]="displayProject"
+      >
+        <mat-option *ngFor="let option of projects" [value]="option">
+          {{ option.projectName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field class="search-class" appearance="outline">
+      <mat-label>Search/Select Unit</mat-label>
+      <input
+        type="text"
+        [value]="unitName"
+        matInput
+        (input)="searchUnit($event)"
+        [formControl]="unit"
+        [matAutocomplete]="unitAuto"
+      />
+      <mat-autocomplete
+        #unitAuto="matAutocomplete"
+        (optionSelected)="onUnitSelect($event)"
+        [displayWith]="displayUnit"
+      >
+        <mat-option *ngFor="let option of units" [value]="option">
+          {{ option.unitName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <!-- <mat-form-field appearance="outline" class="search-class">
+      <mat-label>Select Status</mat-label>
+      <mat-select
+        [(value)]="selectedStatus"
+        (selectionChange)="onStatusChange($event.value)"
+      >
+        <mat-option *ngFor="let element of status" [value]="element.value">
+          {{ element.value }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+    <mat-form-field appearance="outline" class="search-class">
+      <mat-label>Search On Applicant Name</mat-label>
+      <input
+        matInput
+        placeholder="Enter Applicant Name"
+        (input)="onSearch($any($event).target?.value)"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="search-class ml-2">
+      <mat-label>Unit Belongs To</mat-label>
+      <mat-select
+        (selectionChange)="onUnitTypeBelongsChange($event)"
+        [(ngModel)]="typeId"
+      >
+        <mat-option *ngFor="let element of companyType" [value]="element.id">
+          {{ element.commonRefValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="applicantInfoDetails"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerName">
+          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.firstApplicantName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef>Created Date</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.createdDate | date : "medium" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerPhoneNumber">
+          <th mat-header-cell *matHeaderCellDef>Phone Number</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.firstApplicantPhoneNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectName">
+          <th mat-header-cell *matHeaderCellDef>Project Name</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.projectName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unitName">
+          <th mat-header-cell *matHeaderCellDef>Unit</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.unitName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="approvalStatus">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.approvalStatus }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="levelName">
+          <th mat-header-cell *matHeaderCellDef>Level</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.levelName }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="actionsBy">
+          <th mat-header-cell *matHeaderCellDef>Action By</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.crmUserName }}
+          </td>
+        </ng-container> -->
+        <ng-container matColumnDef="stageOwner">
+          <th mat-header-cell *matHeaderCellDef>Stage Owner</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.currentStageOwner }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="companyType">
+          <th mat-header-cell *matHeaderCellDef>Unit Belongs To</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.companyTypeName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef>Remarks</th>
+          <td
+            mat-cell
+            *matCellDef="let charge"
+            [matTooltip]="charge.cancelRemarks ? charge.cancelRemarks : 'N/A'"
+          >
+            {{
+              charge.cancelRemarks
+                ? getShortRemarks(charge.cancelRemarks)
+                : "N/A"
+            }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let element" class="actions-div">
+            <!-- Approve/Reject Icon -->
+            <mat-icon
+              *ngIf="element.cancelBookingFormUrl"
+              class="action-icon"
+              (click)="
+                downloadUploadedSalesAgreement(element.cancelBookingFormUrl)
+              "
+              matTooltip="Download Cancel Booking Form"
+            >
+              download
+            </mat-icon>
+            <mat-icon
+              matTooltip="View Cancel Booking Form"
+              (click)="viewDocument(element.cancelBookingFormUrl)"
+              class="action-icon"
+              *ngIf="element.cancelBookingFormUrl"
+            >
+              visibility
+            </mat-icon>
+
+            <!-- Booking Form Icon -->
+            <mat-icon
+              *ngIf="element.actionStatus == 'Pending'"
+              matTooltip="Approve/Reject"
+              (click)="goToApprovals(element)"
+              class="action-icon"
+            >
+              rule
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          class="table-row"
+          mat-row
+          *matRowDef="let charge of paymentDetails; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <b>
+    <hr style="margin: 0" />
+  </b>
+  <mat-card-footer class="pagination-sec">
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator"
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>
+<div *ngIf="isModelView">
+  <div
+    class="modal fade"
+    id="remarksModal"
+    tabindex="-1"
+    aria-labelledby="remarksModalLabel"
+    aria-hidden="true"
+    [ngClass]="{ show: isModelView }"
+    [style.display]="isModelView ? 'block' : 'none'"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="remarksModalLabel" class="radio-button">
+            ENTER REMARKS
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            (click)="onClose()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <textarea
+                class="form-control"
+                id="remarks"
+                [(ngModel)]="remarks"
+                #remarksField="ngModel"
+                required
+                name="remarks"
+                rows="4"
+                placeholder="Enter your remarks here"
+                (input)="resizeTextarea($event)"
+              ></textarea>
+              <div
+                *ngIf="
+                  remarksField.invalid &&
+                  (remarksField.dirty || remarksField.touched || isSubmitted)
+                "
+                class="text-danger mt-1"
+              >
+                Enter remarks.
+              </div>
+            </div>
+            <!-- <div class="mb-3">
+                  <div class="choose-file">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      (change)="onFileChange($event)"
+                      #fileInput
+                    />
+                  </div>
+                  <div *ngIf="fileTypeError" class="error-message">
+                    {{ fileSizeDisplay }}
+                  </div>
+                </div> -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="onClose()"
+          >
+            Close
+          </button>
+          <!-- <button
+            type="button"
+            class="btn btn-danger"
+            (click)="handleApprovalStatus('Rejected')"
+          >
+            Reject
+          </button> -->
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="handleApprovalStatus('Rejected')"
+          >
+            Rejected
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="handleApprovalStatus('Approval')"
+          >
+            Approve
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

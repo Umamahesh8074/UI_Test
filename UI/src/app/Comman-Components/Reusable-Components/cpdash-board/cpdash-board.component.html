@@ -1,0 +1,196 @@
+<div style="width: 100%; height: 100%; overflow: auto">
+  <div class="main-head">
+    <div class="header-div">
+      <div class="header-cont">
+        <h1 class="head-text">Dashboard</h1>
+        <p class="date-txt" style="margin: 0">{{ today }}</p>
+      </div>
+      <!-- <p class="user-txt">
+      Hi {{ user.userName }}, here's what's happening today
+    </p> -->
+    </div>
+    <div class="date-picker">
+      <mat-form-field
+        *ngIf="showDateRangePicker"
+        class="time-picker"
+        appearance="outline"
+        style="margin-top: 16px"
+      >
+        <mat-label>Select Date Range</mat-label>
+        <mat-date-range-input [rangePicker]="picker"  (click)="picker.open()">
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="customStartDate"
+            (focus)="picker.open()"
+          />
+          <input
+            matEndDate
+            placeholder="End date"
+            formControlName="customEndDate"
+            (focus)="picker.open()"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field
+        class="example-full-width"
+        class="mat-45"
+        appearance="outline"
+      >
+        <mat-label>Project</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchProject($event)"
+          [formControl]="project"
+          [matAutocomplete]="projectAuto"
+        />
+        <mat-autocomplete
+          #projectAuto="matAutocomplete"
+          (optionSelected)="onProjectSelect($event)"
+          [displayWith]="displayProject"
+        >
+          <mat-option *ngFor="let option of projects" [value]="option">
+            {{ option.projectName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="day-selector" [formGroup]="formData">
+      <mat-form-field appearance="outline">
+        <mat-label>Select Day</mat-label>
+        <mat-select (selectionChange)="handleDaySelection($event.value)">
+          <mat-option *ngFor="let day of days" [value]="day">
+            {{ day.commonRefValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field
+        *ngIf="showDateRangePicker"
+        class="time-picker"
+        appearance="outline"
+        style="margin-top: 16px"
+      >
+        <mat-label>Select Date Range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="customStartDate"
+          />
+          <input
+            matEndDate
+            placeholder="End date"
+            formControlName="customEndDate"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="cards">
+    <app-dash-board
+      heading="Assigned Leads"
+      [count]="assignedLeads"
+      icon="assignment_add"
+      backgroundColor="linear-gradient(230deg, #0e4cfd, #6a8eff)"
+      hoverColor="red"
+      [styles]="{
+        width: '260px',
+        height: '100px',
+        titleColor: 'white'
+      }"
+      (cardClick)="navigateToLeads()"
+    ></app-dash-board>
+
+    <app-dash-board
+      heading="Follow Ups"
+      [count]="followups"
+      icon="contact_phone"
+      backgroundColor="linear-gradient(230deg, #e74b08f6, #df7e54)"
+      [styles]="{
+        width: '260px',
+        height: '100px',
+        titleColor: 'white'
+      }"
+      (cardClick)="navigateToFollowups()"
+    ></app-dash-board>
+
+    <app-dash-board
+      heading="Non Contactable"
+      [count]="nonContactableCount"
+      icon="phone_disabled"
+      backgroundColor="linear-gradient(230deg, #ef0722, #e14c4c)"
+      [styles]="{
+        width: '260px',
+        height: '100px',
+        titleColor: 'white'
+      }"
+      (cardClick)="navigateToLeadsForNonContactable()"
+    ></app-dash-board>
+
+    <app-dash-board
+      heading="Site Visit Prospect"
+      [count]="siteVisitProspectFollowups"
+      icon="share_location"
+      backgroundColor="linear-gradient(230deg, #06848a, #42c1c1)"
+      [styles]="{
+        width: '260px',
+        height: '100px',
+        titleColor: 'white'
+      }"
+      (cardClick)="navigateToFollowups('Site Visit Prospect')"
+    ></app-dash-board>
+
+    <app-dash-board
+      heading="Site Visit Done"
+      [count]="siteVisitDoneCount"
+      icon="person_pin_circle"
+      backgroundColor="linear-gradient(230deg, #a23b8f, #cc52ba)"
+      [styles]="{
+        width: '260px',
+        height: '100px',
+        titleColor: 'white'
+      }"
+      (cardClick)="navigateToFollowups('Site Visit Done')"
+    ></app-dash-board>
+
+    <app-dash-board
+      heading="Booked"
+      [count]="nonContactableCount"
+      icon="real_estate_agent"
+      backgroundColor="linear-gradient(230deg, #038b3a, #51cb82)"
+      [styles]="{
+        width: '260px',
+        height: '100px',
+        titleColor: 'white'
+      }"
+      (cardClick)="navigateToLeadsForNonContactable()"
+    ></app-dash-board>
+  </div>
+  <!-- <div class="cards"></div> -->
+
+  <div class="content">
+    <div
+      class="team-data-table-container leads-asigned-div"
+      *ngIf="isUserManager"
+    >
+      <h3 class="table-header">Presales Team Member-wise Leads Report</h3>
+      <div class="team-data-table">
+        <app-reusable-table
+          [dataSource]="teamData"
+          [displayedColumns]="displayedColumns"
+          [clickableRows]="true"
+          (rowClick)="onRowClick($event)"
+        ></app-reusable-table>
+      </div>
+    </div>
+  </div>
+ 
+</div>

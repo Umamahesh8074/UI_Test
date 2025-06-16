@@ -1,0 +1,42 @@
+.green-amount {
+  color: green;
+  font-weight: bold;
+}
+
+.blue-amount {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+}
+
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  overflow: hidden;
+  max-width: 48px;
+}
+
+th.mat-header-cell mat-checkbox,
+td.mat-cell mat-checkbox {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Sticky header row for the CRM applicants table */
+.sticky-header-row th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #fff;
+}
+
+/* Ensure no sticky/position styles on table body cells */
+.mat-cell mat-checkbox {
+  position: static;
+}

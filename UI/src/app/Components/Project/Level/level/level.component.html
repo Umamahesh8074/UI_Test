@@ -1,0 +1,111 @@
+<h3 class="header">
+  <b>{{ isAdding ? "ADD LEVEL" : "EDIT LEVEL" }}</b>
+</h3>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-content class="cmn-mat-card-content mat-card-scroll">
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Project</mat-label>
+            <mat-select formControlName="projectId">
+              <mat-option
+                *ngFor="let option of projects"
+                [value]="option.projectId"
+                [disabled]="!isAdding && !option.enabled"
+                (click)="
+                  isAdding && !option.enabled
+                    ? setSelectedProject(option.projectId)
+                    : null
+                "
+              >
+                {{ option.projectName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Block</mat-label>
+            <mat-select formControlName="blockId">
+              <mat-option
+                *ngFor="let option of blocks"
+                [value]="option.id"
+                [disabled]="!isAdding && !option.enabled"
+                (click)="
+                  isAdding && !option.enabled
+                    ? setSelectedBlock(option.id)
+                    : null
+                "
+              >
+                {{ option.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div formArrayName="levels">
+          <div class="row" style="padding: 0 15px">
+            <div *ngFor="let level of levels.controls; let i = index">
+              <div class="row" [formGroupName]="i">
+                <div class="col">
+                  <mat-form-field appearance="outline" class="mat-50">
+                    <mat-label>Level Name</mat-label>
+                    <input matInput formControlName="name" />
+                  </mat-form-field>
+                </div>
+                <div class="col">
+                  <mat-form-field appearance="outline" class="mat-50">
+                    <mat-label>Number Of Units</mat-label>
+                    <input matInput formControlName="noOfUnits" />
+                  </mat-form-field>
+                </div>
+
+                <div class="col" *ngIf="!isAdding">
+                  <mat-form-field appearance="outline" class="mat-50">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="status">
+                      <mat-option value="">Select Status</mat-option>
+                      <mat-option
+                        *ngFor="let element of statuses"
+                        [value]="element.commonRefKey"
+                      >
+                        {{ element.commonRefValue }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error
+                      *ngIf="formData.get('status')?.hasError('required')"
+                    >
+                      Please select one option
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div class="button">
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoLevels()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

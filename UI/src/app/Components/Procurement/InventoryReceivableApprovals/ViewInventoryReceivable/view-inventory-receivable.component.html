@@ -1,0 +1,161 @@
+<div class="pac-header">INVENTORY RECEIVABLE</div>
+
+<form [formGroup]="formData">
+  <div>
+    <mat-card class="qo-details-card">
+      <mat-card-content class="cmn-card-content">
+        <div class="tab-head">
+          <div class="row sub-details-div">
+            <div class="column1">
+              <div *ngIf="inventoryReceivables?.projectName">
+                <b class="column-div">PROJECT:</b>
+                {{ inventoryReceivables.projectName }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="inventoryReceivables?.vendorName">
+                <b class="column-div">VENDOR:</b>
+                {{ inventoryReceivables.vendorName }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="inventoryReceivables?.purchaseOrderCode">
+                <b class="column-div">PURCHASE ORDER CODE:</b>
+                {{ inventoryReceivables.purchaseOrderCode }}
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0rem 1rem">
+            <div class="radio-button-id">INVENTORY RECEIVABLE ITEMS</div>
+            <div class="mat-elevation-z8">
+              <table
+                mat-table
+                [dataSource]="inventoryReceivableItems"
+                class="mat-table"
+              >
+                <ng-container matColumnDef="irId">
+                  <th mat-header-cell *matHeaderCellDef>Id</th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    {{ i + 1 }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="materialCode">
+                  <th mat-header-cell *matHeaderCellDef>Material Code</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.materialCode }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="categoryName">
+                  <th mat-header-cell *matHeaderCellDef>Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.categoryName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subCategoryName">
+                  <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.subCategoryName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="specificationName">
+                  <th mat-header-cell *matHeaderCellDef>Specification</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.specificationName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="inventoryUnitName">
+                  <th mat-header-cell *matHeaderCellDef>Unit</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.inventoryUnitName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalQuantityReceived">
+                  <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.totalQuantityReceived | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalQuantityExceed">
+                  <th mat-header-cell *matHeaderCellDef>Qty Exceed</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.totalQuantityExceed | number }}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+              </table>
+            </div>
+            <mat-paginator
+              [length]="totalItems"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="[5, 10, 15, 20, 25]"
+              (page)="onPageChange($event)"
+              showFirstLastButtons
+              class="custom-paginator"
+              style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+            ></mat-paginator>
+          </div>
+
+          <div *ngIf="stages.length > 0" style="padding: 0rem 1rem">
+            <div class="radio-button-id">STAGE DETAILS</div>
+            <ng-container>
+              <app-workorder-stage [stagesDto]="stages"></app-workorder-stage>
+            </ng-container>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div *ngIf="routeStatus === 'pending'; else backButton">
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="goBack()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            type="button"
+            (click)="approvalStatus('Rejected')"
+          >
+            REJECT
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class success"
+            type="button"
+            (click)="approvalStatus('Approval')"
+          >
+            APPROVE
+          </button>
+        </div>
+        <ng-template #backButton>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="goBack()"
+          >
+            BACK
+          </button>
+        </ng-template>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

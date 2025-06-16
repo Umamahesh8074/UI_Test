@@ -1,0 +1,80 @@
+<h4 class="header"><b>FINGER PRINT</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header class="cmn-mat-card-header">
+        <b>{{ isAdding ? "ADD FINGERPRINT" : "EDIT FINGERPRINT" }}</b>
+      </mat-card-header>
+      <mat-card-content class="cmn-mat-card-content">
+        <!-- <mat-form-field class="mat-45" appearance="outline" style="margin-top: 8px">
+          <mat-label>Project</mat-label>
+          <input type="text" matInput [value]="selectedProject?.projectName ? selectedProject.projectName : ''
+          " (input)="searchProject($event)" [formControl]="project" [matAutocomplete]="projectAuto1" />
+          <mat-autocomplete #projectAuto1="matAutocomplete" (optionSelected)="onProjectSelect($event)"
+            [displayWith]="displayProject">
+            <mat-option *ngFor="let option of projects" [value]="option">
+              {{ option?.projectName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field> -->
+        <mat-form-field appearance="outline" class="mat-45" appearance="outline" style="margin-top: 8px">
+          <mat-label>Location Name</mat-label>
+          <mat-select formControlName="locationId" (selectionChange)="onLocationSelect($event)">
+            <mat-option *ngFor="let item of locationsList" [value]="item.id">
+              {{ item.location }}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="formData.get('generatorId')?.hasError('required')">
+            Please select location
+          </mat-error>
+        </mat-form-field>
+ 
+        <!-- <mat-form-field appearance="outline" class="mat-45" style="margin-top: 8px">
+          <mat-label>Fingerpring Number</mat-label>
+          <input matInput formControlName="fingerprintNumber"
+            (onChange)="onChangeFingerPrintNumber($event)" type="text"
+            [value]="nextfingerprintNumber" />
+        </mat-form-field>  -->
+
+        <mat-form-field appearance="outline"  class="mat-45" appearance="outline" style="margin-top: 8px">
+          <mat-label>Fingerpring Number</mat-label>
+          <input matInput formControlName="fingerprintNumber" type="number"  />
+         
+        </mat-form-field> 
+
+        <mat-form-field class="example-full-width" class="mat-45" appearance="outline">
+          <mat-label>User Name</mat-label>
+          <input type="text" matInput [value]="selectedUser.userName ? selectedUser.userName : ''"
+            (input)="searchUserForAuto($event)" [formControl]="userControll" [matAutocomplete]="usernameauto"
+            />
+          <mat-autocomplete #usernameauto="matAutocomplete" (optionSelected)="onUserSelectForAuto($event)"
+            [displayWith]="displayUserForAuto">
+            <mat-option *ngFor="let option of userData" [value]="option" >
+              {{ option.userName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div class="button-group">
+          <!-- Back Button -->
+          <button mat-flat-button class="btn-class accent" (click)="gotoDisplay()">
+            BACK
+          </button>
+          <!-- Reset Button (Conditional) -->
+          <button mat-flat-button class="btn-class warn" (click)="clearForm()" *ngIf="isAdding">
+            RESET
+          </button>
+          <!-- Submit Button -->
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

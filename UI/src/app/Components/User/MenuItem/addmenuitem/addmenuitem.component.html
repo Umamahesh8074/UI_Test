@@ -1,0 +1,112 @@
+<h3 class="header">
+  <b>{{ isAdding ? "ADD MENU ITEM" : "UPDATE MENU ITEM" }}</b>
+</h3>
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <!-- <mat-card-header
+        ><b>{{
+          isAdding ? "ADD MENU ITEM" : "EDIT MENU ITEM"
+        }}</b></mat-card-header
+      > -->
+      <mat-card-content class="mat-content">
+        <ng-container *ngIf="organizationId == 0">
+          <mat-form-field appearance="outline" class="mat-50">
+            <mat-label> Organization</mat-label>
+            <mat-select
+              formControlName="organizationId"
+              (selectionChange)="onOrganizationSelete($event)"
+            >
+              <mat-option value="">Select Organization</mat-option>
+              <mat-option
+                *ngFor="let organization of organizations"
+                [value]="organization.organizationId"
+              >
+                {{ organization.organizationName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label> Menu Name</mat-label>
+          <mat-select formControlName="menuId">
+            <mat-option value="">Select Menu</mat-option>
+            <mat-option *ngFor="let menu of menus" [value]="menu.menuId">
+              {{ menu.menuName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Menu Item Name</mat-label>
+          <input matInput formControlName="menuItemName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Path</mat-label>
+          <input matInput formControlName="path" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Order</mat-label>
+          <input matInput formControlName="order" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Moblie Display</mat-label>
+          <mat-select formControlName="moblieDisplay">
+            <mat-option value="">Select</mat-option>
+            <mat-option *ngFor="let config of menuConfig" [value]="config">
+              {{ config }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Website Display</mat-label>
+          <mat-select formControlName="webSiteDisplay">
+            <mat-option value="">Select</mat-option>
+            <mat-option *ngFor="let config of menuConfig" [value]="config">
+              {{ config }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50" *ngIf="!isAdding">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="">Select Status</mat-option>
+            <mat-option
+              *ngFor="let element of statuses"
+              [value]="element.commonRefKey"
+            >
+              {{ element.commonRefValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('status')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoMenus()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

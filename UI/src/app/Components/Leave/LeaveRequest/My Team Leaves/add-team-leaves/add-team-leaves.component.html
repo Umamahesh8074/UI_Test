@@ -1,0 +1,112 @@
+<h4 class="header">
+  <div class="cmn-mat-card-header">
+    <b>{{ isAdding ? "ADD TEAM LEAVE REQUEST" : "EDIT TEAM LEAVE REQUEST" }}</b>
+  </div>
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card" style="width: 50%">
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field class="example-full-width" class="mat-45" appearance="outline">
+          <mat-label>User Name</mat-label>
+          <input type="text" matInput [value]="selectedUser.userName ? selectedUser.userName : ''"
+            (input)="searchUserForAuto($event)" [formControl]="userControll" [matAutocomplete]="usernameauto"
+            />
+          <mat-autocomplete #usernameauto="matAutocomplete" (optionSelected)="onUserSelectForAuto($event)"
+            [displayWith]="displayUserForAuto">
+            <mat-option *ngFor="let option of userData" [value]="option" >
+              {{ option.userName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Start Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="startDatePicker"
+            formControlName="startDate"
+            (click)="startDatePicker.open()"
+            [min]="minStartDate"
+            [value]="formData.get('startDate')?.value | date : 'yyyy-MM-dd'"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="startDatePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #startDatePicker></mat-datepicker>
+          <mat-error
+            *ngIf="formData.get('startDate')?.hasError('matDatepickerMin')"
+            >Start date cannot be before today.</mat-error
+          >
+        </mat-form-field>
+
+        <!-- End Date Field -->
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>End Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="endDatePicker"
+            formControlName="endDate"
+            (click)="endDatePicker.open()"
+            id="endDatePickerInput"
+            [min]="minEndDate"
+            [value]="formData.get('endDate')?.value | date : 'yyyy-MM-dd'"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="endDatePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker></mat-datepicker>
+          <mat-error
+            *ngIf="formData.get('endDate')?.hasError('matDatepickerMin')"
+            >End date must be today or a future date.</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Reason</mat-label>
+          <input matInput formControlName="reason" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-100" *ngIf="!isAdding">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="">Select Status</mat-option>
+            <mat-option
+              *ngFor="let element of statuses"
+              [value]="element.commonRefKey"
+            >
+              {{ element.commonRefValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('status')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="gotoLeaverequest()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            type="button"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

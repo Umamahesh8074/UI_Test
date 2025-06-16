@@ -1,0 +1,71 @@
+/* table {
+  width: 100%;
+}
+.header {
+  text-align: center;
+}
+.example-button-row {
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-button {
+  margin-left: 20px;
+}
+.btn {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+}
+.btn-leave, .btn-add {
+  background-color: #004869;
+}
+.btn:hover {
+  background-color: #00354e;
+}
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #004869;
+}
+.mat-header-cell {
+  background-color: #004869;
+  color: white;
+} */
+
+.search-class {
+  display: flex;
+  gap: 1rem;
+  /* width: 30%; */
+}
+
+/* .table-container {
+  overflow-y: auto;
+  height: 500px;
+  max-height: 600px;
+} */
+.paginator {
+  /* display: flex; */
+
+  width: 100%;
+}
+mat-card {
+  position: relative;
+  min-height: 400px;
+}
+
+mat-card-content {
+  /* Give some bottom padding so content doesn't overlap the footer */
+  padding-bottom: 50px;
+  overflow-y: auto;
+}
+mat-card-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

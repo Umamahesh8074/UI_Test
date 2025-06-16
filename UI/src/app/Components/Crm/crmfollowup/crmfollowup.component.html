@@ -1,0 +1,417 @@
+<!-- <h4 class="head"><b>FOLLOWUP</b></h4> -->
+<form [formGroup]="followupForm" (ngSubmit)="save()">
+  <div class="container">
+    <mat-card class="card">
+      <mat-card-header class="header">
+        <div class="title">
+          <div>
+            <b>Applicant Details</b>
+          </div>
+          <div
+            style="margin-top: 10px; display: flex; justify-content: flex-end"
+          >
+            <button
+              mat-flat-button
+              class="btn-class back-btn"
+              (click)="gotoPayments()"
+            >
+              BACK
+            </button>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-card class="applicant-details">
+        <div class="row">
+          <div class="column1">
+            <span
+              ><b>Customer Name:</b>
+              {{ followUp.firstApplicantName || "N/A" }}</span
+            ><br />
+            <span
+              ><b>Phone:</b>
+              {{ followUp.firstApplicantPhoneNumber || "N/A" }}</span
+            ><br />
+            <span
+              ><b>Final Price:</b>
+              {{ followUp.formattedFinalPrice || "N/A" }}</span
+            ><br />
+            <span
+            ><b>Stage Total Amount Without Tds:</b>
+            {{ followUp.formattedStageAmountWithoutTds || "N/A" }}</span
+          ><br />
+          <span
+            ><b>Stage Tds:</b>
+            {{ followUp.formattedTotalTds || "N/A" }}</span
+          ><br />
+          
+           
+          </div>
+          <div class="column2">
+            <span><b>Project:</b> {{ followUp.projectName || "N/A" }}</span
+            ><br />
+            <span><b>Block:</b> {{ followUp.blockName || "N/A" }}</span
+            ><br />
+            <span
+              ><b>Final Price Without Tds:</b>
+              {{ followUp.formattedFinalPriceWithoutTds || "N/A" }}</span
+            ><br />
+            <span
+            ><b>Paid Amount:</b>
+            {{ followUp.formattedPaidAmount || "N/A" }}</span
+          ><br />
+          <span
+          ><b>Paid Tds:</b> {{ followUp.formattedPaidTds || "N/A" }}</span
+        ><br /> 
+            <br />
+            <span style="display: flex"> </span>
+            <br />
+          </div>
+          <div class="column3">
+            <span><b>Unit:</b> {{ followUp.unitName || "N/A" }}</span
+            ><br />
+            <span><b>Level:</b> {{ followUp.levelName || "N/A" }}</span
+              ><br />
+            
+            <span
+              ><b>Received Amount:</b>
+              {{ followUp.formattedReceivedAmount || "N/A" }}</span
+            ><br />
+            <span
+              ><b>Balance Amount: </b>
+              <b>{{ followUp.formattedBalanceAmount || "N/A" }}</b></span
+            ><br />
+            <span
+              ><b>Pending Tds Amount:</b>
+              {{ followUp.formattedPendingTds || "N/A" }}</span
+            ><br />
+          </div>
+          <div class="column2">
+            <span><b>Stage:</b> {{ followUp.stageName || "N/A" }}</span
+            ><br />
+            <span><b>Unit Type:</b> {{ followUp.unitTypeName || "N/A" }}</span
+              ><br />
+            <span
+              ><b>Stage Total Amount:</b>
+              {{ followUp.formattedTotalAmount || "N/A" }}</span
+            ><br />
+           
+           
+          </div>
+        </div>
+      </mat-card>
+      <div class="projects-check"></div>
+
+      <div class="card-content">
+        <div class="form-div" *ngIf="isDisplayAddFollowup">
+          <mat-card class="content-form">
+            <mat-card-content class="mat-content mat-card-scroll-followup">
+              <div class="row" style="padding: 0 15px">
+                <div class="followup-title">
+                  <b>{{ isAdding ? "ADD FOLLOWUP" : "UPDATE FOLLOWUP" }}</b>
+                </div>
+
+                <mat-form-field appearance="outline" style="padding-top: 20px">
+                  <mat-label>Choose Followup Date</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="datepicker"
+                    formControlName="followupDate"
+                    (click)="datepicker.open()"
+                    (dateChange)="onChange()"
+                    [min]="minDate"
+                  />
+                  <mat-error
+                    *ngIf="
+                      followupForm.get('followupDate')?.hasError('required')
+                    "
+                  >
+                    Followup Date is required
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      followupForm.get('followupDate')?.hasError('futureDate')
+                    "
+                  >
+                    Date cannot be future
+                  </mat-error>
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="datepicker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #datepicker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <input
+                    matInput
+                    [ngxTimepicker]="timepicker"
+                    placeholder="Choose a time"
+                    formControlName="followupTime"
+                  />
+                  <ngx-material-timepicker
+                    (timeSet)="onChange()"
+                    #timepicker
+                  ></ngx-material-timepicker>
+                  <mat-error
+                    *ngIf="
+                      followupForm.get('followupTime')?.hasError('timeInvalid')
+                    "
+                  >
+                    The selected time cannot be earlier than the current time.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="row" style="padding: 0 15px">
+                <!-- <mat-form-field appearance="outline">
+                  <mat-label>Select Type</mat-label>
+                  <mat-select formControlName="typeId">
+                    <mat-option value="">Select Type</mat-option>
+                    <mat-option
+                      *ngFor="let type of followupTypes"
+                      [value]="type.id"
+                    >
+                      {{ type.commonRefValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Select Status</mat-label>
+                  <mat-select formControlName="statusId">
+                    <mat-option value="">Select Status</mat-option>
+                    <mat-option
+                      *ngFor="let status of followupStatusList"
+                      [value]="status.id"
+                    >
+                      {{ status.commonRefValue }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="followupForm.get('statusId')?.hasError('required')"
+                  >
+                    Please Choose one option
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      followupForm
+                        .get('statusId')
+                        ?.hasError('lessThanOrEqualToZero')
+                    "
+                  >
+                    Please Choose one option
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="row" style="padding: 0 15px"></div>
+
+              <div class="row" style="padding: 0 15px">
+                <div appearance="outline">
+                  <textarea
+                    type="text"
+                    matInput
+                    formControlName="remarks"
+                    rows="5"
+                    placeholder="Remarks"
+                    style="flex: 1; width: 100%; padding: 4px 10px"
+                  ></textarea>
+                  <mat-error
+                    *ngIf="
+                      followupForm.get('remarks')?.hasError('required') &&
+                      (followupForm.get('remarks')?.touched ||
+                        followupForm.get('remarks')?.dirty)
+                    "
+                  >
+                    Remarks required
+                  </mat-error>
+                </div>
+              </div>
+            </mat-card-content>
+            <div>
+              <mat-card-footer>
+                <div
+                  class="followup-buttons"
+                  style="
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-right: 2rem;
+                  "
+                >
+                  <button
+                    mat-flat-button
+                    class="btn-class reset-btn"
+                    (click)="clearForm()"
+                  >
+                    RESET
+                  </button>
+
+                  <button
+                    mat-flat-button
+                    class="btn-class submit-btn"
+                    type="submit"
+                  >
+                    {{ isAdding ? "ADD" : "UPDATE" }}
+                  </button>
+                </div>
+              </mat-card-footer>
+            </div>
+          </mat-card>
+        </div>
+        <div
+          [ngStyle]="{
+            width: isDisplayAddFollowup ? '64%' : '100%',
+            'padding-left': !isDisplayAddFollowup ? '20px' : '0px'
+          }"
+        >
+          <mat-card>
+            <div class="followup-history">
+              <div class="table-container">
+                <table
+                  matSort
+                  mat-table
+                  [dataSource]="followups"
+                  class="mat-elevation-z8"
+                >
+                  <ng-container matColumnDef="rowNum">
+                    <th mat-header-cell *matHeaderCellDef>#</th>
+                    <td mat-cell *matCellDef="let i = index">
+                      {{ pageIndex * pageSize + i + 1 }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="followupDate">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Followup Date
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let followup"
+                      matTooltip="{{ followup.followupDate | date : 'medium' }}"
+                    >
+                      {{ followup.followupDate | date : "mediumDate" }}
+                    </td>
+                  </ng-container>
+                  <!-- <ng-container matColumnDef="type">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Type
+                    </th>
+                    <td mat-cell *matCellDef="let followup">
+                      {{ followup.type || "N/A" }}
+                    </td>
+                  </ng-container> -->
+                  <ng-container matColumnDef="remarks">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Remarks
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let followup"
+                      style="width: 400px"
+                    >
+                      <div class="remarks-cell">
+                        {{ followup?.remarks || "N/A" }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="status">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Status
+                    </th>
+                    <td mat-cell *matCellDef="let followup">
+                      {{ followup.status || "N/A" }}
+                    </td>
+                  </ng-container>
+                  <!-- <ng-container matColumnDef="subStatus">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Sub Status
+                    </th>
+                    <td mat-cell *matCellDef="let followup">
+                      {{ followup.subStatus || "N/A" }}
+                    </td>
+                  </ng-container> -->
+
+                  <ng-container matColumnDef="createdBy">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Created By
+                    </th>
+                    <td mat-cell *matCellDef="let followup">
+                      {{ followup.createdBy || "N/A" }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="createdDate">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Created Date
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let followup"
+                      matTooltip="{{ followup.createdDate | date : 'medium' }}"
+                    >
+                      {{ followup.createdDate | date : "mediumDate" }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="stage">
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="background-color: #004869; color: white"
+                    >
+                      Stage
+                    </th>
+                    <td mat-cell *matCellDef="let followup">
+                      <div class="stage-cell">
+                        {{ followup?.stage || "N/A" }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let followup; columns: displayedColumns"
+                  ></tr>
+                </table>
+              </div>
+            </div>
+            <div>
+              <mat-card-footer>
+                <mat-paginator
+                  [length]="totalItems"
+                  [pageSize]="pageSize"
+                  [pageSizeOptions]="pageSizeOptions"
+                  (page)="onPageChange($event)"
+                  showFirstLastButtons
+                ></mat-paginator>
+              </mat-card-footer>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</form>

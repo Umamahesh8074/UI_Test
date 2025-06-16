@@ -1,0 +1,141 @@
+.pac-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1% !important;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+/* Center div trick */
+.center {
+  text-align: center;
+  flex: 1;
+}
+
+/* Left and Right fixed size */
+.left,
+.right {
+  flex: 0 0 auto;
+  margin-right: 14px;
+}
+.ml-2 {
+  margin-left: 15px;
+  padding-left: 5px;
+  width: 15%;
+}
+.Completed {
+  color: green;
+  font-weight: bold;
+}
+
+.Pending {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+
+.Not {
+  color: rgb(185, 123, 6);
+  font-weight: bold;
+}
+.radio-button {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.pending {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+}
+
+.approved {
+  color: green;
+  font-weight: bold;
+}
+
+.rejected {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+.filters-div {
+  /* display: flex; */
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
+}
+
+.clear-date-div {
+  color: white;
+  cursor: pointer;
+  border: 1px solid #333;
+  height: 26px !important;
+  font-size: 25px;
+  background: #fff;
+  /* width: 30px; */
+  text-align: center;
+  border-radius: 4px;
+  background-color: #004869;
+}
+
+.advanceSearch {
+  margin-left: 10px;
+}
+.menu-icon {
+  margin-top: 3px;
+  font-size: 18px;
+  /* margin-right: 8px; */
+  color: #555;
+}
+
+/* Styling for labels inside the menu */
+.menu-label {
+  font-size: 13px;
+  color: #333;
+}
+
+::ng-deep .custom-menu.mat-mdc-menu-panel {
+  min-width: 200px !important;
+  max-width: 200px !important;
+  width: 100px !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  align-items: center !important;
+  margin-bottom: -8px !important;
+  margin-top: -15px !important;
+}
+.action-icon {
+  margin-right: 2px;
+  cursor: pointer;
+  color: #2d2c2c8c;
+  /* opacity: 0.6; */
+  font-size: 18px;
+}
+.mat-icon-actions {
+  width: 5%;
+}
+.customer-payment-example-button-row {
+  padding-left: 10px;
+  border-radius: 5px;
+}
+::ng-deep .custom-menu.mat-mdc-menu-panel {
+  min-width: 200px !important;
+  max-width: 200px !important;
+  width: 100px !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  align-items: center !important;
+  margin-bottom: -8px !important;
+  margin-top: -15px !important;
+}
+
+.action-trigger{
+  margin-right: 2px;
+  cursor: pointer;
+  color: #2d2c2c8c;
+  /* opacity: 0.6; */
+  font-size: 18px;
+}

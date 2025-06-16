@@ -1,0 +1,212 @@
+l<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-pic">
+      <img
+        *ngIf="imageUrl"
+        [src]="imageUrl"
+        alt="Profile Picture"
+        class="user-img"
+      />
+      <mat-icon class="icon" (click)="userFileInput.click()"
+        >add_a_photo</mat-icon
+      >
+      <div *ngIf="!imageUrl" class="initial">{{ user.userName.charAt(0) }}</div>
+
+      <!-- <input
+        matInput
+        [attr.placeholder]="'Choose File'"
+        [attr.type]="'text'"
+        [attr.readonly]="true"
+        (click)="userFileInput.click()"
+        [value]="fileNames.user || 'No image chosen'"
+      /> -->
+      <input
+        type="file"
+        #userFileInput
+        (change)="userFileChange($event)"
+        style="display: none"
+      />
+      <mat-error *ngIf="fileErrors.user">
+        {{ fileErrors.user }}
+      </mat-error>
+    </div>
+    <div class="profile-info">
+      <h2 class="profile-name">{{ user.userName }}</h2>
+      <p class="profile-role">{{ user.title }}</p>
+    </div>
+    <p
+      class="profile-status"
+      [ngClass]="{ active: user.status === 'A', inactive: user.status === 'I' }"
+    >
+      <i
+        class="fas"
+        [ngClass]="{
+          'fa-circle': user.status === 'A',
+          'fa-circle-slash': user.status === 'I'
+        }"
+      ></i>
+      {{ user.status == "A" ? "ACTIVE" : user.status == "I" ? "INACTIVE" : "" }}
+    </p>
+  </div>
+  <div class="profile-body">
+    <div class="row">
+      <div class="col-md-7"   [ngStyle]="{
+        width: !isCustomerLoggedIn ? '58%' : '100%',
+        'padding-left': !isCustomerLoggedIn ? '20px' : '0px'
+      }">
+        <div class="card" style="margin-left: 0px; width: 100%">
+          <div class="card-header">
+            <h5 class="card-title">Personal Information</h5>
+          </div>
+          <ul class="list-group list-group">
+            <li class="list-group-item">
+              <i class="fas fa-user"></i> Name: {{ user.userName }}
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-envelope"></i> Email: {{ user.email }}
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-phone"></i> Phone Number: {{ user.phoneNumber }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-5"  *ngIf="!isCustomerLoggedIn">
+        <div class="card" style="margin-left: 0px; width: 100%">
+          <div class="card-header">
+            <h5 class="card-title">Designation</h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <i class="fas fa-map-marker-alt"></i>Organization :
+              {{ user.organizationName }}
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-map-marker-alt"></i> Role : {{ user.title }}
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-map-marker-alt"></i> Manager Name :
+              {{ user.managerName }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button
+        class="btn btn-primary"
+        (click)="toggleEditMode()"
+        *ngIf="!editMode"
+      
+      >
+        <i class="fas fa-edit"></i> Edit Details
+      </button>
+      <button
+        class="btn btn-warning"
+        (click)="changePassword()"
+        *ngIf="!changePasswordMode"
+      >
+        <i class="fas fa-lock"></i> Change Password
+      </button>
+      <button class="btn btn-success" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Go Back
+      </button>
+    </div>
+
+    <div class="edit-mode" *ngIf="editMode && !isCustomerLoggedIn ">
+      <h5>Edit Details</h5>
+      <form (ngSubmit)="saveChanges()">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            [(ngModel)]="user.userName"
+            class="form-control"
+            name="userName"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="user.email"
+            class="form-control"
+            name="email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="title">Role Name:</label>
+          <input
+            type="text"
+            id="title"
+            [(ngModel)]="user.title"
+            class="form-control"
+            name="title"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number:</label>
+          <input
+            type="tel"
+            id="phone"
+            [(ngModel)]="user.phoneNumber"
+            class="form-control"
+            name="phoneNumber"
+          />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Update</button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancelEditMode()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="change-password-mode" *ngIf="changePasswordMode">
+      <h5>Change Password</h5>
+      <form (ngSubmit)="saveNewPassword()">
+        <div class="form-group position-relative">
+          <label for="new-password">New Password:</label>
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            id="new-password"
+            [(ngModel)]="newPassword"
+            class="form-control"
+            name="newPassword"
+          />
+          <i
+            class="bi"
+            [ngClass]="passwordVisible ? 'bi-eye-slash' : 'bi-eye'"
+            (click)="togglePasswordVisibility()"
+            style="
+              position: absolute;
+              right: 18px;
+              top: 68%;
+              transform: translateY(-50%);
+              cursor: pointer;
+            "
+          ></i>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="changePassword()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

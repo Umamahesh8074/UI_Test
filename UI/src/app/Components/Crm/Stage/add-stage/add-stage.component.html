@@ -1,0 +1,324 @@
+<h4 class="header">
+  <b>STAGES</b>
+</h4>
+<div class="example-button-row add-stage">
+  <form [formGroup]="formData" (ngSubmit)="saveOrUpdate()" style="width: 100%">
+    <table>
+      <tr>
+        <td>
+          <!-- <mat-form-field appearance="outline" class="search-class ml-2">
+            <mat-label>Search/Select Project</mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchProject($event)"
+              [formControl]="project"
+              [matAutocomplete]="projectAuto"
+            />
+            <mat-autocomplete
+              #projectAuto="matAutocomplete"
+              (optionSelected)="onProjectSelect($event)"
+              [displayWith]="displayProject"
+            >
+              <mat-option *ngFor="let option of projects" [value]="option">
+                {{ option.projectName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field> -->
+
+          <mat-form-field
+          appearance="outline" class="search-class ml-2"
+            style="margin-left: 0.5%"
+          >
+            <mat-label>Search/Select Block</mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchBlock($event)"
+              [formControl]="block"
+              [matAutocomplete]="blockAuto"
+            />
+            <mat-autocomplete
+              #blockAuto="matAutocomplete"
+              (optionSelected)="onBockSelect($event)"
+              [displayWith]="displayBlock"
+            >
+              <mat-option *ngFor="let option of blocks" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+       
+          <!-- Payment Plan Selection -->
+          <mat-form-field appearance="outline" class="search-class ml-2">
+            <mat-label>Search/Select Payment Plan</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedPaymentPlan.planName ? selectedPaymentPlan.planName : ''
+              "
+              (input)="searchPaymentPlan($event)"
+              [formControl]="paymentPlan"
+              [matAutocomplete]="paymentPlanAuto"
+            />
+            <mat-autocomplete
+              #paymentPlanAuto="matAutocomplete"
+              (optionSelected)="onPaymentPlanSelect($event)"
+              [displayWith]="displayPaymentPlan"
+            >
+              <mat-option *ngFor="let option of paymentPlans" [value]="option">
+                {{ option.planName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        
+      </tr>
+    </table>
+    <table formArrayName="stageBean">
+      <thead style="height: 40px">
+        <tr>
+          <th style="width: 10%">Stage Name</th>
+          <th style="width: 10%">Description</th>
+          <th style="width: 10%">Stage Order</th>
+          <th style="width: 10%">Percentage (%)</th>
+          <th style="width: 10%">Days</th>
+          <th style="width: 10%">Demand Date</th>
+          <th style="width: 10%">Due Date</th>
+          <!-- <th style="width: 10%;">Status</th> -->
+          <th style="width: 10%">Initiate</th>
+          <!-- <th style="width: 10%">Actions</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let stage of stagesOrders.controls; let i = index"
+          [formGroupName]="i"
+          [ngClass]="{
+            'disabled-stage': stage.get('initiated')?.value === 'Yes'
+          }"
+        >
+          <td>
+            <mat-form-field class="example-full-width mr-10 stage">
+              <mat-label>Stage Name</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="stageName"
+                placeholder="Enter Stage Name"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+                [matTooltip]="stage.get('stageName')?.value"
+              />
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field class="example-full-width mr-10 stage">
+              <mat-label>Description</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="description"
+                placeholder="Enter Description"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+                [matTooltip]="stage.get('description')?.value"
+              />
+            </mat-form-field>
+          </td>
+
+          <td>
+            <!-- Stage Order -->
+            <mat-form-field class="example-full-width mr-10">
+              <mat-label>Stage Order</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="stageOrder"
+                placeholder="Enter Stage Order"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+              />
+            </mat-form-field>
+          </td>
+
+          <td>
+            <!-- Percentage -->
+            <mat-form-field class="example-full-width mr-10">
+              <mat-label>Percentage(%)</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="percentage"
+                placeholder="Enter Completion Percentage"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+              />
+            </mat-form-field>
+          </td>
+
+          <td>
+            <!-- Days -->
+            <mat-form-field class="example-full-width mr-10">
+              <mat-label>Days</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="days"
+                placeholder="Enter Days"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+              />
+            </mat-form-field>
+          </td>
+            <td>
+            <!-- Actual Date -->
+            <mat-form-field class="example-full-width mr-10">
+              <mat-label>Demand Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="demandDatePicker"
+                (click)="demandDatePicker.open()"
+                formControlName="demandDate"
+                placeholder="Select Demand Date"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="demandDatePicker"
+                *ngIf="stage.get('initiated')?.value !== 'Yes'"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #demandDatePicker></mat-datepicker>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <!-- Expected Date -->
+            <mat-form-field class="example-full-width mr-10">
+              <mat-label>Due Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dueDatePicker"
+                (click)="dueDatePicker.open()"
+                formControlName="dueDate"
+                placeholder="Select Due Date"
+                [readonly]="stage.get('initiated')?.value === 'Yes'"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dueDatePicker"
+                *ngIf="stage.get('initiated')?.value !== 'Yes'"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dueDatePicker></mat-datepicker>
+            </mat-form-field>
+          </td>
+
+        
+
+          <td [class.disabled]="isTdDisabled(i)">
+            <mat-form-field
+              class="example-full-width mr-10"
+              *ngIf="stage.get('initiated')?.value !== 'Yes'"
+            >
+              <mat-label>Initiated</mat-label>
+              <mat-select
+                formControlName="initiated"
+                (selectionChange)="onInitiateChange($event, stage)"
+              >
+                <mat-option
+                  *ngFor="let element of initiate"
+                  [value]="element.commonRefKey"
+                >
+                  {{ element.commonRefValue }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="formData.get('initiated')?.hasError('required')"
+              >
+                Please select one option
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              class="example-full-width mr-10"
+              *ngIf="stage.get('initiated')?.value === 'Yes'"
+            >
+              <mat-label>Initiated</mat-label>
+              <input matInput formControlName="initiated" readonly />
+            </mat-form-field>
+          </td>
+
+          <!-- <td *ngIf="!removedStages[stage.get('stageId')?.value]">
+
+          <button
+            *ngIf="stage.get('stageId')?.value > 0 && stage.get('initiated')?.value !== 'Yes'; else addButton"
+            type="button"
+            mat-button
+            (click)="openConfirmDialog(stage.get('stageId')?.value)"
+            style="color: red; cursor: pointer; margin-bottom: 20px; border: 1px solid #333; height: 24px !important; font-size: 13px; background: #fff;"
+            class="bi bi-trash text-danger"
+          ></button>
+        
+          <ng-template #addButton>
+            <button
+              class="bi bi-plus h5"
+              type="button"
+              mat-button
+              (click)="addEmptyStage()"
+              style="cursor: pointer; margin-bottom: 20px; border: 1px solid #333; height: 24px !important; font-size: 22px; background: #fff;"
+            ></button>
+          </ng-template>
+        </td> -->
+          <td *ngIf="!removedStages[stage.get('stageId')?.value]">
+            <!-- Delete icon (only shown for stages with a stageId > 0) -->
+            <!-- <ng-container *ngIf="stage.get('stageId')?.value > 0">
+            <i
+              (click)="openConfirmDialog(stage.get('stageId')?.value)"
+              style="cursor: pointer; margin-bottom: 20px; font-size: 17px; background: none;"
+              class="bi bi-trash text-danger"
+            ></i>
+          </ng-container>
+         -->
+            <!-- Add icon ("+" symbol), only shown for the last stage -->
+            <ng-container
+              *ngIf="isLastStage(stage) && getTotalPercentage() < 100"
+            >
+              <i
+                (click)="addEmptyStage()"
+                style="
+                  cursor: pointer;
+                  margin-bottom: 20px;
+                  font-size: 25px;
+                  background: none;
+                "
+                class="bi bi-plus"
+              ></i>
+            </ng-container>
+            <ng-container *ngIf="isEmptyStage(stage)">
+              <i
+                (click)="removeEmptyStage(stage)"
+                style="
+                  cursor: pointer;
+                  margin-bottom: 20px;
+                  font-size: 25px;
+                  background: none;
+                "
+                class="bi bi-dash"
+              ></i>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <mat-card-footer class="add-mat-card-footer">
+      <div class="form-group">
+        <button
+          *ngIf="saveButtonEnabled"
+          type="button"
+          mat-flat-button
+          class="btn-class primary"
+          (click)="saveOrUpdate()"
+        >
+          SAVE
+        </button>
+      </div>
+    </mat-card-footer>
+  </form>
+</div>

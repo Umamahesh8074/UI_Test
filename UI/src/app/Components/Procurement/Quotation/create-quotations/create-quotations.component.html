@@ -1,0 +1,284 @@
+<div class="create-qo-pac-header">QUOTATION</div>
+
+<div class="create-qo-filters-div">
+  <div class="cre-qo-search-container">
+    <mat-form-field appearance="outline" class="cre-qo-search-class">
+      <mat-label>Search On Quotation Code</mat-label>
+      <input
+        matInput
+        [(ngModel)]="quotationCode"
+        (input)="onSearch($any($event).target?.value)"
+        placeholder="Enter Quotation Code"
+      />
+    </mat-form-field>
+
+    <mat-form-field
+      class="cre-qo-search-class cre-qo-ml-2"
+      appearance="outline"
+    >
+      <mat-label> Search/Select Vendor</mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchVendor($event)"
+        [formControl]="vendor"
+        [matAutocomplete]="vendorAuto"
+      />
+      <mat-autocomplete
+        #vendorAuto="matAutocomplete"
+        (optionSelected)="onVendorSelect($event)"
+        [displayWith]="displayVendor"
+      >
+        <mat-option *ngFor="let option of vendors" [value]="option">
+          {{ option.vendorName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field
+      class="cre-qo-search-class cre-qo-ml-2"
+      appearance="outline"
+    >
+      <mat-label> Search/Select Project Name </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchProject($event)"
+        [formControl]="project"
+        [matAutocomplete]="projectAuto"
+      />
+      <mat-autocomplete
+        #projectAuto="matAutocomplete"
+        (optionSelected)="onProjectSelect($event)"
+        [displayWith]="displayProject"
+      >
+        <mat-option *ngFor="let option of projects" [value]="option">
+          {{ option.displayProjectName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="search-class-date cre-qo-ml-2">
+      <mat-label>Select Date Range</mat-label>
+      <mat-date-range-input
+        [formGroup]="formData"
+        [rangePicker]="picker"
+        (click)="picker.open()"
+      >
+        <input
+          matStartDate
+          placeholder="Start date"
+          formControlName="customStartDate"
+          (focus)="picker.open()"
+          (dateChange)="onDateChange()"
+        />
+        <input
+          matEndDate
+          placeholder="End date"
+          formControlName="customEndDate"
+          (focus)="picker.open()"
+          (dateChange)="onDateChange()"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-icon
+      matTooltip="Clear Date"
+      (click)="clearDateRange()"
+      class="clear-date-div"
+      >sync</mat-icon
+    >
+    <mat-icon
+      matTooltip="Clear Filters"
+      (click)="resetForm()"
+      class="clear-date-div"
+      >filter_list_off</mat-icon
+    >
+  </div>
+
+  <div class="button-container">
+    <button mat-flat-button (click)="goBack()" class="btn-class accent">
+      BACK
+    </button>
+    <button mat-flat-button (click)="addQuotation()" class="btn-class primary">
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<app-table
+  [displayedColumns]="displayedColumns"
+  [customHeaderNames]="customHeaderNames"
+  [dataSource]="quotationData"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  [actionButtons]="actionButtons"
+  (pageChanged)="onPageChange($event)"
+  [pipes]="pipes"
+  (actionClicked)="onActionClicked($event)"
+></app-table>
+
+<!-- <app-autocomplete
+      class="ml-2"
+      [label]="'Search/Select Vendor'"
+      [formControl]="vendorIdControl"
+      [options]="vendors"
+      [displayFn]="displayVendor"
+      (selectionChange)="onVendorSelect($event)"
+      (onSearch)="searchVendor($event)"
+    ></app-autocomplete> -->
+
+<!-- <app-autocomplete
+      class="ml-2"
+      [label]="'Search/Select Project'"
+      [formControl]="projectIdControl"
+      [options]="projects"
+      [displayFn]="displayProject"
+      (selectionChange)="onProjectSelect($event)"
+      (onSearch)="searchProject($event)"
+    ></app-autocomplete> -->
+
+<!-- <mat-form-field appearance="outline" class="serach-class ml-2">
+      <mat-label>Search On Stage Owner</mat-label>
+      <input
+        matInput
+        (input)="onSearch($any($event).target?.value)"
+        placeholder="Enter Stage Owner"
+      />
+    </mat-form-field> 
+    <app-date-filter
+      class="ml-2"
+      [formData]="formData"
+      (dateChanged)="onDateFilterChange($event)"
+      (clearFilter)="onClearDateFilter()"
+    ></app-date-filter>
+
+    -->
+
+<div
+  class="modal fade modal-xl"
+  [ngClass]="{ show: openDialog }"
+  [ngStyle]="{ display: openDialog ? 'block' : 'none' }"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #004869">DOCUMENTS</h3>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="onClose()"
+        ></button>
+      </div>
+
+      <div class="modal-body wo-modal-body">
+        <div *ngIf="!documents || documents.length === 0; else documentsTable">
+          <p>No documents available.</p>
+        </div>
+
+        <div class="tab-head">
+          <ng-template #documentsTable>
+            <table
+              matSort
+              mat-table
+              [dataSource]="documents"
+              class="table table-striped"
+            >
+              <ng-container matColumnDef="fileName">
+                <th mat-header-cell *matHeaderCellDef>File Name</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.documentName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.createdDate | date : "medium" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status" *ngIf="isQuotationDocuments">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let document">Done</td>
+              </ng-container>
+
+              <ng-container matColumnDef="status" *ngIf="!isQuotationDocuments">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let document">
+                  <span>
+                    <span *ngIf="document === documents[0]" class="approved"
+                      >Current Document</span
+                    >
+                    <span *ngIf="document !== documents[0]" class="rework"
+                      >Past Document</span
+                    >
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let document">
+                  <mat-icon
+                    matTooltip="Download PDF"
+                    (click)="downloadDocument(document.documentPath)"
+                    class="font icon-spacing icon"
+                    style="color: #004869"
+                    >download</mat-icon
+                  >
+
+                  <mat-icon
+                    matTooltip="Review PDF"
+                    (click)="viewDocument(document.documentPath)"
+                    class="font icon-spacing icon"
+                    style="color: #004869"
+                    >visibility</mat-icon
+                  >
+                </td>
+              </ng-container>
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumnsDocuments"
+              ></tr>
+              <tr
+                class="table-row"
+                mat-row
+                *matRowDef="let row; columns: displayedColumnsDocuments"
+              ></tr>
+            </table>
+          </ng-template>
+        </div>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="documentTotalItems"
+            [pageSize]="documentPageSize"
+            [pageSizeOptions]="documentPageSizeOptions"
+            (page)="onDocumentPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="onClose()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

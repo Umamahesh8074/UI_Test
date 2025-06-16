@@ -1,0 +1,135 @@
+<h3 class="header">PROJECTS</h3>
+
+<div class="example-button-row">
+  <div>
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Project Name</mat-label>
+      <input matInput (input)="onSearchProject($any($event).target?.value)" />
+    </mat-form-field>
+  </div>
+  <div>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addProject()"
+      class="btn-class"
+    >
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="projectData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let project">{{ project.projectName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectCode">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Code
+          </th>
+          <td mat-cell *matCellDef="let project">{{ project.projectCode }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectType">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Type
+          </th>
+          <td mat-cell *matCellDef="let project">{{ project.projectType }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectStatus">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Status
+          </th>
+          <td mat-cell *matCellDef="let project">
+            {{ project.projectStatus }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let project">{{ project.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let project">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editProject(project)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <i
+              (click)="openConfirmDialog(project.projectId)"
+              style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger"
+              *ngIf="project.status == 'A'"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let project of projectData; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalPages"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

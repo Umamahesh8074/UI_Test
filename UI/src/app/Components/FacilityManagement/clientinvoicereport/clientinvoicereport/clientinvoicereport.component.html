@@ -1,0 +1,188 @@
+<h4 class="header"><b>Invoice Management</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()" class="invoices">
+  <mat-card>
+    <mat-nav-list>
+      <ng-container>
+        <mat-list-item class="main-header" (click)="toggleQuotation(0)">
+          <div class="list-item-content">
+            <mat-icon class="menu-icon">description</mat-icon>
+            <span mat-subheader class="menu-head">
+              <span>Client Details</span>
+              <mat-icon class="toggle-icon">{{
+                expanded[0] ? "expand_more" : "chevron_right"
+              }}</mat-icon>
+            </span>
+          </div>
+        </mat-list-item>
+        <ng-container *ngIf="expanded[0]">
+          <div class="details-columns">
+            <div class="details-column">
+              <p>
+                <strong>Client Name:</strong>
+                {{ monthlyInvoiceReport.clientName }}
+              </p>
+              <p>
+                <strong>Address 1:</strong> {{ monthlyInvoiceReport.address1 }}
+              </p>
+              <p>
+                <strong>Address 2:</strong> {{ monthlyInvoiceReport.address2 }}
+              </p>
+              <p><strong>City:</strong> {{ monthlyInvoiceReport.city }}</p>
+            </div>
+            <div class="details-column">
+              <p><strong>State:</strong> {{ monthlyInvoiceReport.state }}</p>
+              <p>
+                <strong>Pincode:</strong> {{ monthlyInvoiceReport.orgPinCode }}
+              </p>
+              <p><strong>Gst:</strong> {{ monthlyInvoiceReport.gst }}</p>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container>
+        <mat-list-item class="main-header" (click)="toggleQuotation(1)">
+          <div class="list-item-content">
+            <mat-icon class="menu-icon">description</mat-icon>
+            <span mat-subheader class="menu-head">
+              <span>Location Details</span>
+              <mat-icon class="toggle-icon">{{
+                expanded[1] ? "expand_more" : "chevron_right"
+              }}</mat-icon>
+            </span>
+          </div>
+        </mat-list-item>
+        <ng-container *ngIf="expanded[1]">
+          <div class="details-columns">
+            <div class="details-column">
+              <p>
+                <strong>Location Name:</strong>
+                {{ monthlyInvoiceReport.location }}
+              </p>
+              <p>
+                <strong>Invoice Date:</strong>
+                {{ monthlyInvoiceReport.invoiceDate }}
+              </p>
+
+              <p>
+                <strong>Invoice Number:</strong>
+                <span
+                  contenteditable="true"
+                  (blur)="updateInvoiceNumber($event)"
+                  class="editable-text"
+                >
+                  {{ formData.get("invoiceNumber")?.value }}
+                </span>
+              </p>
+            </div>
+
+            <div class="details-column">
+              <p>
+                <strong>Organization Gst:</strong>
+                {{ monthlyInvoiceReport.orgGstinUin }}
+              </p>
+
+              <p>
+                <strong>Order Number:</strong>
+                <span
+                  contenteditable="true"
+                  (blur)="updateOrderNumber($event)"
+                  class="editable-text"
+                >
+                  {{ formData.get("orderNumber")?.value }}
+                </span>
+              </p>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container>
+        <mat-list-item class="main-header">
+          <div class="list-item-content">
+            <mat-icon class="menu-icon">description</mat-icon>
+            <span mat-subheader class="menu-head">
+              <span>Resource Consumption details</span>
+              <mat-icon class="toggle-icon">{{
+                expanded[2] ? "expand_more" : "chevron_right"
+              }}</mat-icon>
+            </span>
+          </div>
+        </mat-list-item>
+        <ng-container *ngIf="expanded[2]">
+          <div class="details-columns">
+            <div class="details-column">
+              <!-- Input fields go here -->
+              <mat-form-field appearance="outline" class="mat-50">
+                <mat-label>Service Name</mat-label>
+                <input
+                  matInput
+                  formControlName="serviceName"
+                  [readonly]="isView"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-50">
+                <mat-label>Service Salary</mat-label>
+                <input
+                  matInput
+                  formControlName="serviceSalary"
+                  [readonly]="isView"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-50">
+                <mat-label>No Of Duties</mat-label>
+                <input
+                  matInput
+                  formControlName="noOfDuties"
+                  [readonly]="isView"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-50">
+                <mat-label>Man Power</mat-label>
+                <input
+                  matInput
+                  formControlName="manPower"
+                  [readonly]="isView"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-50">
+                <mat-label>Total Amount</mat-label>
+                <input
+                  matInput
+                  formControlName="totalAmount"
+                  [readonly]="isView"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <mat-card-actions>
+        <div style="text-align: right; padding: 10px 30px 0 0">
+          <ng-container *ngIf="!isView">
+            <div>
+              <button
+                mat-flat-button
+                style="color: white; background-color: #004869"
+                class="btn-class"
+                type="submit"
+              >
+                {{ isAdding ? "ADD" : "UPDATE" }}
+              </button>
+
+              <button
+                mat-flat-button
+                style="color: white; background-color: rgb(132, 110, 21)"
+                class="btn-class"
+                (click)="gotoclientinvoicereports()"
+              >
+                BACK
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </mat-card-actions>
+    </mat-nav-list></mat-card
+  >
+</form>

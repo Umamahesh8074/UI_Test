@@ -1,0 +1,102 @@
+<h4 class="header">
+  <div>
+    <b>{{ isAdding ? "CREATE PROJECT TEAM " : "EDIT PROJECT TEAM" }}</b>
+  </div>
+</h4>
+
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-content class="mat-content">
+        <mat-form-field
+          class="example-full-width"
+          class="mat-50"
+          appearance="outline"
+        >
+          <mat-label>Project</mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="searchProject($event)"
+            [formControl]="project"
+            [matAutocomplete]="projectAuto"
+          />
+          <mat-autocomplete
+            #projectAuto="matAutocomplete"
+            (optionSelected)="onProjectSelect($event)"
+            [displayWith]="displayProject"
+          >
+            <mat-option *ngFor="let option of projects" [value]="option">
+              {{ option.projectName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label> Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          class="mat-50"
+          appearance="outline"
+        >
+          <mat-label>Head</mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="searchUser($event)"
+            [formControl]="user"
+            [matAutocomplete]="userAuto"
+          />
+          <mat-autocomplete
+            #userAuto="matAutocomplete"
+            (optionSelected)="onUserSelect($event)"
+            [displayWith]="displayUser"
+          >
+            <mat-option *ngFor="let option of users" [value]="option">
+              {{ option.userName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50" *ngIf="!isAdding">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="">Select Status</mat-option>
+            <mat-option
+              *ngFor="let element of statuses"
+              [value]="element.commonRefKey"
+            >
+              {{ element.commonRefValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('status')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoSalesTeam()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

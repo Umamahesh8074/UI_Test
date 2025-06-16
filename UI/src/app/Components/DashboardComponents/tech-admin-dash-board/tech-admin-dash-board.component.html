@@ -1,0 +1,46 @@
+<div class="main-head">
+  <div class="header-div">
+    <div class="header-cont">
+      <h1 class="head-text">Dashboard</h1>
+      <p class="date-txt" style="margin: 0">{{ today }}</p>
+    </div>
+  </div>
+  <div *ngIf="proxyLoginDisplay" class="proxy">
+    <mat-form-field
+      class="example-full-width"
+      class="mat-45"
+      appearance="outline"
+    >
+      <mat-label>Proxy Login</mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchUser($event)"
+        [formControl]="User"
+        [matAutocomplete]="userAuto"
+      />
+      <mat-autocomplete
+        #userAuto="matAutocomplete"
+        (optionSelected)="onUserSelect($event)"
+        [displayWith]="displayUser"
+      >
+        <mat-option *ngFor="let option of UserDetails" [value]="option">
+          {{ option.userName | titlecase }}
+          <span style="font-weight: bold">
+            -
+            {{
+              option.roleName.split(" ").length > 1
+                ? (option.roleName | titlecase)
+                : (option.roleName | uppercase)
+            }}
+          </span>
+          <span>
+            <ng-container *ngIf="option.companyName">
+              ({{ option.companyName | titlecase }})
+            </ng-container>
+          </span>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+</div>

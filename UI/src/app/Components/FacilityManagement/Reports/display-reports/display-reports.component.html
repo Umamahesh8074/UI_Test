@@ -1,0 +1,384 @@
+<div class="header">REPORTS</div>
+
+<div class="display-reports-button-row">
+  <div class="">
+    <mat-form-field appearance="outline" class="display-reports-search-class">
+      <mat-label>Project Name</mat-label>
+      <mat-select
+        formControlName="projectId"
+        (selectionChange)="onSelect($event)"
+      >
+        <mat-option
+          *ngFor="let item of qrReportProject"
+          [value]="item.projectId"
+          [disabled]="isView"
+        >
+          {{ item.projectName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="display-reports-search-class">
+      <mat-label>Location Name</mat-label>
+      <mat-select
+        formControlName="qrgenertorId"
+        (selectionChange)="onSelectLocation($event)"
+      >
+        <mat-option
+          *ngFor="let item of qrReportLocation"
+          [value]="item.qrgeneratorId"
+          [disabled]="isView"
+        >
+          {{ item.location }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="display-reports-search-class">
+      <mat-label>User Name</mat-label>
+      <mat-select
+        formControlName="userId"
+        (selectionChange)="onSelectUser($event)"
+      >
+        <mat-option
+          *ngFor="let item of qrReportUser"
+          [value]="item.userId"
+          [disabled]="isView"
+        >
+          {{ item.userName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      style="margin-bottom: 12px"
+      mat-button
+      (click)="onClear()"
+      class="mr-10 clr-button clear-top1 clr-btn-color"
+    >
+      Clear
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div *ngIf="showProjectTable">
+      <table
+        matSort
+        mat-table
+        [dataSource]="qrReportProject"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.projectName }}</td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="yesCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Yes Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.yesCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="noCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            No Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.noCount }}</td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="overallCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Overall Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.overallCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="overallStatus">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Overall Status
+          </th>
+          <td mat-cell *matCellDef="let reports">
+            {{ reports.overallStatus }}
+          </td>
+        </ng-container>
+        <!-- <tr mat-row *matRowDef="let reports; columns: displayedProjectColumns" (click)="onRowClick(reports, 'project')"></tr> -->
+
+        <tr mat-header-row *matHeaderRowDef="displayedProjectColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let reports of reportsData;
+            columns: displayedProjectColumns
+          "
+          (click)="onRowClick(reports.projectId, 'project')"
+        >
+          >
+        </tr>
+      </table>
+    </div>
+
+    <div *ngIf="showLocationTable">
+      <table
+        matSort
+        mat-table
+        [dataSource]="qrReportLocation"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="location">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Location
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.location }}</td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="yesCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Yes Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.yesCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="noCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            No Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.noCount }}</td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="overallCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Overall Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.overallCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="overallStatus">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Overall Status
+          </th>
+          <td mat-cell *matCellDef="let reports">
+            {{ reports.overallStatus }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedLocationColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let reports of reportsData;
+            columns: displayedLocationColumns
+          "
+          (click)="onRowClick(reports.qrgeneratorId, 'location')"
+        ></tr>
+      </table>
+    </div>
+
+    <div *ngIf="showUserTable">
+      <table
+        matSort
+        mat-table
+        [dataSource]="qrReportUser"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="userName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            User Name
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.userName }}</td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="yesCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Yes Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.yesCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="noCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            No Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.noCount }}</td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="overallCount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Overall Count
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.overallCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="overallStatus">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Overall Status
+          </th>
+          <td mat-cell *matCellDef="let reports">
+            {{ reports.overallStatus }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedUserColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let reports of reportsData; columns: displayedUserColumns"
+          (click)="onRowClick(reports.userId, 'user')"
+        ></tr>
+      </table>
+    </div>
+
+    <div *ngIf="showAllTable">
+      <table
+        matSort
+        mat-table
+        [dataSource]="qrReportOrg"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.projectName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="userName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            User Name
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.userName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="location">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            location
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.location }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="scheduleTime">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Schedule Time
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.scheduleTime }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Scanned Time
+          </th>
+          <td mat-cell *matCellDef="let reports">
+            {{ reports.createdDate | date : "MM/dd/yyyy, HH:mm" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let reports">{{ reports.status }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedAllColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedAllColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

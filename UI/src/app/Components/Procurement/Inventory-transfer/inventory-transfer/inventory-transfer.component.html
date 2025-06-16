@@ -1,0 +1,268 @@
+<h4 class="pac-header">
+  {{ isAdding ? "ADD INVENTORY TRANSFER" : "EDIT INVENTORY TRANSFER" }}
+</h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-content class="cmn-mat-card-content">
+        <!-- Transfer Date -->
+        <mat-form-field appearance="outline" class="it-mat-50">
+          <mat-label>Transfer Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="transferDate"
+            required
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="it-mat-50" appearance="outline">
+          <mat-label>Search/Select Item</mat-label>
+          <input
+            type="text"
+            id="itemId"
+            matInput
+            [value]="selecteditem.name ? selecteditem.name : ''"
+            (input)="searchitem($event)"
+            [formControl]="itemUnit"
+            [matAutocomplete]="auto"
+            name="itemUnit"
+          />
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            (optionSelected)="onitemSelect($event.option.value)"
+            [displayWith]="displayitem"
+          >
+            <mat-option *ngFor="let option of itemUnits" [value]="option">
+              {{ option.materialCode }}
+            </mat-option>
+          </mat-autocomplete>
+          <div *ngIf="itemUnavailable" class="text-danger">
+            Item not available in store.
+          </div>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="it-mat-50">
+          <mat-label>Item Transfer To </mat-label>
+          <mat-select formControlName="transferType">
+            <mat-option
+              *ngFor="let element of transferTypes"
+              [value]="element.transferType"
+            >
+              {{ element.transferType }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="formData.get('transactionType')?.hasError('required')"
+          >
+            Please select transaction Type
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="it-mat-50">
+          <mat-label> Search/Select From Store Name </mat-label>
+          <input
+            type="text"
+            matInput
+            [value]="
+              selectedFromStore.storeName ? selectedFromStore.storeName : ''
+            "
+            (input)="onSearchStoreFrom($event)"
+            [formControl]="storeFromFc"
+            [matAutocomplete]="storeAuto"
+          />
+          <mat-autocomplete
+            #storeAuto="matAutocomplete"
+            (optionSelected)="onStoreChangeFrom($event.option.value)"
+            [displayWith]="displayStoreFromFn"
+          >
+            <mat-option *ngFor="let item of fromStoreData" [value]="item">
+              {{ item.storeName }}
+            </mat-option>
+          </mat-autocomplete>
+
+          <div *ngIf="!isAvailable" class="text-danger">
+            Item not available in selected store.
+          </div>
+        </mat-form-field>
+
+        <ng-container *ngIf="transferTypeValue === 'Store'">
+          <mat-form-field appearance="outline" class="it-mat-50">
+            <mat-label> Search/Select To Store Name </mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedToStore.storeName ? selectedToStore.storeName : ''
+              "
+              (input)="onSearchStore($event)"
+              [formControl]="storeFc"
+              [matAutocomplete]="storeAuto"
+            />
+            <mat-autocomplete
+              #storeAuto="matAutocomplete"
+              (optionSelected)="onStoreChange($event.option.value)"
+              [displayWith]="displayStoreFn"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let item of toStoreData" [value]="item">
+                {{ item.storeName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </ng-container>
+        <ng-container *ngIf="transferTypeValue === 'Site'">
+          <mat-form-field appearance="outline" class="it-mat-50">
+            <mat-label>Search/Select Project Name</mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedProject.projectName ? selectedProject.projectName : ''
+              "
+              (input)="searchProject($event)"
+              [formControl]="projectFc"
+              [matAutocomplete]="projectAuto"
+            />
+            <mat-autocomplete
+              #projectAuto="matAutocomplete"
+              (optionSelected)="onProjectSelect($event.option.value)"
+              [displayWith]="displayProject"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let option of project" [value]="option">
+                {{ option.displayProjectName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </ng-container>
+
+        <mat-form-field appearance="outline" class="it-mat-50">
+          <mat-label>Quantity Transferred</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="quantityTransferred"
+            required
+            (input)="checkQuantity()"
+          />
+
+          <div *ngIf="!isQuantityAvailable" class="text-danger">
+            Quantity not available in selected store.
+          </div>
+        </mat-form-field>
+
+        <!-- Quantity Transferred -->
+
+        <!-- From Location -->
+        <mat-form-field appearance="outline" class="it-mat-50">
+          <mat-label>From Location</mat-label>
+          <input matInput formControlName="fromLocation" required />
+        </mat-form-field>
+
+        <!-- To Location -->
+        <mat-form-field appearance="outline" class="it-mat-50">
+          <mat-label>To Location</mat-label>
+          <input matInput formControlName="toLocation" required />
+        </mat-form-field>
+
+        <mat-form-field class="it-mat-50" appearance="outline">
+          <mat-label>Search/Select Transferred By</mat-label>
+          <input
+            type="text"
+            id="transferredBy"
+            matInput
+            [value]="
+              selectedTransferredBy.userName
+                ? selectedTransferredBy.userName
+                : ''
+            "
+            (input)="searchTransferredBy($event)"
+            [formControl]="transferredByUser"
+            [matAutocomplete]="transferredByUserauto"
+            name="transferredByUser"
+          />
+          <mat-autocomplete
+            #transferredByUserauto="matAutocomplete"
+            (optionSelected)="onTransferredBySelect($event.option.value)"
+            [displayWith]="displayTransferredBy"
+          >
+            <mat-option
+              *ngFor="let option of transferredByusers"
+              [value]="option"
+            >
+              {{ option.userName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field class="it-mat-50" appearance="outline">
+          <mat-label>Search/Select Received By</mat-label>
+          <input
+            type="text"
+            id="receivedBy"
+            matInput
+            [value]="
+              selectedReceivedBy.userName ? selectedReceivedBy.userName : ''
+            "
+            (input)="searchReceivedBy($event)"
+            [formControl]="receivedByUser"
+            [matAutocomplete]="receivedByUserauto"
+            name="receivedByUser"
+          />
+          <mat-autocomplete
+            #receivedByUserauto="matAutocomplete"
+            (optionSelected)="onReceivedBySelect($event.option.value)"
+            [displayWith]="displayReceivedBy"
+          >
+            <mat-option *ngFor="let option of receivedByUsers" [value]="option">
+              {{ option.userName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <div class="row" style="padding: 0 15px">
+          <mat-label>Remarks</mat-label>
+          <div appearance="outline" class="mat-100">
+            <textarea
+              matInput
+              formControlName="remarks"
+              rows="1"
+              placeholder="Remarks"
+              style="flex: 1; width: 100%; padding: 5px 5px; font-size: 13px"
+              #remarksTextArea
+            ></textarea>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoInventoryTransfers()"
+          >
+            BACK
+          </button>
+
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

@@ -1,0 +1,116 @@
+.sac-serach-class {
+  width: 30%;
+}
+
+.sac-ml-2 {
+  margin-left: 0.1%;
+}
+
+.sac-search-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin-left: 2%;
+}
+.context-menu {
+  position: fixed; /* or absolute */
+  z-index: 10000;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  width: 150px;
+}
+
+.context-menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 0;
+}
+.context-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.context-menu li:hover {
+  background-color: #eee;
+}
+::ng-deep .mat-calendar-period-button {
+  pointer-events: none; /* disable navigation */
+}
+::ng-deep .mat-calendar-arrow {
+  display: none; /* hide dropdown arrow */
+}
+.custom-modal {
+  width: 400px;
+  max-width: 90vw;
+}
+
+.custom-modal .modal-content {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.modal-body-custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  padding: 20px;
+}
+
+.form-field-custom {
+  width: 100%;
+  max-width: 300px;
+}
+
+.generate-button {
+  width: 200px;
+  background-color: #004869;
+  color: white;
+}
+.custom-modal {
+  width: 400px;
+  max-width: 90vw;
+}
+
+.custom-modal .modal-content {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.modal-body-custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  padding: 20px;
+}
+
+.form-field-custom {
+  width: 100%;
+  max-width: 300px;
+  padding: 20px;
+  margin-left: 18px;
+}
+
+.generate-button {
+  width: 200px;
+  background-color: #004869;
+  color: white;
+}
+.modal-title {
+  text-align: center;
+  width: 100%;
+}
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* optional spacing */
+}

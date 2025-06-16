@@ -1,0 +1,45 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+
+.work-order-icon {
+  height: 18px !important;
+  width: 25px !important;
+  font-size: 18px !important;
+}
+.radio-button {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+.ml-2 {
+  margin-left: 0.5%;
+}
+.serach-class-code {
+  width: 16%;
+}
+.serach-class-phone {
+  width: 20%;
+}
+.modal-body1 {
+  margin: 15px 15px 15px 15px;
+}
+
+.filters-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-right: 1.8rem;
+}
+
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin-left: 2%;
+}

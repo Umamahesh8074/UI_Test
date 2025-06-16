@@ -1,0 +1,769 @@
+import { formatDate } from '@angular/common';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
+import { Chart } from 'chart.js';
+import { Subject, takeUntil } from 'rxjs';
+import { pageSizeOptions } from 'src/app/Constants/CommanConstants/Comman';
+import { MapDto, TeamDashBoardDataDto } from 'src/app/Models/Presales/lead';
+import { IProject, Project } from 'src/app/Models/Project/project';
+import { CommonReferenceDetails } from 'src/app/Models/User/CommonReferenceDetails';
+import { User } from 'src/app/Models/User/User';
+import { CommanService } from 'src/app/Services/CommanService/comman.service';
+import { StateServiceService } from 'src/app/Services/CommanService/state-service.service';
+import { LeadbudgetService } from 'src/app/Services/LeadBugetService/leadbudget.service';
+import { LeadFollowupService } from 'src/app/Services/Presales/Leads/lead-followup.service';
+import { LeadService } from 'src/app/Services/Presales/Leads/lead.service';
+import { CommonreferencedetailsService } from 'src/app/Services/UserService/commonreferencedetails.service';
+
+@Component({
+  selector: 'app-cpdash-board',
+  templateUrl: './cpdash-board.component.html',
+  styleUrls: ['./cpdash-board.component.css'],
+})
+export class CPDashBoardComponent implements OnInit {
+  @ViewChild(MatDatepicker) datepicker!: MatDatepicker<any>;
+  leadsData: MapDto[] = [];
+  assignedTo?: number;
+  user: User = new User();
+  leadFollowUpTotal: number = 0;
+  pageSizeOptions = pageSizeOptions;
+  totalLeads: number = 0;
+  assignedLeads: number = 0;
+  scheduledVisits: number = 0;
+  followups: number = 0;
+  siteVisitDoneCount: number = 0;
+  closedLeads: number = 0;
+  lostLeads: number = 0;
+  nonContactableLeads: number = 0;
+  siteVisitProspectFollowups: number = 0;
+  bookedLeadsCount: number = 0;
+  private destroy$ = new Subject<void>();
+  today: any;
+  daysType: string = 'Filter_Days';
+  followupStatusType: string = 'Lead_Status';
+  moduleNames: string[] = [];
+  siteVisitDoneId: number = 0;
+  siteVisitProspectId: number = 0;
+  revisitDoneStatusId: number = 0;
+  days: CommonReferenceDetails[] = [];
+  dateRange: any = 0;
+  statusId: number = 0;
+  userRole: string = '';
+  chart: Chart | any;
+  projectName: string = '';
+  projects: Project[] = [];
+  displayedColumns: string[] = [
+    'userName',
+    'assignedLeads',
+    'noOfFollowups',
+    'noOfSiteVisitDone',
+    'booked',
+  ];
+  isUserManager: boolean = false;
+
+  showDateRangePicker = false;
+  formData!: FormGroup;
+  startDate: any;
+  endDate: any;
+  assignedLeadsBgColor = 'linear-gradient(230deg, #0e4cfd, #6a8eff)';
+
+  // displayedColumns: string[] = [
+  //   'userName',
+  //   'assignedLeads',
+  //   'noOfFollowups',
+  //   'noOfSiteVisitConfirm',
+  //   'noOfSiteVisitDone',
+  // ];
+  displayedLeadBudgetColumns: string[] = [
+    'sourceName',
+    'subSourceName',
+    'totalAmonut',
+    'leadCount',
+    'CPL',
+    'bookedLeadCount',
+    'CPB',
+    'siteVisitDoneLeadCount',
+    'CPV',
+  ];
+  teamData: TeamDashBoardDataDto[] = [];
+  organizationId: number = 0;
+
+  leadBudgetSpend: any = [];
+  leadBudget: any;
+  leadBudgetdateRangeForm!: FormGroup;
+  nonContactableStatusId: any;
+  nonContactableCount: any;
+  projectId: number = 0;
+  project: any = new FormControl([] as IProject[]);
+
+  constructor(
+    private router: Router,
+    private leadService: LeadService,
+    private followupService: LeadFollowupService,
+    private commonService: CommanService,
+    private commonRefDetailService: CommonreferencedetailsService,
+    private formBuilder: FormBuilder,
+    private stateService: StateServiceService,
+    private leadBudgetService: LeadbudgetService
+  ) {}
+  ngOnInit() {
+    this.initForm();
+    this.initializeState();
+    this.initLeadBudgetDateRange();
+    
+    this.today = new Date().toDateString();
+    this.fetchFilterDays();
+    const user = localStorage.getItem('user');
+
+    if (user) {
+      console.log('user');
+      this.user = JSON.parse(user);
+      this.userRole = this.user.roleName;
+      this.fetchProjects();
+      this.navigateToDashBoardBasedOnLoggedIn(this.userRole);
+      this.isUserManager = this.userRole.toLocaleLowerCase().includes('manager')
+        ? true
+        : false;
+      this.fetchTeamLeadsData();
+      this.organizationId = this.user.organizationId;
+      this.fetchLeadsData(this.user.userId);
+      this.fetchDashboardFollowupsData();
+      this.fetchTotalLeadsCount();
+      this.getNonContactableLeadCount();
+      this.userRole.toLocaleLowerCase().includes('sales')
+        ? this.moduleNames.push('S,PS')
+        : this.moduleNames.push('P,PS');
+      this.fetchFollowupStatusList();
+    }
+  }
+
+  navigateToDashBoardBasedOnLoggedIn(userRole: String) {
+    console.log('User Role ', userRole);
+    if (this.userRole.toLocaleLowerCase().includes('channel')) {
+      console.log('entered channel partner role');
+      this.router.navigate(['layout/presales/cp/dashboard']);
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
+  navigateTo(table: string) {
+    this.router.navigate([`/${table}`]);
+  }
+
+  navigateToLeads() {
+    const userRoleLower = this.userRole.toLowerCase();
+    const route = userRoleLower.includes('presale')
+      ? 'layout/presales/leads/PST'
+      : 'layout/sales/leads/ST';
+
+    // Define the state object with the necessary properties
+    const state = {
+      dateRange: this.dateRange,
+      isMenuLeads: false,
+      customStartDate: this.startDate,
+      customEndDate: this.endDate,
+    };
+
+    // Set the state in the StateService
+    this.stateService.setState('stateData', state);
+
+    // Navigate to the desired route with the state data
+    this.router.navigate([route], {
+      state: state,
+    });
+  }
+  goToLeads() {
+    const userRoleLower = this.userRole.toLowerCase();
+    const route = userRoleLower.includes('presale')
+      ? 'layout/presales/leads/PST'
+      : 'layout/sales/leads/ST';
+
+    // Define the state object with the necessary properties
+    const state = {
+      dateRange: this.dateRange,
+      isMenuLeads: false,
+      customStartDate: this.startDate,
+      customEndDate: this.endDate,
+      statusId: this.statusId,
+    };
+
+    // Set the state in the StateService
+    this.stateService.setState('stateData', state);
+
+    // Navigate to the desired route with the state data
+    this.router.navigate([route], {
+      state: state,
+    });
+  }
+  navigateToLeadsForNonContactable() {
+    console.log('non contactable');
+    this.commonService
+      .getRefDetailsId('Lead_Status', 'NC')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          console.log('NC status');
+          console.log(response);
+          this.statusId = response;
+          this.goToLeads();
+        },
+        error: (error: any) => console.error(error),
+      });
+  }
+
+  navigateToFollowups(value?: string) {
+    console.log(value);
+    const userRoleLower = this.userRole.toLowerCase();
+    const route = userRoleLower.includes('presale')
+      ? 'layout/presales/dashboard/followups/PST'
+      : 'layout/sales/dashboard/followups/ST';
+
+    let statusIds: number[] = [];
+
+    // Check if value exists and includes either 'Confirm' or 'Done'
+    if (value) {
+      if (value.includes('Prospect')) {
+        statusIds.push(this.siteVisitProspectId);
+      } else if (value.includes('Done')) {
+        statusIds.push(this.siteVisitDoneId);
+        statusIds.push(this.revisitDoneStatusId);
+      }
+      // If value does not include either 'Confirm' or 'Done', statusId remains 0
+    }
+    this.router.navigate([route], {
+      state: {
+        dateRange: this.dateRange,
+        statusIds: statusIds,
+        customStartDate: this.startDate,
+        customEndDate: this.endDate,
+        disableActionButton: false,
+      },
+    });
+  }
+
+  fetchLeadsData(userId: number) {
+    this.leadService
+      .fetchDashBoardLeads(
+        userId,
+        this.user.roleId,
+        this.dateRange,
+        this.startDate,
+        this.endDate
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: MapDto[]) => {
+          this.leadsData = response;
+          this.assignedLeads = this.leadsData.reduce(
+            (total, lead) => total + lead.value,
+            0
+          );
+        },
+        error: (error) => console.error(error),
+      });
+  }
+
+  fetchDashboardFollowupsData() {
+    this.followupService
+      .fetchDashboardFollowupsData(
+        this.user.userId,
+        this.user.roleId,
+        this.dateRange,
+        this.startDate,
+        this.endDate
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: MapDto[]) => {
+          this.followups = response.reduce(
+            (total, lead) => total + lead.value,
+            0
+          );
+
+          // Exclude site visit done followups
+          const filteredResponse = response.filter(
+            (lead) =>
+              !lead.status.toLowerCase().includes('done') &&
+              !lead.status.toLowerCase().includes('prospect')
+            // &&
+            // !lead.status.toLowerCase().includes('booked')
+          );
+
+          // Calculate the total follow-ups excluding 'done' and 'prospect'
+          this.followups = filteredResponse.reduce(
+            (total, lead) => total + lead.value,
+            0
+          );
+
+          response.forEach((lead) => {
+            const leadStatus = lead.status.toLowerCase().trim();
+            console.log(leadStatus);
+
+            if (['site visit done', 'revisit done'].includes(leadStatus)) {
+              this.siteVisitDoneCount += lead.value;
+            } else if (leadStatus.includes('confirm')) {
+              this.scheduledVisits = lead.value;
+            } else if (leadStatus.includes('prospect')) {
+              this.siteVisitProspectFollowups = lead.value;
+            }
+          });
+        },
+        error: (error: any) => console.error(error),
+      });
+  }
+
+  fetchFilterDays() {
+    this.commonService.getRefDetailsByType(this.daysType).subscribe({
+      next: (response: CommonReferenceDetails[]) => {
+        this.days = response;
+      },
+      error: (error: any) => console.error(error),
+    });
+  }
+  handleDaySelection(commonRefObject: CommonReferenceDetails) {
+    this.dateRange = commonRefObject.commonRefKey;
+
+    if (commonRefObject.commonRefValue.includes('Custom')) {
+      console.log('Custom Date');
+      this.showDateRangePicker = true;
+      this.dateRange = '';
+    } else {
+      this.startDate = null;
+      this.endDate = null;
+      this.formData.patchValue({
+        customStartDate: null,
+        customEndDate: null,
+      });
+      this.fetchLeadsData(this.user.userId);
+      this.fetchDashboardFollowupsData();
+      this.fetchNonContactableLeadCount();
+      this.fetchTeamLeadsData();
+      this.showDateRangePicker = false;
+    }
+  }
+
+  fetchTotalLeadsCount() {
+    this.leadService
+      .fetchTotalLeadsCount(this.user.userId, this.user.roleId,'')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: MapDto[]) => {
+          this.totalLeads = response.reduce(
+            (total, lead) => total + lead.value,
+            0
+          );
+          response.forEach((lead) => {
+            const leadStatus = lead.status.toLowerCase();
+            if (leadStatus === 'closed') {
+              this.closedLeads = lead.value;
+            } else if (leadStatus === 'lost') {
+              this.lostLeads = lead.value;
+            } else if (leadStatus === 'rnr') {
+              this.nonContactableLeads = lead.value;
+            } else if (leadStatus === 'booked') {
+              this.bookedLeadsCount = lead.value;
+            }
+          });
+          this.createChart();
+        },
+        error: (error) => console.error(error),
+      });
+  }
+
+  createChart(): void {
+    if (!this.isAllDataZero()) {
+      const canvas = document.getElementById('MyChart') as HTMLCanvasElement;
+      if (canvas) {
+        this.chart = new Chart(canvas, {
+          type: 'pie',
+          data: {
+            labels: ['Total', 'Booked', 'Closed', 'Lost'],
+            datasets: [
+              {
+                label: 'Count',
+                data: [
+                  this.totalLeads,
+                  this.bookedLeadsCount,
+                  this.closedLeads,
+                  this.lostLeads,
+                ],
+                backgroundColor: ['#329ca8', 'green', 'purple', 'red'],
+                hoverOffset: 4,
+              },
+            ],
+          },
+          options: {
+            aspectRatio: 2.2,
+            plugins: {
+              legend: {
+                position: 'right', // Set legend position to bottom
+              },
+            },
+          },
+        });
+      }
+    }
+  }
+
+  isAllDataZero(): boolean {
+    return (
+      this.totalLeads === 0 &&
+      this.bookedLeadsCount === 0 &&
+      this.closedLeads === 0 &&
+      this.lostLeads === 0
+    );
+  }
+
+  fetchFollowupStatusList() {
+    this.commonRefDetailService
+      .fetchLeadStatusListByRole(this.followupStatusType, this.moduleNames)
+      .subscribe({
+        next: (response: any) => {
+          // console.log('Status list received: ', response);
+
+          response.forEach((crd: CommonReferenceDetails) => {
+            const status = crd.commonRefValue.toLowerCase().trim();
+            if (status.includes('site visit done')) {
+              this.siteVisitDoneId = crd.id;
+            } else if (status.includes('prospect')) {
+              this.siteVisitProspectId = crd.id;
+            } else if (status.includes('revisit done')) {
+              this.revisitDoneStatusId = crd.id;
+            }
+          });
+        },
+        error: (error: any) => {
+          console.error('Error fetching follow-up status list:', error);
+        },
+      });
+  }
+  fetchTeamLeadsData(): void {
+    console.log(this.userRole);
+
+    if (this.userRole.toLocaleLowerCase().includes('manager')) {
+      this.leadService
+        .fetchTeamLeadsData(
+          this.user.userId,
+          this.user.roleId,
+          this.dateRange,
+          this.startDate,
+          this.endDate
+        )
+        .subscribe({
+          next: (response: TeamDashBoardDataDto[]) => {
+            // console.log('Response :', response);
+            this.teamData = response;
+          },
+          error: (error) => console.error(error),
+        });
+    } else {
+      console.log('Not a manger');
+    }
+  }
+
+  private initForm(): void {
+    this.formData = this.formBuilder.group({
+      customStartDate: [],
+      customEndDate: [],
+    });
+    this.formData.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (formDataValue: { customStartDate: Date; customEndDate: Date }) => {
+          if (formDataValue.customStartDate && formDataValue.customEndDate) {
+            const startDate = this.formatDateTime(
+              formDataValue.customStartDate
+            );
+            const endDate = this.formatDateTime(
+              formDataValue.customEndDate,
+              true
+            );
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.fetchLeadsData(this.user.userId);
+            this.fetchDashboardFollowupsData();
+            this.fetchNonContactableLeadCount();
+            this.fetchTeamLeadsData();
+          }
+        }
+      );
+  }
+
+  formatDateTime(date: Date, isEndDate: boolean = false): string {
+    if (isEndDate) {
+      date.setHours(23, 59, 59, 999);
+    }
+    return formatDate(date, 'yyyy-MM-ddTHH:mm:ss.SSSSSS', 'en-IN');
+  }
+
+  getLeadBugdetSpent(startDate: any, endDate: any) {
+    this.leadBudgetService
+      .getAllBudgetSpent(startDate, endDate, this.organizationId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          console.log(response);
+          const leadBudgetSpend = response;
+          if (leadBudgetSpend.length > 0) {
+            // Removed parentheses
+            console.log(leadBudgetSpend[leadBudgetSpend.length - 1]); // Accessing the last element
+            this.leadBudget = leadBudgetSpend[leadBudgetSpend.length - 1];
+            leadBudgetSpend.pop();
+            this.leadBudgetSpend = leadBudgetSpend;
+          }
+        },
+        error: (error: any) => console.error(error),
+      });
+  }
+
+  initLeadBudgetDateRange() {
+    this.leadBudgetdateRangeForm = this.formBuilder.group({
+      leadBudgetCustomStartDate: null,
+      leadBudgetCustomEndDate: null,
+    });
+    this.leadBudgetdateRangeForm.valueChanges.subscribe((formData: any) => {
+      this.onLeadBudgetDateRangeChange(formData);
+    });
+  }
+
+  onLeadBudgetDateRangeChange(formDataValue: any) {
+    console.log(formDataValue);
+    if (
+      formDataValue.leadBudgetCustomStartDate &&
+      formDataValue.leadBudgetCustomEndDate
+    ) {
+      const startDate = this.formatDateTime(
+        formDataValue.leadBudgetCustomStartDate
+      );
+      const endDate = this.formatDateTime(
+        formDataValue.leadBudgetCustomEndDate,
+        true
+      );
+      this.getLeadBugdetSpent(startDate, endDate);
+    }
+  }
+
+  getNonContactableLeadCount() {
+    console.log('non contactable');
+    this.commonService
+      .getRefDetailsId('Lead_Status', 'NC')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          console.log('NC status');
+          console.log(response);
+          this.statusId = response;
+          this.nonContactableStatusId = this.statusId;
+          this.fetchNonContactableLeadCount();
+        },
+        error: (error: any) => console.error(error),
+      });
+  }
+
+  fetchNonContactableLeadCount() {
+    this.leadService
+      .fetchDashBoardNoncontactableLeads(
+        this.user.userId,
+        this.user.roleId,
+        this.dateRange,
+        this.startDate,
+        this.endDate,
+        this.nonContactableStatusId
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+          if (response?.length > 0) {
+            console.log(response[0].value);
+            this.nonContactableCount = response[0].value;
+          } else {
+            this.nonContactableCount = 0;
+          }
+        },
+        error: (error) => console.error(error),
+      });
+  }
+  // onRowClick(row: TeamDashBoardDataDto): void {
+  //   this.router.navigate(['layout/presales/leads/PST'], { queryParams: { userId: row.userId ,userName:row.userName} });
+  // }
+  onRowClick(row: TeamDashBoardDataDto): void {
+    const userRoleLower = this.userRole.toLowerCase();
+    const route = userRoleLower.includes('presale')
+      ? 'layout/presales/leads/PST'
+      : 'layout/sales/leads/ST';
+
+    // Define the query parameters with the necessary properties
+    const queryParams = {
+      userId: row.userId,
+      userName: row.userName,
+    };
+    // Navigate to the desired route with the query parameters
+    this.router.navigate([route], { queryParams });
+  }
+
+  searchProject(event: any) {
+    if (event.target.value.length >= 3) {
+      console.log(event.target.value);
+      this.projectName = event.target.value;
+      this.fetchProjects();
+    } else {
+      this.projectName = '';
+      this.fetchProjects();
+    }
+  }
+
+  fetchProjects() {
+    this.leadService.fetchProjects(this.projectName,this.user.organizationId).subscribe({
+      next: (projects) => {
+        console.log(this.projects);
+        this.projects = projects;
+      },
+      error: (error) => {
+        console.error('Error fetching projects:', error);
+      },
+    });
+  }
+
+  onProjectSelect(event: any) {
+    console.log(event.option.value);
+    this.projectId = event.option.value.projectId;
+    this.formData.patchValue({ projectId: this.projectId });
+  }
+
+  displayProject(project: IProject): string {
+    return project && project.projectName ? project.projectName : '';
+  }
+
+  headers = [
+    { key: 'userName', value: 'User Name' },
+    { key: 'assignedLeads', value: 'Assigned Leads' },
+    { key: 'noOfFollowups', value: 'Follow-ups' },
+    { key: 'noOfSiteVisitDone', value: 'Site Visit Done' },
+  ];
+
+  private initializeState() {
+    console.log('init');
+    const state = history.state;
+    console.log(state);
+
+    this.formData = this.formBuilder.group({
+      customStartDate: [state.customStartDate],
+      customEndDate: [state.customEndDate],
+    });
+  }
+
+  //   today: any;
+  //   user: User = new User();
+  //   userRole: string = '';
+  //   bodyText: any;
+  //   menuItems:any;
+  //   bodyText1: number=0;
+  //   menuItems1:any;
+  //   assignedLeads:number=5;
+  //   constructor(private leadService:LeadService){}
+
+  //   headers = [
+  //     { key: 'userName', value: 'User Name' },
+  //     { key: 'assignedLeads', value: 'Assigned Leads' },
+  //     { key: 'noOfFollowups', value: 'Follow-ups' },
+  //     { key: 'noOfSiteVisitDone', value: 'Site Visit Done' }
+  //   ];
+
+  //   ngOnInit() {
+  //     this.today = new Date().toDateString();
+
+  //     const user = localStorage.getItem('user');
+
+  //     if (user) {
+  //       this.user = JSON.parse(user);
+  //       this.userRole = this.user.roleName;
+  //     }
+  //     console.log(this.headers);
+
+  //     this.fetchTeamLeadsData();
+  //     // this.dataSource.data = this.data;
+  //     const jsonData = {
+  //       "headerText": "Follow Up",
+  //       "bodyColor": "lightyellow",
+  //       "headerColor": "darkblue",
+  //       "count": 5,
+  //       "menuItems": [
+  //         { "label": "Assign Leads", "route": "layout/presales/leads/PST" },
+  //         { "label": "Add Lead", "route": "layout/presales/savelead/PST" },
+  //       ]
+  //     };
+  //     const jsonData1 = {
+  //       "headerText": "Follow Up",
+  //       "bodyColor": "lightyellow",
+  //       "headerColor": "darkblue",
+  //       "count": 3,
+  //       "menuItems": [
+  //         { "label": "Follow Up", "route": "layout/presales/followups/PST" },
+  //       ]
+  //     };
+
+  //     this.bodyText = jsonData.count;
+  //     this.menuItems=jsonData.menuItems;
+  //     console.log(this.menuItems);
+
+  //     this.bodyText1 = jsonData1.count;
+  //     this.menuItems1=jsonData1.menuItems;
+  //   }
+  //   dateRange: number=7;
+  //   startDate: any;
+  //   endDate: any;
+  //   teamData: TeamDashBoardDataDto[] = [];
+
+  //   fetchTeamLeadsData(): void {
+  //     console.log(this.userRole);
+
+  //     if (this.userRole.toLocaleLowerCase().includes('manager')) {
+  //       this.leadService
+  //         .fetchTeamLeadsData(
+  //           this.user.userId,
+  //           this.user.roleId,
+  //           this.dateRange,
+  //           this.startDate,
+  //           this.endDate
+  //         )
+  //         .subscribe({
+  //           next: (response: TeamDashBoardDataDto[]) => {
+  //             // console.log('Response :', response);
+  //             this.teamData = response;
+  //             console.log(this.teamData);
+
+  //           },
+  //           error: (error) => console.error(error),
+  //         });
+  //     } else {
+  //       console.log('Not a manger');
+  //     }
+  //   }
+  //   navigateToLeads()
+  //   {
+
+  //   }
+  //   navigateToFollowups()
+  //   {
+
+  //   }
+  //   navigateToSiteVisitDone()
+  //   {
+
+  //   }
+  //   navigateToBookedLeads()
+  //   {
+
+  //   }
+}

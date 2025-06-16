@@ -1,0 +1,130 @@
+<table mat-table [dataSource]="dataSource" class="mat-table">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>#</th>
+    <td mat-cell *matCellDef="let element; let i = index">
+      {{ pageIndex * pageSize + i + 1 }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="serviceCode">
+    <th mat-header-cell *matHeaderCellDef>Service Code</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.serviceCode }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="serviceDescription">
+    <th mat-header-cell *matHeaderCellDef>Service Description</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.serviceDescription }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="scUomRefValue">
+    <th mat-header-cell *matHeaderCellDef>Service UOM</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.scUomRefValue }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="serviceGroupCode">
+    <th mat-header-cell *matHeaderCellDef>Service Group</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.serviceGroupCode }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="primeActivityNumber">
+    <th mat-header-cell *matHeaderCellDef>Prime Activity Number</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.primeActivityNumber }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell *matHeaderCellDef>Quantity</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.totalQuantityAfterAmendment | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="rate">
+    <th mat-header-cell *matHeaderCellDef>Rate</th>
+    <td mat-cell *matCellDef="let element">{{ element.rate | number }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="value">
+    <th mat-header-cell *matHeaderCellDef>Value</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.totalAmountAfterAmendment | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="wbsElements">
+    <th mat-header-cell *matHeaderCellDef>Wbs Elements</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.wbsElements }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="budgetQuantity">
+    <th mat-header-cell *matHeaderCellDef>Budget Quantity</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.totalBudgetQuantity | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="releasedTillPrevious"
+    ><
+    <th mat-header-cell *matHeaderCellDef>Released Till Previous</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.releasedTillPrevious | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="currentPeriod">
+    <th mat-header-cell *matHeaderCellDef>Current Period</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.currentPeriod | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="cumulative">
+    <th mat-header-cell *matHeaderCellDef>Cumulative</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.cumulative | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="balance">
+    <th mat-header-cell *matHeaderCellDef>Balance</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.balance | number }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="workOrderBillingQuantityStatus">
+    <th mat-header-cell *matHeaderCellDef>WOB Quantity Status</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.workOrderBillingQuantityStatus }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="quantityOrder">
+    <th mat-header-cell *matHeaderCellDef>WOB Quantity Order</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.wobqStageOrder | number }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+<mat-paginator
+  [length]="totalItems"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 15, 20, 25]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+  class="custom-paginator"
+></mat-paginator>

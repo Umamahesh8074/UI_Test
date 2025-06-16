@@ -1,0 +1,87 @@
+<h4 class="pac-header">
+  {{ isAdding ? "ADD WORK ORDER HEADER" : "EDIT  WORK ORDER HEADER" }}
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="cmn-mat-content mat-card-scroll">
+        <div class="row" style="padding: 0 15px">
+          <mat-label>Header Name</mat-label>
+          <div appearance="outline" class="mat-100">
+            <textarea
+              matInput
+              formControlName="headerName"
+              rows="1"
+              placeholder="Header Name"
+              style="flex: 1; width: 100%; padding: 5px 10px; font-size: 13px"
+              (input)="autoResizeHeaderName()"
+              #headerTextarea
+            ></textarea>
+
+            <mat-error *ngIf="formData.get('headerName')?.hasError('required')">
+              Subject required.
+            </mat-error>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-45" *ngIf="!isAdding">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option value="">Select Status</mat-option>
+              <mat-option
+                *ngFor="let element of statuses"
+                [value]="element.commonRefKey"
+              >
+                {{ element.commonRefValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="row" style="padding: 0 15px">
+          <div class="terms-and-con-ck-editor">
+            <label for="headerTermsAndConditions"
+              >Header Terms And Conditions
+            </label>
+            <quill-editor
+              formControlName="headerTermsAndConditions"
+              [style]="{ height: '80%' }"
+            ></quill-editor>
+            <div
+              *ngIf="formData.get('headerTermsAndConditions')?.invalid"
+              class="error-message"
+            >
+              Terms and Conditions are required.
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoWorkOrderHeaders()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

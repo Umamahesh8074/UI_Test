@@ -1,0 +1,527 @@
+<h4 class="header">
+  <b>{{ "SITE VISIT FORM" }}</b>
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card" style="padding: 0">
+      <mat-card-header>
+        <b></b>
+      </mat-card-header>
+      <mat-card-content class="cmn-mat-card-content mat-card-scroll">
+        <div style="padding: 0 15px">
+          <!-- Row 1: Name and Phone Number -->
+          <div
+            class="row"
+            style="display: flex; justify-content: space-between"
+          >
+            <mat-form-field
+              class="example-full-width"
+              class="mat-45"
+              appearance="outline"
+            >
+              <mat-label>Project</mat-label>
+              <input
+                type="text"
+                matInput
+                (input)="searchProject($event)"
+                [formControl]="project"
+                [matAutocomplete]="projectAuto1"
+              />
+              <mat-autocomplete
+                #projectAuto1="matAutocomplete"
+                (optionSelected)="onProjectSelect($event)"
+                [displayWith]="displayProject"
+              >
+                <!-- <mat-option
+                  *ngFor="let option of projects"
+                  [value]="option"
+                  [disabled]="projectId"
+                > -->
+                <mat-option *ngFor="let option of projects" [value]="option">
+                  {{ option.projectName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-20"
+              style="padding-top: 20px"
+            >
+              <mat-label>Country</mat-label>
+              <input
+                type="text"
+                matInput
+                (input)="searchCountry($event)"
+                formControlName="countryCode"
+                [matAutocomplete]="countryAuto"
+              />
+              <mat-autocomplete #countryAuto="matAutocomplete">
+                <mat-option
+                  *ngFor="let option of countryCodes"
+                  [value]="option.commonRefKey"
+                >
+                  {{ option.commonRefValue }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-30"
+              style="padding-top: 20px"
+            >
+              <mat-label>Contact Number</mat-label>
+              <input
+                id="al-phn"
+                matInput
+                formControlName="phoneNumber"
+                (input)="validatePhoneNumber()"
+                [readonly]="isView"
+              />
+
+              <!-- Error for required phone number -->
+              <mat-error
+                *ngIf="formData.get('phoneNumber')?.hasError('required')"
+              >
+                Phone number is required.
+              </mat-error>
+
+              <!-- Error for incorrect phone number length -->
+              <mat-error
+                *ngIf="formData.get('phoneNumber')?.hasError('requiredLength')"
+              >
+                Number must be
+                {{
+                  formData.get("phoneNumber")?.getError("requiredLength")
+                    ?.expectedLength
+                }}
+                digits.
+              </mat-error>
+              <mat-error
+                *ngIf="formData.get('phoneNumber')?.hasError('incorrectPrefix')"
+              >
+                {{
+                  formData.get("phoneNumber")?.getError("incorrectPrefix")
+                    ?.message
+                }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Row 6: Sales Member and Followup DateTime -->
+          <div
+            class="row"
+            style="display: flex; justify-content: space-between"
+          >
+            <!-- <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Select Sales Member</mat-label>
+              <mat-select formControlName="assignedToSales">
+                <mat-option *ngFor="let item of users" [value]="item.userId">
+                  {{ item.userName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" type="text" />
+              <mat-error *ngIf="formData.get('name')?.hasError('required')">
+                Name is required
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="mat-45" appearance="outline">
+              <mat-label>Search/Select Sales Member</mat-label>
+              <input
+                type="text"
+                matInput
+                aria-label="Number"
+                (input)="onUserSerach($any($event).target?.value)"
+                [formControl]="saleMember"
+                [matAutocomplete]="auto"
+              />
+
+              <mat-autocomplete
+                #auto="matAutocomplete"
+                (optionSelected)="onSaleMemberSelect($event)"
+                [displayWith]="displayUser"
+              >
+                <mat-option
+                  *ngFor="let user of users"
+                  [value]="user"
+                  [disabled]="lead?.assignedToSales > 0"
+                >
+                  {{ user.userName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <!-- Row 2: Email and Date -->
+          <div
+            class="row"
+            style="display: flex; justify-content: space-between"
+          >
+            <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Alternate Contact Number</mat-label>
+              <input matInput formControlName="alternatePhoneNumber" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" type="email" required />
+              <mat-error *ngIf="formData.get('email')?.hasError('required')">
+                Please enter a valid email address
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Row 3: Country and Flat Type -->
+          <div
+            class="row"
+            style="display: flex; justify-content: space-between"
+          >
+            <mat-form-field
+              class="example-full-width"
+              class="mat-45"
+              appearance="outline"
+            >
+              <mat-label>Flat Type</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="preferredFlatType"
+                [matAutocomplete]="unitAuto"
+              />
+              <mat-autocomplete #unitAuto="matAutocomplete">
+                <mat-option
+                  *ngFor="let option of unitTypes"
+                  [value]="option.name"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Budget</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="budget"
+                [matAutocomplete]="budgetAuto"
+              />
+              <mat-autocomplete #budgetAuto="matAutocomplete">
+                <mat-option
+                  *ngFor="let option of filteredBudgets"
+                  [value]="option.commonRefKey"
+                >
+                  {{ option.commonRefValue }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <!-- Row 4: Address and Budget -->
+          <div
+            class="row"
+            style="display: flex; justify-content: space-between"
+          >
+            <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Pin Code</mat-label>
+              <input
+                matInput
+                formControlName="pincode"
+                (input)="onSearchPinCode(pincode.value)"
+                #pincode
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              class="example-full-width mat-45"
+              appearance="outline"
+            >
+              <mat-label>Address</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="homeLocation"
+                [matAutocomplete]="homeLocation"
+                (input)="onChangeAddress($event)"
+                #homeLocationInput
+              />
+              <mat-autocomplete #homeLocation="matAutocomplete">
+                <mat-option
+                  *ngFor="let address of filteredAddresses"
+                  [value]="address"
+                >
+                  {{ address }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <!-- Row 5: Source and Sub Source -->
+          <div
+            class="row"
+            style="display: flex; justify-content: space-between"
+          >
+            <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Source</mat-label>
+              <mat-select
+                [disabled]="isSourceDisabled"
+                formControlName="sourceId"
+                (selectionChange)="onSelectSource($event.value)"
+              >
+                <mat-option
+                  *ngFor="let item of filteredSources"
+                  [value]="item.leadSourceId"
+                >
+                  {{ item.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field
+              class="example-full-width"
+              class="mat-45"
+              appearance="outline"
+            >
+              <mat-label>Sub Source</mat-label>
+              <input
+                type="text"
+                matInput
+                (input)="searchSubSource($event)"
+                [formControl]="subSourceControl"
+                [matAutocomplete]="subSourceAuto"
+              />
+              <mat-autocomplete
+                #subSourceAuto="matAutocomplete"
+                (optionSelected)="onSubSourceSelect($event)"
+                [displayWith]="displaySubSource"
+              >
+                <mat-option
+                  *ngFor="let option of filteredSubSources"
+                  [value]="option"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <!-- <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Sub Source</mat-label>
+              <mat-select
+                formControlName="subSourceId"
+                [disabled]="dbLeadSubSourceId > 0 && !isAdding"
+                (selectionChange)="onSelectSubSource($event)"
+              >
+                <mat-option
+                  *ngFor="let item of subSources"
+                  [value]="item.leadSubSourceId"
+                >
+                  {{ item.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+          </div>
+
+          <!-- Row 7: Remarks -->
+          <!-- <div
+            class="row"
+            style="display: flex; justify-content: space-between; gap: 20px"
+          > -->
+            <!-- <mat-form-field appearance="outline" class="mat-45">
+              <mat-label>Select Visit Status</mat-label>
+              <mat-select
+                formControlName="statusId"
+                (selectionChange)="fetchLostStatusList($event.source.value)"
+              >
+                <mat-option value="">Select Status</mat-option>
+                <mat-option
+                  *ngFor="let status of leadStatusList"
+                  [value]="status.id"
+                >
+                  {{ status.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <!-- <mat-form-field
+              appearance="outline"
+              class="mat-45"
+              *ngIf="isLostStatus"
+            >
+              <mat-label>Select sub Status</mat-label>
+              <mat-select
+                formControlName="subStatusId"
+                (selectionChange)="displayReasonForOthers($event.source.value)"
+              >
+                <mat-option value="">Select Lost Reason</mat-option>
+                <mat-option
+                  *ngFor="let status of lostStatusList"
+                  [value]="status.id"
+                >
+                  {{ status.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <!-- <div class="mat-45" style="flex: 1; padding-top: 20px">
+              <textarea
+                matInput
+                formControlName="remarks"
+                rows="1"
+                placeholder="Remarks"
+                style="width: 100%; padding: 8px 10px"
+              ></textarea>
+              <mat-error
+                *ngIf="
+                  formData.get('remarks')?.hasError('required') &&
+                  formData.get('remarks')?.touched
+                "
+              >
+                Please enter remarks
+              </mat-error>
+            </div> -->
+
+            <!-- Radio Buttons -->
+            <!-- <div
+              style="
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                padding-top: 20px;
+              "
+            >
+              <mat-radio-group formControlName="typeId">
+                <mat-radio-button
+                  *ngFor="let option of leadTypes"
+                  [value]="option.id"
+                  class="mr-3"
+                  color="primary"
+                >
+                  {{ option.commonRefValue }}
+                </mat-radio-button>
+              </mat-radio-group>
+
+              <mat-error
+                *ngIf="
+                  (formData.get('typeId')?.hasError('required') &&
+                    formData.get('typeId')?.touched) ||
+                  formData.get('typeId')?.hasError('min')
+                "
+              >
+                Please select one
+              </mat-error>
+            </div> -->
+          <!-- </div> -->
+        </div>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="goToLeads()"
+          >
+            BACK
+          </button>
+          <button mat-flat-button class="btn-class warn" (click)="clearForm()">
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+          <button
+            *ngIf="isDisplayDialog"
+            mat-flat-button
+            class="btn-class"
+            style="
+              margin-left: 10px;
+              background-color: rgb(98, 6, 184);
+              color: white;
+            "
+            (click)="openDialogOnClick()"
+          >
+            SEE SOURCE DETAILS
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>
+
+<div
+  *ngIf="openDialog"
+  class="modal fade show"
+  tabindex="-1"
+  style="display: block"
+  aria-labelledby="audioModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h1 class="modal-title fs-5" id="audioModal" style="color: red">
+            Lead Already Exists..!
+          </h1>
+          <h2 class="modal-title fs-6" id="audioModal">
+            Source & Sub-Sources Details
+          </h2>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="onDialogClose()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          Please select a sub-source to ensure that the lead credit is
+          accurately assigned.
+        </div>
+        <!-- First Row: Source, Sub Source, OK Button -->
+        <div class="first-row">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Source</mat-label>
+            <mat-select (selectionChange)="fetchLeadSubSources($event.value)">
+              <mat-option
+                *ngFor="let item of dialogSources"
+                [value]="item.leadSourceId"
+              >
+                {{ item.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Sub Source</mat-label>
+            <mat-select (selectionChange)="onLeadSubSourceSelect($event)">
+              <mat-option
+                *ngFor="let item of leadSubSources"
+                [value]="item.leadSubSourceId"
+              >
+                {{ item.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" (click)="onDialogClose()">
+            OK
+          </button>
+        </div>
+
+        <!-- Second Row: "or" in the center -->
+        <!-- <div class="or-divider">or</div>
+        <div>
+          Click the button below to assign this lead to a different CP or
+          source.
+        </div> -->
+        <!-- Third Row: Centered "Add as a New Lead" Button -->
+        <!-- <div class="button-container">
+          <button mat-flat-button color="primary" (click)="addAsNewLead()">
+            Add as a New Lead
+          </button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

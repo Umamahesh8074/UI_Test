@@ -1,0 +1,75 @@
+.pac-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1% !important;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+/* Center div trick */
+.center {
+  text-align: center;
+  flex: 1;
+}
+
+/* Left and Right fixed size */
+.left,
+.right {
+  flex: 0 0 auto;
+  margin-right: 14px;
+}
+
+.mat-45 {
+  margin-left: 10px;
+}
+.ml-2 {
+  margin-left: 1%;
+  width: 13%;
+}
+.search-class {
+  margin-left: 15px;
+  width: 13%;
+}
+.search-container {
+  margin-left: 10px;
+  display: flex;
+  flex-grow: 1;
+}
+.icons {
+  padding-left: 10px;
+}
+.icon {
+  font-weight: normal !important;
+  font-size: 20px !important;
+}
+.action-icon {
+  padding-top: 5px;
+  margin-right: 2px;
+  cursor: pointer;
+  color: #2d2c2c8c;
+  font-size: 18px;
+}
+.menu-icon {
+  font-size: 18px;
+  margin-right: 8px;
+  color: #555;
+}
+
+/* Styling for labels inside the menu */
+.menu-label {
+  font-size: 13px;
+  color: #333;
+}
+
+::ng-deep .custom-menu.mat-mdc-menu-panel {
+  min-width: 200px !important;
+  max-width: 200px !important;
+  width: 100px !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  align-items: center !important;
+  margin-bottom: -8px !important;
+  margin-top: -15px !important;
+}

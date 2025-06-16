@@ -1,0 +1,703 @@
+<div class="pac-header">
+  {{ isAdding ? "ADD QUOTATION" : "EDIT QUOTATION" }}
+</div>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div>
+    <mat-card class="qo-card">
+      <div class="upload-doc-div">
+        <b style="color: rgb(34, 34, 164)">
+          TOTAL COST WITH GST :
+          {{ quotationDataForEdit.totalCostWithGst | number }}
+        </b>
+
+        <b style="color: rgb(34, 34, 164)">
+          TOTAL COST WITH OUT GST :
+          {{ quotationDataForEdit.totalCostWithOutGst | number }}
+        </b>
+        <button
+          mat-flat-button
+          class="btn-class primary"
+          type="button"
+          (click)="viewDownLoads()"
+        >
+          ATTACH DOCUMENTS
+        </button>
+      </div>
+      <mat-card-content class="quotation-mat-content quotation-card-scroll">
+        <div class="row1 sub-details-div" *ngIf="indentItems?.length > 0">
+          <div class="column1">
+            <div *ngIf="indentItems[0]?.projectName">
+              <b class="column-div">PROJECT NAME:</b>
+              {{ indentItems[0].projectName }}
+            </div>
+            <div *ngIf="indentItems[0]?.requiredDate">
+              <b class="column-div">REQUIRED DATE:</b>
+              {{ indentItems[0].requiredDate | date : "MMM d, yyyy" }}
+            </div>
+          </div>
+
+          <div class="column2">
+            <div *ngIf="indentItems[0]?.code">
+              <b class="column-div">INDENT CODE</b>
+              {{ indentItems[0].code }}
+            </div>
+          </div>
+
+          <div class="column2">
+            <div *ngIf="indentItems[0]?.createdDate">
+              <b class="column-div">INDENT CREATED DATE:</b>
+              {{ indentItems[0].createdDate | date : "MMM d, yyyy" }}
+            </div>
+          </div>
+        </div>
+
+        <div class="aq-row" style="padding: 0 10px">
+          <mat-form-field appearance="outline" class="aq-mat-40">
+            <mat-label> Search/Select Vendor Code </mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchVendor($event)"
+              [formControl]="vendorIdControl"
+              [matAutocomplete]="vendorCodeAuto"
+            />
+            <mat-autocomplete
+              #vendorCodeAuto="matAutocomplete"
+              (optionSelected)="onVendorSelect($event)"
+              [displayWith]="displayVendor"
+            >
+              <mat-option *ngFor="let option of vendors" [value]="option">
+                {{ option.vendorCode }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <div *ngIf="isVendorPresent" class="text-danger">
+              Vendor already given a quotation for indent.
+            </div>
+          </mat-form-field>
+          <div
+            class="quotation-mat_icon"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#quotationModel"
+            (click)="setVendor()"
+          >
+            <mat-icon matTooltip="Search" class="font"> search </mat-icon>
+          </div>
+
+          <mat-form-field appearance="outline" class="aq-mat-45">
+            <mat-label> Search/Select Vendor Name </mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchVendorName($event)"
+              [formControl]="vendor"
+              [matAutocomplete]="vendorNameAuto"
+            />
+            <mat-autocomplete
+              #vendorNameAuto="matAutocomplete"
+              (optionSelected)="onVendorNameSelect($event)"
+              [displayWith]="displayVendorName"
+            >
+              <mat-option *ngFor="let option of vendors" [value]="option">
+                {{ option.vendorName }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <mat-error
+              *ngIf="formData.get('vendor')?.hasError('invalidVendorName')"
+            >
+              Invalid vendor
+            </mat-error>
+          </mat-form-field>
+
+          <!-- <app-autocomplete
+            class="aq-mat-40"
+            [label]="'Search/Select Vendor'"
+            [formControl]="vendorIdControl"
+            [options]="vendors"
+            [displayFn]="displayVendor"
+            (selectionChange)="onVendorSelect($event)"
+            (onSearch)="searchVendor($event)"
+          ></app-autocomplete> -->
+
+          <mat-form-field appearance="outline" class="aq-mat-40">
+            <mat-label>Vendor Gst</mat-label>
+            <input matInput formControlName="vendorGst" type="text" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="aq-mat-40">
+            <mat-label>Delivery In Days</mat-label>
+            <input matInput formControlName="deliveryInDays" type="text" />
+          </mat-form-field>
+        </div>
+
+        <div formArrayName="quotationItems">
+          <div *ngFor="let items of quotationItems.controls; let i = index">
+            <div [formGroupName]="i" class="quo-subitems-div">
+              <mat-form-field appearance="outline" class="qo-mat-30">
+                <mat-label>Select Category Type</mat-label>
+                <mat-select
+                  formControlName="workType"
+                  (selectionChange)="onWorkTypeChange($event)"
+                >
+                  <mat-option
+                    *ngFor="let element of options"
+                    [value]="element.id"
+                  >
+                    {{ element.commonRefValue }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-30">
+                <mat-label> Search/Select Material Code </mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchUnit($event)"
+                  [formControlName]="'materialCodeId'"
+                  [readonly]="items?.get('indentItemId')?.value > 0"
+                  [matAutocomplete]="unitAuto"
+                  [name]="'unit' + i"
+                />
+                <mat-autocomplete
+                  #unitAuto="matAutocomplete"
+                  (optionSelected)="onUnitSelectionChange($event, i)"
+                  [displayWith]="displayUnit"
+                >
+                  <mat-option
+                    *ngFor="let unit of filteredUnits()"
+                    [value]="unit"
+                  >
+                    {{ unit.materialCode }}
+                  </mat-option>
+                </mat-autocomplete>
+
+                <mat-error *ngIf="formData.hasError('duplicateUnitId')">
+                  Duplicate Material Code selected! Please choose a unique one.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-30">
+                <mat-label>Category</mat-label>
+                <input
+                  matInput
+                  formControlName="itemCategory"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-30">
+                <mat-label> Sub Category</mat-label>
+                <input
+                  matInput
+                  formControlName="itemSubcategory"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-30">
+                <mat-label>Item Specification</mat-label>
+                <input
+                  matInput
+                  formControlName="itemSpecification"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-25">
+                <mat-label>Unit</mat-label>
+                <input
+                  matInput
+                  formControlName="itemUnit"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-25">
+                <mat-label>Quantity</mat-label>
+                <input
+                  matInput
+                  formControlName="quantity"
+                  [readonly]="items?.get('indentItemId')?.value > 0"
+                  type="text"
+                  (input)="formatRate($event)"
+                  (keydown)="restrictToNumbers($event)"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-25">
+                <mat-label>Price</mat-label>
+                <input
+                  matInput
+                  formControlName="price"
+                  type="text"
+                  (input)="formatRate($event)"
+                  (keydown)="restrictToNumbers($event)"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-25">
+                <mat-label>Cost WithOut Gst</mat-label>
+                <input
+                  matInput
+                  formControlName="quotationItemCostWithOutGst"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-25">
+                <mat-label>Discount</mat-label>
+                <input
+                  matInput
+                  formControlName="discount"
+                  type="number"
+                  min="0"
+                />
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="qo-mat-12"
+                *ngIf="isFromKarnatakaGst"
+              >
+                <mat-label>Select SGST</mat-label>
+
+                <mat-select
+                  (selectionChange)="onSgstChange($event.value, i)"
+                  formControlName="sgst"
+                >
+                  <mat-option
+                    *ngFor="let element of gstFromKarnataka"
+                    [value]="element.id"
+                  >
+                    {{ element.gstPercentage }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="items.get('sgst')?.hasError('required')">
+                  SGST is required.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="qo-mat-12"
+                *ngIf="isFromKarnatakaGst"
+              >
+                <mat-label>Select CGST</mat-label>
+                <mat-select
+                  (selectionChange)="onCgstChange($event.value, i)"
+                  formControlName="cgst"
+                >
+                  <mat-option
+                    *ngFor="let element of gstFromKarnataka"
+                    [value]="element.id"
+                  >
+                    {{ element.gstPercentage }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="items.get('cgst')?.hasError('required')">
+                  CGST is required.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="qo-mat-12"
+                *ngIf="!isFromKarnatakaGst"
+              >
+                <mat-label>Select GST</mat-label>
+                <mat-select
+                  (selectionChange)="onGstChange($event.value, i)"
+                  formControlName="gst"
+                >
+                  <mat-option
+                    *ngFor="let element of gstOutOfKarnataka"
+                    [value]="element.id"
+                  >
+                    {{ element.gstPercentage }}
+                  </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="items.get('gst')?.hasError('required')">
+                  GST is required.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-12">
+                <mat-label>Cost With Gst</mat-label>
+                <input
+                  matInput
+                  formControlName="quotationItemCostWithGst"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <span style="margin: 1%" *ngIf="quotationItems.length > 1">
+                <i
+                  style="
+                    color: red;
+                    cursor: pointer;
+                    border: 1px solid #333;
+                    height: 24px !important;
+                    font-size: 13px;
+                    background: #fff;
+                    padding: 4px 5px;
+                  "
+                  (click)="removeIcons(i)"
+                  class="bi bi-trash text-danger"
+                ></i
+              ></span>
+            </div>
+          </div>
+        </div>
+
+        <div formArrayName="quotationCharges" class="radio-button-id-qo">
+          QUOTATION CHARGES
+          <div *ngFor="let items of quotationCharges.controls; let i = index">
+            <div [formGroupName]="i" class="quo-subitems-div">
+              <mat-form-field appearance="outline" class="qo-mat-20">
+                <mat-label>Transport Charge</mat-label>
+                <input
+                  matInput
+                  formControlName="transportCharge"
+                  type="number"
+                  min="0"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="qo-mat-20">
+                <mat-label>Loading Charge</mat-label>
+                <input
+                  matInput
+                  formControlName="loadingCharge"
+                  type="number"
+                  min="0"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-20">
+                <mat-label>UnLoading Change</mat-label>
+                <input
+                  matInput
+                  formControlName="unLoadingChange"
+                  type="number"
+                  min="0"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="qo-mat-20">
+                <mat-label>Installation/Service Charge</mat-label>
+                <input
+                  matInput
+                  formControlName="installationCharge"
+                  type="number"
+                  min="0"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="qo-mat-20">
+                <mat-label>Other Charge</mat-label>
+                <input
+                  matInput
+                  formControlName="otherCharge"
+                  type="number"
+                  min="0"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="aq-row" style="padding: 0 10px">
+          <mat-form-field appearance="outline" class="aq-mat-40">
+            <mat-label>Select Payment Term</mat-label>
+            <mat-select
+              formControlName="paymentTermType"
+              (selectionChange)="paymentTermChange($event)"
+            >
+              <mat-option
+                *ngFor="let element of paymentTerms"
+                [value]="element"
+              >
+                {{ element }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="aq-mat-40"
+            *ngIf="paymentTermType && paymentTermType !== 'CREDIT'"
+          >
+            <mat-label>Enter Advance Amount/Percentage</mat-label>
+            <input
+              matInput
+              formControlName="advanceAmountOrPercentage"
+              (input)="onAdvanceAmountOrPercentageChange()"
+              type="text"
+            />
+
+            <mat-error
+              *ngIf="
+                formData.get('advanceAmountOrPercentage')?.hasError('max') &&
+                formData.get('advanceAmountOrPercentage')?.dirty
+              "
+            >
+              {{
+                paymentTermType === "ADVANCE IN PERCENTAGE"
+                  ? "Percentage cannot be more than 100%"
+                  : "Advance amount cannot be more than total cost"
+              }}
+            </mat-error>
+            <mat-error
+              *ngIf="
+                formData.get('advanceAmountOrPercentage')?.hasError('required')
+              "
+            >
+              This field is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="aq-mat-40"
+            *ngIf="!isGreaterThenAmount"
+          >
+            <mat-label>Number Of Days</mat-label>
+            <input
+              matInput
+              formControlName="numberOfDays"
+              type="number"
+              min="0"
+            />
+          </mat-form-field>
+
+          <div></div>
+        </div>
+
+        <div formArrayName="qoTermsAndConditions" class="radio-button-id-qo">
+          TERMS & CONDITIONS
+          <div
+            *ngFor="let items of qoTermsAndConditions.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="quo-subitems-div">
+              <div class="qo-mat-100" style="margin-bottom: 0.3rem">
+                <textarea
+                  matInput
+                  formControlName="qoTermsAndConditionDes"
+                  rows="1"
+                  placeholder="Terms & Conditions"
+                  style="
+                    flex: 1;
+                    width: 100%;
+                    padding: 4px 8px;
+                    font-size: 13px;
+                    margin-bottom: 0;
+                  "
+                  (input)="
+                    qoTermsTextarea.style.height = 'auto';
+                    qoTermsTextarea.style.height =
+                      qoTermsTextarea.scrollHeight + 'px'
+                  "
+                  #qoTermsTextarea
+                ></textarea>
+              </div>
+
+
+              
+
+              <span
+                style="margin: 0.6rem"
+                *ngIf="qoTermsAndConditions.length > 1"
+              >
+                <i
+                  style="
+                    color: red;
+                    cursor: pointer;
+                    border: 1px solid #333;
+                    height: 24px !important;
+                    font-size: 13px;
+                    background: #fff;
+                    padding: 4px 5px;
+                  "
+                  (click)="removeQoTermsAndConditions(i, items)"
+                  class="bi bi-trash text-danger"
+                ></i
+              ></span>
+              <span
+                style="margin: 0.6rem"
+                *ngIf="i === qoTermsAndConditions.length - 1"
+              >
+                <i
+                  class="bi bi-plus h5"
+                  style="
+                    cursor: pointer;
+                    border: 1px solid #333;
+                    height: 24px !important;
+                    font-size: 15px;
+                    background: #fff;
+                    padding: 3px 4px;
+                  "
+                  (click)="addQoTermsAndConditions()"
+                ></i
+              ></span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer>
+        <div style="text-align: right" class="button">
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoQuotations()"
+          >
+            BACK
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>
+<!-- Bootstrap Modal -->
+<div
+  class="modal fade modal-xl"
+  id="quotationModel"
+  tabindex="-1"
+  aria-labelledby="vendorCodeSearchModal"
+  aria-hidden="true"
+  (hidden.bs.modal)="clearModalFilters()"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="column-div" id="vendorCodeSearchModal">
+          SELECT VENDOR CODE
+        </h4>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-search-fields">
+        <mat-form-field appearance="outline" class="aq-mat-40">
+          <mat-label> Search/Select Vendor Code </mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="popUpSearchVendor($event)"
+            [formControl]="popUpvendorIdControl"
+            [matAutocomplete]="popUpVendorCodeAuto"
+          />
+          <mat-autocomplete
+            #popUpVendorCodeAuto="matAutocomplete"
+            (optionSelected)="onPopVendorSelect($event)"
+            [displayWith]="displayPopUpVendor"
+          >
+            <mat-option *ngFor="let option of vendorPopUp" [value]="option">
+              {{ option.vendorCode }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="aq-mat-40"
+        >
+          <mat-label> Search/Select Vendor Name </mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="searchPopUpVendorName($event)"
+            [formControl]="PopUpVendor"
+            [matAutocomplete]="PopUpVendorNameAuto"
+          />
+          <mat-autocomplete
+            #PopUpVendorNameAuto="matAutocomplete"
+            (optionSelected)="onPopUpVendorNameSelect($event)"
+            [displayWith]="displayPopUpVendorName"
+          >
+            <mat-option *ngFor="let option of vendors" [value]="option">
+              {{ option.vendorName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-icon
+          style="margin-left: 1.5rem"
+          matTooltip="Clear Filters"
+          (click)="resetForm(popUpVendorCodeAuto, PopUpVendorNameAuto)"
+          class="clear-date-div-aq"
+          >filter_list_off</mat-icon
+        >
+      </div>
+
+      <div class="modal-body wo-modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr class="modal-table-header">
+              <th>Select</th>
+              <th>Vendor Name</th>
+              <th>Vendor Code</th>
+              <th>Company Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vendor of vendorPopUpData">
+              <td>
+                <input
+                  type="radio"
+                  name="VendorCodeRadio"
+                  #radioButton
+                  (change)="onVendorCodeSelect(vendor)"
+                />
+              </td>
+              <td>{{ vendor.vendorName }}</td>
+              <td>{{ vendor.vendorCode }}</td>
+              <td>{{ vendor.companyName }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPopUpPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          (click)="selectVendorCode()"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

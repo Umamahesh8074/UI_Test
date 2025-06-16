@@ -1,0 +1,174 @@
+<h4 class="header">
+  <b>{{ isAdding ? "ADD NOTIFICATION" : "EDIT NOTIFICATION" }}</b>
+</h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-content class="cmn-mat-card-content">
+        <div class="form-row">
+          <!-- Event -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Event</mat-label>
+            <mat-select formControlName="eventId">
+              <mat-option
+                *ngFor="let item of eventList"
+                [value]="item.id"
+                [disabled]="isView"
+              >
+                {{ item.commonRefValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Recipient Type -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Recipient Type</mat-label>
+            <mat-select
+              formControlName="recipientType"
+              (selectionChange)="onRecipientTypeChange($event)"
+            >
+              <mat-option
+                *ngFor="let item of recipientList"
+                [value]="item.id"
+                [disabled]="isView"
+              >
+                {{ item.commonRefValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field
+            *ngIf="showRecipientId"
+            appearance="outline"
+            class="form-field"
+            style="width:100%"
+          >
+            <mat-label>Recipient Id</mat-label>
+            <mat-select formControlName="recipientId">
+              <mat-option value="">Select User</mat-option>
+              <mat-option *ngFor="let user of userData" [value]="user.userId">
+                {{ user.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+<div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Document Needed</mat-label>
+            <mat-select formControlName="isDocumentAttached">
+              <mat-option [value]="'Yes'">Yes</mat-option>
+              <mat-option [value]="'No'">No</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Subject</mat-label>
+            <textarea
+              matInput
+              formControlName="subject"
+              rows="1"
+              placeholder="Write your subject here"
+            ></textarea>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="formData.get('isDocumentAttached')?.value === 'Yes'">
+          <mat-form-field appearance="outline" class="cpr-mat-50" style="width:96.5%">
+            <mat-label>Upload Document</mat-label>
+            <input
+              matInput
+              [attr.placeholder]="'Choose File'"
+              [attr.type]="'text'"
+              [attr.readonly]="true"
+              (click)="attachmentUrlFileInput.click()"
+              [value]="attachmentUrl || 'No file chosen'"
+            />
+            <input
+              type="file"
+              #attachmentUrlFileInput
+              (change)="onFileSelected($event)"
+              style="display: none"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="attachmentUrlFileInput.click()"
+              type="button"
+            >
+              <mat-icon>attach_file</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="row" style="width:100%;margin-bottom:15px;">
+          <div appearance="outline">
+            <textarea
+              type="text"
+              matInput
+              formControlName="messageBody"
+              rows="2"
+              placeholder="Enter Message Here"
+              style="flex: 1; width: 100%; padding: 4px 10px"
+            ></textarea>
+
+          </div>
+        </div>
+
+
+        <!-- Date Pickers -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker1"
+              formControlName="startDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker1"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>End Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker2"
+              formControlName="endDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker2"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-row">
+          <button
+          mat-flat-button
+          class="btn-class accent"
+          (click)="gotoDisplayNotifications()"
+        >
+          BACK
+        </button>
+        <button  *ngIf="isAdding"
+          mat-flat-button
+          class="btn-class warn"
+          (click)="clearForm()"
+        >
+          RESET
+        </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</form>

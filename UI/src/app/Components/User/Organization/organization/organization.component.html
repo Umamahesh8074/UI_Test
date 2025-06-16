@@ -1,0 +1,210 @@
+<h4 class="header"><b>ORGANIZATION</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header>
+        <b>{{ isAdding ? "ADD ORGANIZATION" : "EDIT ORGANIZATION" }}</b>
+      </mat-card-header>
+      <mat-card-content class="mat-content">
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Organization Name</mat-label>
+          <input
+            matInput
+            formControlName="organizationName"
+            placeholder="Enter organization name"
+          />
+          <mat-error *ngIf="formData.get('organizationName')?.hasError('required')">
+            Organization Name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Contact Number</mat-label>
+          <input
+            matInput
+            formControlName="organizationContact"
+            placeholder="Enter organization contact"
+            maxlength="10"
+          />
+          <mat-error
+            *ngIf="formData.get('organizationContact')?.hasError('required')"
+          >
+            Organization Contact is required
+          </mat-error>
+          <mat-error
+            *ngIf="formData.get('organizationContact')?.hasError('minlength')"
+          >
+            Organization Contact must be 10 digits
+          </mat-error>
+          <mat-error
+            *ngIf="formData.get('organizationContact')?.hasError('maxlength')"
+          >
+            Organization Contact must be 10 digits
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Enter email" />
+          <mat-error *ngIf="formData.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="formData.get('email')?.hasError('email')">
+            Invalid email format
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50" *ngIf="!isAdding">
+          <mat-label>Status</mat-label>
+          <mat-select
+            formControlName="status"
+            (selectionChange)="statusValue($event)"
+          >
+            <mat-option value="">Select Status</mat-option>
+            <mat-option
+              *ngFor="let element of statuses"
+              [value]="element.commonRefKey"
+            >
+              {{ element.commonRefValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('status')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Address1</mat-label>
+          <input
+            matInput
+            formControlName="orgAddress1"
+            placeholder="Enter organization address"
+          />
+          <mat-error *ngIf="formData.get('orgAddress1')?.hasError('required')">
+            Address1 is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Address2</mat-label>
+          <input
+            matInput
+            formControlName="orgAddress2"
+            placeholder="Enter organization address"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>City</mat-label>
+          <input
+            matInput
+            formControlName="orgCity"
+            placeholder="Enter city"
+          />
+          <mat-error *ngIf="formData.get('orgCity')?.hasError('required')">
+            City is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Pincode</mat-label>
+          <input
+            matInput
+            formControlName="orgPincode"
+            placeholder="Enter pincode"
+          />
+          <mat-error *ngIf="formData.get('orgPincode')?.hasError('required')">
+            Pincode is required
+          </mat-error>
+          <mat-error *ngIf="formData.get('orgPincode')?.hasError('pattern')">
+            Pincode must be 6 digits
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>GSTIN</mat-label>
+          <input
+            matInput
+            formControlName="orgGstinUin"
+            placeholder="Enter GSTIN"
+            maxlength="15"
+          />
+          <mat-error *ngIf="formData.get('orgGstinUin')?.hasError('required')">
+            GSTIN is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>State</mat-label>
+          <input
+            matInput
+            formControlName="orgState"
+            placeholder="Enter state"
+          />
+          <mat-error *ngIf="formData.get('orgState')?.hasError('required')">
+            State is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Code</mat-label>
+          <input
+            matInput
+            formControlName="orgCode"
+            placeholder="Enter code"
+          />
+          <mat-error *ngIf="formData.get('orgCode')?.hasError('required')">
+            Code is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>PAN</mat-label>
+          <input
+            matInput
+            formControlName="orgPan"
+            placeholder="Enter PAN"
+            maxlength="10"
+          />
+          <mat-error *ngIf="formData.get('orgPan')?.hasError('required')">
+            PAN is required
+          </mat-error>
+          <mat-error *ngIf="formData.get('orgPan')?.hasError('pattern')">
+            PAN format is invalid
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-footer>
+        <div style="text-align: right" class="button">
+          <button
+            mat-flat-button
+            style="color: white; background-color: #004869"
+            class="btn-class"
+            type="submit"
+          >
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+          <button
+            mat-flat-button
+            style="color: white; background-color: red"
+            class="btn-class"
+            type="reset"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button
+            mat-flat-button
+            style="color: white; background-color: rgb(97, 97, 38)"
+            class="btn-class"
+            (click)="gotoItemCategory()"
+          >
+            BACK
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

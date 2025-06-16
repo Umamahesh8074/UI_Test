@@ -1,0 +1,78 @@
+/* table {
+    width: 100%;
+  }
+  .header{
+    margin-left: 50%;
+  }
+  .mat-mdc-form-field {
+    font-size: 10px;
+  }
+  .example-button-row {
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  .serach-class {
+    width: 30%;
+  }
+  
+  .header-class {
+    background-color: #004869;
+  }
+  .btn-class {
+    margin-left: 60%;
+  }
+  
+  mat-card {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+
+  .example-button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .button-group {
+    display: flex;
+  }
+  
+  .add-button {
+    margin-left: auto;
+  }
+  
+  .btn {
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-leave {
+    background-color: #004869;
+  }
+  
+  .btn-add {
+    background-color: #004869;
+  }
+  
+  .btn:hover {
+    background-color: #00354e;
+  }
+  
+  .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #004869;
+  }
+   */
+   .week-off-example-button-row {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 40px;
+    border-radius: 5px;
+    margin-bottom: 2%;
+  }
+  

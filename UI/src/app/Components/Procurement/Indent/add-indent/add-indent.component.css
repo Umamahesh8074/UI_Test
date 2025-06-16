@@ -1,0 +1,98 @@
+.card-div {
+  text-align: left;
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+}
+.indent-mat-content {
+  margin-top: 3% !important;
+  height: 70vh;
+  overflow-y: auto;
+}
+.indent-card-scroll {
+  max-height: 90vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.ind-mat-30 {
+  width: 30%;
+  margin-left: 1%;
+}
+
+.mat-40-ind {
+  width: 25%;
+  margin-top: 0.5rem;
+}
+.ml-2 {
+  margin-left: 0.5%;
+}
+.add {
+  margin-left: 0.4%;
+}
+.view {
+  margin-left: auto;
+}
+.error-message {
+  color: red;
+}
+.remove-icon {
+  color: red;
+  cursor: pointer;
+  border: 1px solid #333;
+  height: 24px !important;
+  font-size: 13px;
+  background: #fff;
+  padding: 4px 5px;
+  margin: 8% 0% 0% 30%;
+}
+
+.add-icon {
+  cursor: pointer;
+  border: 1px solid #333;
+  height: 24px !important;
+  font-size: 15px;
+  background: #fff;
+  padding: 3px 4px;
+  margin: 7% 0% 0% 28%;
+}
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+.upload-ind-doc-div {
+  margin-left: 0.2rem;
+  display: flex;
+  justify-content: space-between;
+}
+.indent-mat_icon {
+  width: 5%;
+  margin-left: 2%;
+}
+.clr-btn {
+  padding: 5px 10px;
+  margin-right: 5px;
+}
+.modal-table-header > th {
+  background-color: #b8e6fb !important;
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  color: #000 !important;
+}
+.wo-modal-body {
+  padding: 0px 0px 0px 10px;
+}
+.modal-search-fields {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 0 10px;
+  flex-grow: 1;
+  margin-left: 2%;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+}

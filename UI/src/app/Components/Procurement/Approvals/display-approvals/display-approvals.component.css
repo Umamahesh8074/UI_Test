@@ -1,0 +1,43 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+.ml-2 {
+  margin-left: 0.5%;
+}
+
+.filters-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin-left: 2%;
+}
+.approved-column {
+  color: green;
+  font-weight: bold;
+}
+
+.rejected-column {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+
+.rework-column {
+  color: rgb(31, 84, 152);
+  font-weight: bold;
+}
+.pending-column {
+  color: rgb(185, 123, 6);
+  font-weight: bold;
+}
+.new-column {
+  color: purple;
+  font-weight: bold;
+}

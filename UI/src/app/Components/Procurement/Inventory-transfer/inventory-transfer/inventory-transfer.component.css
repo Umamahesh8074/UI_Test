@@ -1,0 +1,15 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+
+.it-mat-50 {
+  width: 48%;
+  margin-left: 1%;
+}
+it-mat-100 {
+  width: 80%;
+  margin-left: 1%;
+}

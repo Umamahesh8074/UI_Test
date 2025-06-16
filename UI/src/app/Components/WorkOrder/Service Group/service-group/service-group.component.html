@@ -1,0 +1,156 @@
+<h4 class="pac-header">
+  {{ isAdding ? "ADD SERVICE GROUP" : "EDIT SERVICE GROUP" }}
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="cmn-mat-content mat-card-scroll">
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <!-- <mat-label>Search/Select Service Group Category</mat-label> -->
+            <mat-label
+              [ngClass]="{ 'error-label': showServiceGroupCategoryError }"
+            >
+              Search/Select Service Group Category
+            </mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedServiceGroupCategory.commonRefValue
+                  ? selectedServiceGroupCategory.commonRefValue
+                  : ''
+              "
+              (input)="searchServiceGroupCategory($event)"
+              [formControl]="serviceGroupCategory"
+              [matAutocomplete]="serviceGroupCategoryAuto"
+            />
+            <mat-autocomplete
+              #serviceGroupCategoryAuto="matAutocomplete"
+              (optionSelected)="onServiceGroupCategory($event)"
+              [displayWith]="displayServicegroupCategory"
+            >
+              <mat-option
+                *ngFor="let option of serviceGroupCategories"
+                [value]="option"
+              >
+                {{ option.commonRefValue }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <div *ngIf="showServiceGroupCategoryError" class="error-message">
+              Select Service Uom
+            </div>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Service Group Name</mat-label>
+            <input matInput formControlName="serviceGroupName" />
+          </mat-form-field>
+        </div>
+
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>Service Group Code</mat-label>
+            <input matInput formControlName="serviceGroupCode" />
+
+            <mat-error
+              *ngIf="formData.get('serviceGroupCode')?.hasError('required')"
+              >Service Group Code Required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field
+            class="example-full-width"
+            class="mat-45"
+            appearance="outline"
+          >
+            <!-- <mat-label>Search/Select Service Group Type</mat-label> -->
+            <mat-label [ngClass]="{ 'error-label': showServiceGroupTypeError }">
+              Search/Select Service Group Type
+            </mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedServiceGroupType.commonRefValue
+                  ? selectedServiceGroupType.commonRefValue
+                  : ''
+              "
+              (input)="searchServiceGroupType($event)"
+              [formControl]="serviceGroupType"
+              [matAutocomplete]="serviceGroupTypeAuto"
+            />
+            <mat-autocomplete
+              #serviceGroupTypeAuto="matAutocomplete"
+              (optionSelected)="onServiceGroupType($event)"
+              [displayWith]="displayServiceGroupType"
+            >
+              <mat-option
+                *ngFor="let option of serviceGroupTypes"
+                [value]="option"
+              >
+                {{ option.commonRefValue }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <div *ngIf="showServiceGroupTypeError" class="error-message">
+              Select Service Uom
+            </div>
+          </mat-form-field>
+        </div>
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-50">
+            <mat-label>Service Group Description</mat-label>
+            <input
+              matInput
+              formControlName="serviceGroupDescription"
+              type="text"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45" *ngIf="!isAdding">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option value="">Select Status</mat-option>
+              <mat-option
+                *ngFor="let element of statuses"
+                [value]="element.commonRefKey"
+              >
+                {{ element.commonRefValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoServiceGroup()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

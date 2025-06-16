@@ -1,0 +1,109 @@
+<h4 class="header"><b>QR Generation</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header *ngIf="!isView">
+        <b>{{ isAdding ? "ADD QR DATA" : "EDIT PROJECT" }}</b>
+      </mat-card-header>
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field appearance="outline" class="qr-gen-mat-50">
+          <mat-label>Project Name</mat-label>
+          <mat-select formControlName="projectId">
+            <mat-option
+              *ngFor="let item of building"
+              [value]="item.projectId"
+              [disabled]="isView"
+            >
+              {{ item.projectName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="qr-gen-mat-50">
+          <mat-label>Location</mat-label>
+          <input matInput formControlName="location" [readonly]="isView" />
+          <mat-error
+          *ngIf="formData.get('location')?.hasError('required')"
+        >
+        location is required     </mat-error
+        >
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="qr-gen-mat-50">
+          <mat-label>Latitude</mat-label>
+          <input matInput formControlName="latitude" [readonly]="isView" />
+
+          <mat-error
+          *ngIf="formData.get('latitude')?.hasError('required')"
+        >
+        latitude is required     </mat-error
+        >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="qr-gen-mat-50">
+          <mat-label>Longitude</mat-label>
+          <input matInput formControlName="longitude" [readonly]="isView" />
+          <mat-error
+          *ngIf="formData.get('longitude')?.hasError('required')"
+        >
+        longitude is required     </mat-error
+        >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="qr-gen-mat-50">
+          <mat-label>Radius</mat-label>
+          <input matInput formControlName="radius" [readonly]="isView" />
+
+        </mat-form-field>
+        <ng-container>
+          <mat-form-field
+            appearance="outline"
+            class="qr-gen-mat-50"
+            *ngIf="!isAdding"
+          >
+            <mat-label>Status</mat-label>
+            <mat-select
+              formControlName="status"
+              (selectionChange)="statusValue($event)"
+            >
+              <mat-option value="">Select Status</mat-option>
+              <mat-option
+                *ngFor="let element of statuses"
+                [value]="element.commonRefKey"
+              >
+                {{ element.commonRefValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formData.get('status')?.hasError('required')">
+              Please select one option
+            </mat-error>
+          </mat-form-field>
+        </ng-container>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+            <button
+              mat-flat-button
+              class="btn-class accent"
+              (click)="gotoQrgenerators()"
+            >
+              BACK
+            </button>
+            <button  *ngIf="isAdding"
+              mat-flat-button
+              class="btn-class warn"
+              (click)="clearForm()"
+            >
+              RESET
+            </button>
+
+
+            <button mat-flat-button class="btn-class primary">
+              {{ isAdding ? "ADD" : "UPDATE" }}
+            </button>
+
+
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

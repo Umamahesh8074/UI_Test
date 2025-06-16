@@ -1,0 +1,43 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+
+.filters-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-right: 1.8rem;
+}
+
+.serach-class-des {
+  width: 26%;
+}
+.ml-2 {
+  margin-left: 0.5%;
+}
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin-left: 2%;
+}
+
+@media screen and (max-device-width: 768px) {
+  .search-container {
+    flex-wrap: wrap;
+    margin-left: 2%;
+    flex-grow: 1;
+    margin-left: 2%;
+  }
+}
+@media screen and (max-device-width: 1168px) {
+  .search-container {
+    flex-wrap: wrap;
+    margin-left: 2%;
+    flex-grow: 1;
+    margin-left: 2%;
+  }
+}

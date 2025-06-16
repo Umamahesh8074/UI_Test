@@ -1,0 +1,402 @@
+<h4 class="pac-header">
+  {{ isAdding ? "ADD INDENT" : "EDIT INDENT" }}
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card-div" style="padding: 0">
+      <mat-card-content class="indent-mat-content indent-card-scroll">
+        <div class="row" style="padding: 0 30px">
+          <div class="upload-ind-doc-div">
+            <mat-form-field class="mat-40-ind" appearance="outline">
+              <mat-label [ngClass]="{ 'error-label': showPlantCodeError }">
+                Search/Select Project
+              </mat-label>
+              <input
+                type="text"
+                matInput
+                (input)="searchProject($event)"
+                [formControl]="project"
+                [matAutocomplete]="projectAuto"
+              />
+              <mat-autocomplete
+                #projectAuto="matAutocomplete"
+                (optionSelected)="onProjectSelect($event)"
+                [displayWith]="displayProject"
+              >
+                <mat-option *ngFor="let option of projects" [value]="option">
+                  {{ option.displayProjectName }}
+                </mat-option>
+              </mat-autocomplete>
+
+              <div *ngIf="showPlantCodeError" class="error-message">
+                Select project
+              </div>
+
+              <mat-error
+                *ngIf="formData.get('project')?.hasError('invalidProject')"
+              >
+                Please select a valid project.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="mat-40-ind">
+              <mat-label>Required Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="startDatePicker"
+                formControlName="requiredDate"
+                [min]="minDateControll"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="startDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+
+              <mat-error
+                *ngIf="formData.get('requiredDate')?.hasError('required')"
+              >
+                Required date is required.
+              </mat-error>
+              <mat-error
+                *ngIf="formData.get('requiredDate')?.hasError('minDate')"
+              >
+                Date must be greater then 15 days
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="mat-40-ind" appearance="outline">
+              <mat-label [ngClass]="{ 'error-label': showPlantCodeError }">
+                Search/Select Approval User
+              </mat-label>
+              <input
+                type="text"
+                matInput
+                (input)="searchProject($event)"
+                [formControl]="project"
+                [matAutocomplete]="projectAuto"
+              />
+              <mat-autocomplete
+                #projectAuto="matAutocomplete"
+                (optionSelected)="onProjectSelect($event)"
+                [displayWith]="displayProject"
+              >
+                <mat-option *ngFor="let option of projects" [value]="option">
+                  {{ option.displayProjectName }}
+                </mat-option>
+              </mat-autocomplete>
+
+              <div *ngIf="showPlantCodeError" class="error-message">
+                Select project
+              </div>
+
+              <mat-error
+                *ngIf="formData.get('project')?.hasError('invalidProject')"
+              >
+                Please select a valid project.
+              </mat-error>
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              (click)="viewDownLoads()"
+              type="button"
+            >
+              ATTACH DOCUMENTS
+            </button>
+          </div>
+        </div>
+
+        <div formArrayName="indentItems">
+          <div
+            *ngFor="let items of indentItems.controls; let i = index"
+            style="padding: 10px 30px"
+          >
+            <div [formGroupName]="i" class="subitems-div">
+              <mat-form-field appearance="outline" class="ind-mat-30">
+                <mat-label> Search/Select Material Code </mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchUnit($event, i)"
+                  [formControlName]="'unitId'"
+                  [matAutocomplete]="unitAuto"
+                  [name]="'unit' + i"
+                />
+                <mat-autocomplete
+                  #unitAuto="matAutocomplete"
+                  (optionSelected)="onUnitSelectionChange($event, i)"
+                  [displayWith]="displayUnit"
+                >
+                  <mat-option
+                    *ngFor="let unit of filteredUnits(i)"
+                    [value]="unit"
+                  >
+                    {{ unit.materialCode }}
+                  </mat-option>
+                </mat-autocomplete>
+
+                <mat-error *ngIf="formData.hasError('duplicateUnitId')">
+                  Duplicate Material Code selected! Please choose a unique one.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="ind-mat-30">
+                <mat-label>Category</mat-label>
+                <input
+                  matInput
+                  formControlName="itemCategory"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="ind-mat-30">
+                <mat-label> Sub Category</mat-label>
+                <input
+                  matInput
+                  formControlName="itemSubcategory"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <div
+                class="indent-mat_icon"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#indentModel"
+                (click)="setIndentIndexForModal(i)"
+              >
+                <mat-icon matTooltip="Search" class="font"> search </mat-icon>
+              </div>
+
+              <mat-form-field appearance="outline" class="ind-mat-30">
+                <mat-label>Item Specification</mat-label>
+                <input
+                  matInput
+                  formControlName="itemSpecification"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="ind-mat-30">
+                <mat-label>Unit</mat-label>
+                <input
+                  matInput
+                  formControlName="itemUnit"
+                  type="text"
+                  readonly
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="ind-mat-30">
+                <mat-label>Quantity</mat-label>
+                <input
+                  matInput
+                  formControlName="quantity"
+                  (input)="formatRate($event)"
+                  (keydown)="restrictToNumbers($event)"
+                  [name]="'quantity' + i"
+                />
+              </mat-form-field>
+              <span>
+                <i
+                  *ngIf="showAdditionalFields.length > 1"
+                  class="remove-icon bi bi-trash text-danger"
+                  (click)="openConfirmDialog(i, items)"
+                ></i
+              ></span>
+
+              <span *ngIf="i === showAdditionalFields.length - 1" class="add">
+                <i class="bi bi-plus h5 add-icon" (click)="addItems(i)"></i
+              ></span>
+              <!-- <span class="view">
+                <i
+                  style="background-color: #004869; color: white"
+                  class="view-icon bi bi-eye add-icon"
+                  (click)="viewStoreInventory(i, items)"
+                  matTooltip="View Store Data"
+                ></i>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoIndents()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>
+
+<!-- Bootstrap Modal -->
+<div
+  class="modal fade modal-xl"
+  id="indentModel"
+  tabindex="-1"
+  aria-labelledby="serviceCodeSearchModalLabel"
+  aria-hidden="true"
+  (hidden.bs.modal)="clearModalFilters()"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="column-div" id="serviceCodeSearchModalLabel">
+          SELECT MATERIAL CODE
+        </h4>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-search-fields">
+        <mat-form-field appearance="outline" class="aip-serach-class api-ml-2">
+          <mat-label> Search & Select Category </mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="searchCategory($event)"
+            [formControl]="category"
+            [matAutocomplete]="categoryAuto"
+          />
+          <mat-autocomplete
+            #categoryAuto="matAutocomplete"
+            (optionSelected)="onCategorySelectionChange($event)"
+            [displayWith]="displayFn"
+          >
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let item of itemCat" [value]="item">
+              {{ item.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="si-serach-class si-ml-2">
+          <mat-label> Search/Select Sub Category </mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="onSearchItemSubCategory($event)"
+            [formControl]="subCategory"
+            [matAutocomplete]="subCategoryAuto"
+          />
+          <mat-autocomplete
+            #subCategoryAuto="matAutocomplete"
+            (optionSelected)="onSubCategorySelectionChange($event)"
+            [displayWith]="displayFn"
+          >
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let item of itemSubCategoryData" [value]="item">
+              {{ item.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="si-serach-class si-ml-2">
+          <mat-label> Search/Select Specification </mat-label>
+          <input
+            type="text"
+            matInput
+            (input)="onSearchItemSpecification($event)"
+            [formControl]="specification"
+            [matAutocomplete]="specificationAuto"
+          />
+          <mat-autocomplete
+            #specificationAuto="matAutocomplete"
+            (optionSelected)="onSpecificationSelectionChange($event)"
+            [displayWith]="displayFn"
+          >
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let item of itemSpecifications" [value]="item">
+              {{ item.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="modal-body wo-modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr class="modal-table-header">
+              <th>Select</th>
+              <th>Material Code</th>
+              <th>Category</th>
+              <th>Sub Category</th>
+              <th>Specification</th>
+              <th>Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let materialCode of materialCodeDto">
+              <td>
+                <input
+                  type="radio"
+                  name="serviceCodeRadio"
+                  #radioButton
+                  (change)="onMaterialCodeSelect(materialCode)"
+                />
+              </td>
+              <td>{{ materialCode.materialCode }}</td>
+              <td>{{ materialCode.itemCategoryName }}</td>
+              <td>{{ materialCode.itemSubCategoryName }}</td>
+              <td>{{ materialCode.itemSpecificationName }}</td>
+              <td>{{ materialCode.inventoryUnitName }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPopUpPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          (click)="selectMaterialCode()"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

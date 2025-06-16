@@ -1,0 +1,496 @@
+<div class="home-component">
+  <div class="main-head">
+    <div class="header-div">
+      <div class="header-cont">
+        <h1 class="head-text">Dashboard</h1>
+        <p class="date-txt" style="margin: 0">{{ today }}</p>
+      </div>
+      <!-- <p class="user-txt">
+      Hi {{ user.userName }}, here's what's happening today
+    </p> -->
+    </div>
+
+    <div class="dash-top home-dropdown">
+      <div class="day-selector" [formGroup]="formData">
+        <mat-form-field appearance="outline">
+          <mat-label>Select Day</mat-label>
+          <mat-select (selectionChange)="handleDaySelection($event.value)">
+            <mat-option *ngFor="let day of days" [value]="day">
+              {{ day.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- <mat-form-field
+      *ngIf="showDateRangePicker"
+      class="time-picker"
+      appearance="outline"
+    >
+      <mat-label>Select Date Range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input
+          matStartDate
+          placeholder="Start date"
+          formControlName="customStartDate"
+        />
+        <input`
+          matEndDate
+          placeholder="End date"
+          formControlName="customEndDate"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field> -->
+      </div>
+      <div class="date-picker" [formGroup]="formData">
+        <mat-form-field
+          *ngIf="showDateRangePicker"
+          class="time-picker"
+          appearance="outline"
+          style="margin-top: 16px"
+        >
+          <mat-label>Select Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="customStartDate"
+              (focus)="picker.open()"
+            />
+            <input
+              matEndDate
+              placeholder="End date"
+              formControlName="customEndDate"
+              (focus)="picker.open()"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="cards">
+    <mat-card (click)="navigateToLeads()" class="mat-card bg-six">
+      <div class="mat-card-hdiv">
+        <h3 class="cardtitle">Assigned Leads</h3>
+      </div>
+      <div class="mat-card-countdiv">
+        <div class="mat-card-count">
+          <h2 class="total">{{ assignedLeads }}</h2>
+        </div>
+        <div class="mat-card-icondiv">
+          <mat-icon
+            class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+            >assignment_add</mat-icon
+          >
+        </div>
+      </div>
+    </mat-card>
+    <mat-card (click)="navigateToFollowups()" class="mat-card bg-seven">
+      <div class="mat-card-hdiv">
+        <h3 class="cardtitle">Follow Ups</h3>
+      </div>
+      <div class="mat-card-countdiv">
+        <div class="mat-card-count">
+          <h2 class="total">{{ followups }}</h2>
+        </div>
+        <div class="mat-card-icondiv">
+          <mat-icon
+            class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+            >contact_phone</mat-icon
+          >
+        </div>
+      </div>
+    </mat-card>
+    <!-- <mat-card
+      (click)="navigateToFollowups('Site visit Confirm ')"
+      class="mat-card bg-purple"
+    >
+      <h3 class="cardtitle">Scheduled Visits</h3>
+      <h2 class="total">{{ scheduledVisits }}</h2>
+    </mat-card> -->
+    <mat-card
+      (click)="navigateToLeadsForNonContactable()"
+      class="mat-card bg-ten"
+    >
+      <!-- <h3 class="cardtitle">Non Contactable</h3>
+    <h2 class="total">{{ nonContactableCount }}</h2> -->
+      <div class="mat-card-hdiv">
+        <h3 class="cardtitle">Non Contactable</h3>
+      </div>
+      <div class="mat-card-countdiv">
+        <div class="mat-card-count">
+          <h2 class="total">{{ nonContactableCount }}</h2>
+        </div>
+        <div class="mat-card-icondiv">
+          <mat-icon
+            class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+            >phone_disabled</mat-icon
+          >
+        </div>
+      </div>
+    </mat-card>
+    <mat-card
+      (click)="navigateToFollowups('Site Visit Prospect')"
+      class="mat-card bg-five"
+    >
+      <div class="mat-card-hdiv">
+        <h3 class="cardtitle">Site Visit Prospect</h3>
+      </div>
+      <div class="mat-card-countdiv">
+        <div class="mat-card-count">
+          <h2 class="total">{{ siteVisitProspectFollowups }}</h2>
+        </div>
+        <div class="mat-card-icondiv">
+          <mat-icon
+            class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+            >share_location</mat-icon
+          >
+        </div>
+      </div>
+    </mat-card>
+    <mat-card
+      (click)="navigateToFollowups('Site Visit Done')"
+      class="mat-card bg-one"
+    >
+      <div class="mat-card-hdiv">
+        <h3 class="cardtitle">Site Visit Done</h3>
+      </div>
+      <div class="mat-card-countdiv">
+        <div class="mat-card-count">
+          <h2 class="total">{{ siteVisitDoneCount }}</h2>
+        </div>
+        <div class="mat-card-icondiv">
+          <mat-icon
+            class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+            >person_pin_circle</mat-icon
+          >
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card
+      (click)="navigateToLeadsForNonContactable()"
+      class="mat-card bg-three"
+    >
+      <div class="mat-card-hdiv">
+        <h3 class="cardtitle">Booked</h3>
+      </div>
+      <div class="mat-card-countdiv">
+        <div class="mat-card-count">
+          <h2 class="total">{{ nonContactableCount }}</h2>
+        </div>
+        <div class="mat-card-icondiv">
+          <mat-icon
+            class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+            >real_estate_agent</mat-icon
+          >
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <!-- <div class="cards"></div> -->
+
+  <div class="content">
+    <div
+      class="team-data-table-container leads-asigned-div"
+      *ngIf="isUserManager"
+    >
+      <h3 class="table-header">Presales Team Member-wise Leads Report</h3>
+      <div class="team-data-table">
+        <table mat-table [dataSource]="filteredData" class="tableFixHead">
+          <!-- Table header with filters -->
+
+          <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef class="team-data-th">
+              User Name
+              <input
+                matInput
+                (keyup)="applyFilter($event, 'userName')"
+                placeholder="Filter"
+                class="compact-filter"
+              />
+            </th>
+            <td mat-cell *matCellDef="let element" class="team-data-td">
+              {{ element.userName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="assignedLeads">
+            <th mat-header-cell *matHeaderCellDef class="team-data-th">
+              Assigned
+              <input
+                matInput
+                (keyup)="applyFilter($event, 'assignedLeads')"
+                placeholder="Filter"
+                class="compact-filter"
+              />
+            </th>
+            <td mat-cell *matCellDef="let element" class="team-data-td">
+              {{ element.assignedLeads }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="noOfFollowups">
+            <th mat-header-cell *matHeaderCellDef class="team-data-th">
+              Followups
+              <input
+                matInput
+                (keyup)="applyFilter($event, 'noOfFollowups')"
+                placeholder="Filter"
+                class="compact-filter"
+              />
+            </th>
+            <td mat-cell *matCellDef="let element" class="team-data-td">
+              {{ element.noOfFollowups }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="noOfSiteVisitDone">
+            <th mat-header-cell *matHeaderCellDef class="team-data-th">
+              SV Done
+              <input
+                matInput
+                (keyup)="applyFilter($event, 'noOfSiteVisitDone')"
+                placeholder="Filter"
+                class="compact-filter"
+              />
+            </th>
+            <td mat-cell *matCellDef="let element" class="team-data-td">
+              {{ element.noOfSiteVisitDone }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="booked">
+            <th mat-header-cell *matHeaderCellDef class="team-data-th">
+              Booked
+              <input
+                matInput
+                (keyup)="applyFilter($event, 'booked')"
+                placeholder="Filter"
+                class="compact-filter"
+              />
+            </th>
+            <td mat-cell *matCellDef="let element" class="team-data-td">
+              {{ element.noOfSiteVisitConfirm }}
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns"
+            class="team-data-th-tr"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="let element; columns: displayedColumns"
+            class="team-data-td-tr"
+            (click)="onRowClick(element)"
+          ></tr>
+        </table>
+      </div>
+    </div>
+    <!-- <iframe
+      src="http://15.207.212.144:3000/public/dashboard/61ef3dbe-0c1b-4ca4-879c-9b9f35bf373d"
+      frameborder="0"
+      width="800"
+      height="600"
+      allowtransparency
+    ></iframe> -->
+    <div class="pie-chart-container" *ngIf="!isAllDataZero()">
+      <div class="pie-chart">
+        <canvas id="MyChart"></canvas>
+      </div>
+      <!-- <div *ngIf="isAllDataZero()" class="no-data-text">No Data Available</div> -->
+    </div>
+
+    <!--<div class="content">
+    <div class="team-data-table-container">
+      <div
+        style="
+          display: flex;
+          direction: row;
+          justify-content: center;
+          padding-top: 10px;
+        "
+      >
+        <h3 class="table-header">Lead Budget</h3>
+        <div class="day-selector" [formGroup]="leadBudgetdateRangeForm">
+          <mat-form-field class="time-picker" appearance="outline">
+            <mat-label>Select Date Range</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="leadBudgetCustomStartDate"
+              />
+              <input
+                matEndDate
+                placeholder="End date"
+                formControlName="leadBudgetCustomEndDate"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="team-data-table">
+        <table mat-table [dataSource]="leadBudgetSpend">
+
+          <ng-container matColumnDef="sourceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              Source
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.sourceName }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="subSourceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              Sub Source
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.subSourceName }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalAmonut">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              Lead Budget
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.totalAmonut }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalBudget }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="bookedLeadCount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              Booked Lead Count
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.bookedLeadCount }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalBookedLeads }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="CPL">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              CPL
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.costPerLead }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalCostPerLead }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="CPV">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              CPV
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.costPerVisit }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalCostPerVisit }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="siteVisitDoneLeadCount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              Visit Done Lead Count
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.visitDoneLeadCount }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalVisitDoneLeads }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="leadCount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              Lead Count
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.leadCount }}</td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalLeadCount }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="CPB">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #b8e6fb; color: black"
+            >
+              CPB
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.costPerBooking }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              {{ leadBudget?.totalCostPerBooking }}
+            </td>
+          </ng-container>
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedLeadBudgetColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedLeadBudgetColumns"
+          ></tr>
+
+
+          <tr mat-footer-row *matFooterRowDef="displayedLeadBudgetColumns"></tr>
+        </table>
+      </div>
+    </div>
+  </div>-->
+  </div>
+</div>

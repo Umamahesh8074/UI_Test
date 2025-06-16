@@ -1,0 +1,163 @@
+<div class="row woQuantities">
+  <div class="column1">
+    <div *ngIf="workOrderBilling.workOrderNumber">
+      <b class="column-div">RA NUMBER:</b>
+      {{ workOrderBilling.ranumber }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling.projectGstNumber">
+      <b class="column-div">PROJECT GST NUMBER:</b>
+      {{ workOrderBilling.projectGstNumber }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling?.bankName">
+      <b class="column-div">VENDOR BANK NAME:</b>
+      {{ workOrderBilling.bankName }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling.vendorGstNumber">
+      <b class="column-div">VENDOR GST NUMBER:</b>
+      {{ workOrderBilling.vendorGstNumber }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">TOTAL CUMULATIVE AMOUNT:</b>
+      {{ workOrderBilling.totalCumulativeAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">DEBITS/DEDUCTIONS:</b>
+      {{ workOrderBilling.debitAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">TOTAL AMOUNT WITH TAX:</b>
+      {{ workOrderBilling.totalAmountWithTax | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">ADVANCE ON THIS BILL:</b>
+      {{ workOrderBilling.totalPresentAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">RETENSION:</b>
+      {{ workOrderBilling.retensionAmount | currency : "INR" }}
+    </div>
+    <br />
+  </div>
+
+  <div class="column2">
+    <div *ngIf="workOrderBilling.billPeriodFromDate">
+      <b class="column-div">BILL PERIOD FROM DATE:</b>
+      {{ workOrderBilling.billPeriodFromDate | date : "MMM d, yyyy" }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling.createdDate">
+      <b class="column-div">WORK ORDER DATE:</b>
+      {{ workOrderBilling.createdDate | date : "MMM d, yyyy" }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling.ifscCode">
+      <b class="column-div">VENDOR IFSC CODE:</b>
+      {{ workOrderBilling.ifscCode }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling.invoiceBillNumber">
+      <b class="column-div">INVOICE/BILL NO:</b>
+      {{ workOrderBilling.invoiceBillNumber }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">TOTAL PREVIOUS AMOUNT:</b>
+      {{ workOrderBilling.totalPreviousAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">TOTAL TAXABLE AMOUNT:</b>
+      {{ workOrderBilling.totalTaxableAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">MOBILIZATION PAID:</b>
+      {{ workOrderBilling.mobilizationAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">BALANCE TO RECOVER:</b>
+      {{ workOrderBilling.balanceAdvanceToRecover | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">NET AMOUNT CERTIFIED:</b>
+      {{ workOrderBilling.netAmountCertified | currency : "INR" }}
+    </div>
+    <br />
+  </div>
+
+  <div class="column2">
+    <div *ngIf="workOrderBilling?.billPeriodToDate">
+      <b class="column-div">BILL PERIOD TO DATE:</b>
+      {{ workOrderBilling.billPeriodToDate | date : "MMM d, yyyy" }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling?.vendorCode">
+      <b class="column-div">VENDOR CODE:</b>
+      {{ workOrderBilling.vendorCode }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling?.accountNumber">
+      <b class="column-div">VENDOR ACCOUNT NUMBER:</b>
+      {{ workOrderBilling.accountNumber }}
+    </div>
+    <br />
+
+    <div *ngIf="workOrderBilling?.invoiceBillDate">
+      <b class="column-div">INVOICE/BILL DATE:</b>
+      {{ workOrderBilling.invoiceBillDate }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">TOTAL PRESENT AMOUNT:</b>
+      {{ workOrderBilling.totalPresentAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">GST AMOUNT:</b>
+      {{ workOrderBilling.billingGstAmount | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">ADVANCE UPTO PREVIOUS BILL:</b>
+      {{ workOrderBilling.advanceRecoveredUptoPreviousBill | currency : "INR" }}
+    </div>
+    <br />
+
+    <div>
+      <b class="column-div">OTHER RECOVERIES:</b>
+      {{ workOrderBilling.otherRecoveries | currency : "INR" }}
+    </div>
+    <br />
+  </div>
+</div>

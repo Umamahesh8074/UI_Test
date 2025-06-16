@@ -1,0 +1,600 @@
+<!-- <div class="pac-header">BOOKING DETAILS</div> -->
+
+<div class="example-button-row">
+  <span class="search-container">
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Sales Name</mat-label>
+      <input
+        matInput
+        (input)="onSearch($any($event).target?.value)"
+        placeholder="Enter Sales Name"
+      />
+    </mat-form-field>
+  </span>
+  <!-- <span class="search-container">
+    <mat-form-field class="serach-class" appearance="outline">
+      <mat-label>Search/Select Project</mat-label>
+      <input type="text" matInput (input)="searchProject($event)" [formControl]="project"
+        [matAutocomplete]="projectAuto" />
+      <mat-autocomplete #projectAuto="matAutocomplete" (optionSelected)="onProjectSelect($event)"
+        [displayWith]="displayProject">
+        <mat-option *ngFor="let option of projects" [value]="option">
+          {{ option.projectName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </span> -->
+
+  <span *ngIf="shouldShowForRole([this.salesMemberRoleName])">
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addBookingForm()"
+      class="btn-class primary"
+    >
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </span>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="applicantInfoData"
+        class="mat-elevation-z8"
+      >
+        <!-- <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="bookingCode">
+          <th mat-header-cell *matHeaderCellDef>Booking Code</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.bookingCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstApplicantName">
+          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.firstApplicantName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectName">
+          <th mat-header-cell *matHeaderCellDef>Project Name</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.projectName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="levelName">
+          <th mat-header-cell *matHeaderCellDef>Floor</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.levelName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="blockName">
+          <th mat-header-cell *matHeaderCellDef>Block</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.blockName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="unitName">
+          <th mat-header-cell *matHeaderCellDef>Unit</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.unitName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bookedByName">
+          <th mat-header-cell *matHeaderCellDef>STM</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.bookedByName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="crmUser">
+          <th mat-header-cell *matHeaderCellDef>CRM User</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.crmUserName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="landOwnerOrBuilder">
+          <th mat-header-cell *matHeaderCellDef>Unit Belongs To</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.landOwnerOrBuilder }}
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="basePrice">
+          <th mat-header-cell *matHeaderCellDef>Base Price</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.basePrice | currency : "INR" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="totalCharges">
+          <th mat-header-cell *matHeaderCellDef>Total Charges</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.totalCharges | currency : "INR" }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="finalPrice">
+          <th mat-header-cell *matHeaderCellDef>
+            Total Unit Cost (Including GST)
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let applicationInfo"
+            [ngClass]="{
+              'blue-amount': applicationInfo.formattedTotalUnitCost
+            }"
+          >
+            {{ applicationInfo.formattedTotalUnitCost }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="receivedAmount">
+          <th mat-header-cell *matHeaderCellDef>Received Amount</th>
+          <td
+            mat-cell
+            *matCellDef="let applicationInfo"
+            [ngClass]="{
+              'green-amount': applicationInfo.formattedReceivedAmount
+            }"
+          >
+            {{ applicationInfo.formattedReceivedAmount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Sales Team Comments</th>
+          <td
+            mat-cell
+            *matCellDef="let applicationInfo"
+            [matTooltip]="
+              applicationInfo.description ? applicationInfo.description : 'N/A'
+            "
+          >
+            {{
+              applicationInfo.description
+                ? getShortDescription(applicationInfo.description)
+                : "N/A"
+            }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="bookingDate">
+          <th mat-header-cell *matHeaderCellDef>Booking Date</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.bookingDate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="bookingStatus">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.bookingStatus }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let applicationInfo"> -->
+        <!-- <i (click)="generateReport(applicationInfo)" style="color: rgb(14, 14, 14); cursor: pointer"
+            class="bi bi-file-earmark-plus " *ngIf="applicationInfo.status == 'A'"></i> -->
+        <!-- <mat-icon
+            matTooltip="Edit"
+            (click)="editApplicantInfo(applicationInfo)"
+            class="font icon-spacing action-icon"
+            >edit</mat-icon>
+
+            <mat-icon
+            matTooltip="Sale Agreement"
+            (click)="generateReport(applicationInfo)"
+            class="action-icon"
+            >description</mat-icon >
+
+            <mat-icon
+            matTooltip="Generate Cost Sheet"
+            (click)="generateCostSheet(applicationInfo?.bookingId)"
+            class="font action-icon"
+            >request_quote</mat-icon > -->
+
+        <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <i class="bi bi-pencil" style="cursor: pointer" (click)="editApplicantInfo(applicationInfo)"></i> -->
+
+        <!-- <i (click)="openConfirmDialog(applicationInfo.bookingId)" style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger" *ngIf="applicationInfo.status == 'A'"></i> -->
+        <!-- <i class="bi bi-arrow-right"
+              style="color: green; cursor: pointer"
+              (click)="navigateToCustomerStages(applicationInfo.bookingId, applicationInfo.firstApplicantFirstName)"></i> -->
+
+        <!-- <mat-icon
+              matTooltip="Demand Letter"
+              (click)="navigateToCustomerStages(applicationInfo.bookingId, applicationInfo.firstApplicantFirstName,applicationInfo.firstApplicantMiddleName,applicationInfo.firstApplicantLastName)"
+              class="font action-icon"> double_arrow</mat-icon
+            >
+          </td>
+
+        </ng-container> -->
+        <!-- File Upload Column -->
+        <!-- <ng-container matColumnDef="uploadSaleAgreement">
+          <th mat-header-cell *matHeaderCellDef>Sale Agreement</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            <div class="file-upload-container">
+              <mat-icon
+                class="upload-trigger"
+                (click)="
+                  applicationInfo.salesAgreementUrl
+                    ? downloadUploadedSalesAgreement(
+                        applicationInfo.salesAgreementUrl
+                      )
+                    : openUploadModal(applicationInfo.bookingId)
+                "
+              >
+                {{
+                  applicationInfo.saleAgreementUrl
+                    ? "cloud_download"
+                    : "attach_file"
+                }}
+              </mat-icon>
+            </div>
+          </td>
+        </ng-container> -->
+
+        <!-- <ng-container matColumnDef="uploadSaleAgreement">
+          <th mat-header-cell *matHeaderCellDef>Sale Agreement</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            <div class="file-upload-container">
+              <mat-icon
+                class="action-icon"
+                (click)="
+                  applicationInfo.salesAgreementUrl
+                    ? downloadUploadedSalesAgreement(
+                        applicationInfo.salesAgreementUrl
+                      )
+                    : openUploadModal(applicationInfo.bookingId)
+                "
+              >
+                {{
+                  applicationInfo.salesAgreementUrl ? "download" : "attach_file"
+                }}
+              </mat-icon>
+              <span
+                class="status-text"
+                [ngClass]="
+                  applicationInfo.salesAgreementUrl ? 'done' : 'not-done'
+                "
+              >
+                {{ applicationInfo.salesAgreementUrl ? "Done" : "Not Done" }}
+              </span>
+            </div>
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            <!-- Dropdown Menu -->
+            <mat-menu #menu="matMenu" class="custom-menu">
+              <button
+                mat-menu-item
+                (click)="editApplicantInfo(applicationInfo)"
+              >
+                <mat-icon class="menu-icon">edit</mat-icon>
+                <span class="menu-label">Edit</span>
+              </button>
+              <!-- <button mat-menu-item (click)="generateReport(applicationInfo)">
+                <mat-icon class="menu-icon">description</mat-icon>
+                <span class="menu-label">Sale Agreement</span>
+              </button> -->
+              <button
+                mat-menu-item
+                (click)="
+                  generateCostSheet(
+                    applicationInfo?.bookingId,
+                    applicantInfo?.costSheet
+                  )
+                "
+              >
+                <mat-icon class="menu-icon">request_quote</mat-icon>
+                <span class="menu-label">Generate Cost Sheet</span>
+              </button>
+
+              <button
+                *ngIf="!shouldShowForRole([this.salesMemberRoleName])"
+                mat-menu-item
+                (click)="sendWelcomeEmail(applicationInfo)"
+                [disabled]="applicationInfo.isCredentialMailSent === 'yes'"
+                [ngClass]="{
+                  'blurred-button':
+                    applicationInfo.isCredentialMailSent === 'yes'
+                }"
+              >
+                <mat-icon class="menu-icon">
+                  <ng-container
+                    *ngIf="
+                      applicationInfo.isCredentialMailSent === 'yes';
+                      else emailIcon
+                    "
+                  >
+                    check_circle
+                  </ng-container>
+                  <ng-template #emailIcon> email </ng-template>
+                </mat-icon>
+
+                <span class="menu-label">
+                  <ng-container
+                    *ngIf="
+                      applicationInfo.isCredentialMailSent === 'yes';
+                      else sendCredentials
+                    "
+                  >
+                    Credentials Sent
+                  </ng-container>
+                  <ng-template #sendCredentials> Send Credentials </ng-template>
+                </span>
+              </button>
+
+              <button
+                *ngIf="!shouldShowForRole([this.salesMemberRoleName])"
+                mat-menu-item
+                (click)="
+                  navigateToCustomerStages(
+                    applicationInfo.bookingId,
+                    applicationInfo.firstApplicantName,
+                    applicationInfo.unitName,
+                    applicationInfo.projectId,
+                    applicationInfo.typeCommonReferenceDetailsId
+                  )
+                "
+              >
+                <mat-icon class="menu-icon">double_arrow</mat-icon>
+                <span class="menu-label">Demand Letter</span>
+              </button>
+              <button
+                *ngIf="applicationInfo.bookingStatus == 'Booked'"
+                mat-menu-item
+                (click)="cancelBooking(applicationInfo)"
+              >
+                <mat-icon class="menu-icon">cancel</mat-icon>
+                <span class="menu-label">Cancel Booking</span>
+              </button>
+            </mat-menu>
+
+            <!-- Trigger Button -->
+            <mat-icon
+              *ngIf="applicationInfo.bookingStatus != 'Cancelled'"
+              [matMenuTriggerFor]="menu"
+              matTooltip="Actions"
+              class="action-trigger"
+              >more_vert</mat-icon
+            >
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- <tr
+          class="table-row"
+          mat-row
+          *matRowDef="
+            let applicationInfo of applicantInfoData;
+            columns: displayedColumns
+          "
+        ></tr> -->
+
+        <tr
+          mat-row
+          *matRowDef="
+            let applicationInfo of applicantInfoData;
+            columns: displayedColumns
+          "
+          (contextmenu)="onTableRightClick($event, applicationInfo)"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <b>
+    <hr style="margin: 0" />
+  </b>
+  <mat-card-footer class="pagination-sec">
+    <mat-paginator
+      [length]="totalPages"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator"
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>
+<div *ngIf="isModelView">
+  <div
+    class="modal fade"
+    id="remarksModal"
+    tabindex="-1"
+    aria-labelledby="remarksModalLabel"
+    aria-hidden="true"
+    [ngClass]="{ show: isModelView }"
+    [style.display]="isModelView ? 'block' : 'none'"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="remarksModalLabel" class="radio-button">
+            ENTER REMARKS
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            (click)="onClose()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <textarea
+                class="form-control"
+                id="remarks"
+                [(ngModel)]="remarks"
+                #remarksField="ngModel"
+                required
+                name="remarks"
+                rows="4"
+                placeholder="Enter your remarks here"
+                (input)="resizeTextarea($event)"
+              ></textarea>
+              <div
+                *ngIf="
+                  remarksField.invalid &&
+                  (remarksField.dirty || remarksField.touched || isSubmitted)
+                "
+                class="text-danger mt-1"
+              >
+                Enter remarks.
+              </div>
+            </div>
+            <div
+              class="mb-3"
+              style="display: flex; gap: 1rem; align-items: center"
+            >
+              <!-- File Input -->
+              <div class="choose-file">
+                <input
+                  type="file"
+                  id="fileInput"
+                  (change)="onFileChange($event)"
+                  #fileInput
+                />
+              </div>
+              <mat-form-field appearance="outline" class="cancel-date">
+                <mat-label>Cancelled Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="cancelledBookingDatePicker"
+                  placeholder="Select Cancelled Date"
+                  name="cancelledBookingDateInput"
+                  [(ngModel)]="cancelledDate"
+                  #cancelledBookingDateInput="ngModel"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="cancelledBookingDatePicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #cancelledBookingDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- Error message outside of flex row -->
+            <div *ngIf="isSubmitted && !selectedFile" class="text-danger mt-1">
+              Select file.
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="onClose()"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="handleApprovalStatus()"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Modal for File Upload -->
+<!-- <div
+  *ngIf="isModalOpen"
+  class="modal fade show"
+  style="display: block; background: rgba(0, 0, 0, 0.5)"
+  id="uploadModal"
+  tabindex="-1"
+  aria-labelledby="uploadModalLabel"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Upload Sale Agreement</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <input
+            type="file"
+            id="fileInput"
+            (change)="onFileChange($event)"
+            class="form-control"
+            accept=".pdf,.docx,.xlsx"
+          />
+          <div *ngIf="fileTypeError" class="error-message">
+            {{ fileSizeDisplay }}
+          </div>
+          <div *ngIf="selectedFile" class="file-name">
+            Selected: {{ fileSizeDisplay }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="uploadsSaleAgreement()"
+          [disabled]="!selectedFile"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div
+  class="context-menu"
+  *ngIf="contextMenuVisible"
+  [ngStyle]="{
+    top: contextMenuPosition.y + 'px',
+    left: contextMenuPosition.x + 'px'
+  }"
+>
+  <ul>
+    <li (click)="editApplicantInfo(selectedRowData)">Edit</li>
+    <li
+      (click)="
+        generateCostSheet(
+          selectedRowData?.bookingId,
+          selectedRowData?.costSheet
+        )
+      "
+    >
+      Generate Cost Sheet
+    </li>
+    <li (click)="sendWelcomeEmail(selectedRowData)">Send Credentials</li>
+  </ul>
+</div>
+<div
+  class="context-menu"
+  *ngIf="contextMenuVisible"
+  [ngStyle]="{
+    top: contextMenuPosition.y + 'px',
+    left: contextMenuPosition.x + 'px'
+  }"
+  (clickOutside)="contextMenuVisible = false"
+></div>

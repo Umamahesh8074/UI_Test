@@ -1,0 +1,70 @@
+<h4 class="header"><b>COMMON REFERENCE DETAILS</b></h4>
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header>
+        <b>{{
+          isAdding
+            ? "ADD COMMON REFERENCE DETAILS"
+            : "EDIT COMMON REFERENCE DETAILS"
+        }}</b>
+      </mat-card-header>
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label> Common Reference Type Name</mat-label>
+          <mat-select formControlName="referenceTypeId">
+            <mat-option value="">Select CommonReferenceType</mat-option>
+            <mat-option
+              *ngFor="let commonReferenceType of commonReferenceTypesDto"
+              [value]="commonReferenceType.id"
+            >
+              {{ commonReferenceType.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Common Ref Key</mat-label>
+          <input matInput formControlName="commonRefKey" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Common Ref Value</mat-label>
+          <input matInput formControlName="commonRefValue" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Ref Value</mat-label>
+          <input matInput formControlName="refValue" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Order</mat-label>
+          <input matInput formControlName="refOrder" type="number" />
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoCommonReferenceDetails()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

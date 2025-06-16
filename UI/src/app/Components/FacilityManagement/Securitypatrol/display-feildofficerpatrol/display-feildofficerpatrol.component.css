@@ -1,0 +1,28 @@
+.pac-header {
+    font-weight: normal;
+    font-size: 20px;
+    text-align: center;
+    margin: 1% !important;
+  }
+  .mat-45{
+    margin-left: 10px;
+  }
+  .ml-2 {
+    margin-left: 1%;
+    width: 20%;
+  }
+  .button-row {
+    padding: 1% 0;
+    justify-content: space-between;
+    height: auto;
+  }
+  
+  .search-container {
+    display: flex;
+    flex-grow: 1;
+  }
+  
+  .search-class {
+    margin-left: 10px;
+    width: 25%;
+  }

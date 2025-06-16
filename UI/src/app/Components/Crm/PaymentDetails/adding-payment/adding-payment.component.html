@@ -1,0 +1,493 @@
+<div>
+  <div>
+    <h4 class="pac-header">
+      {{ isAdding ? "Add Customer Payment" : "Edit Customer Payment" }}
+    </h4>
+    <form [formGroup]="formData" (ngSubmit)="save()">
+      <div class="example-container">
+        <mat-card class="card">
+          <mat-card-content>
+            <div class="row">
+              <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select Project</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchProject($event)"
+                  [formControl]="projectFc"
+                  [matAutocomplete]="projectAuto"
+                  [readonly]="!isAdding"
+                  [ngClass]="{ 'read-only-input': !isAdding }"
+                />
+                <mat-autocomplete
+                  #projectAuto="matAutocomplete"
+                  (optionSelected)="onProjectSelect($event)"
+                  [displayWith]="displayProject"
+                >
+                  <mat-option
+                    *ngFor="let option of projectsData"
+                    [value]="option"
+                  >
+                    {{ option.projectName }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="projectFc.hasError('required')">
+                  Project is required
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select unit</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchUnit($event)"
+                  [formControl]="unitFc"
+                  [matAutocomplete]="unitAuto"
+                  [readonly]="!isAdding"
+                  [ngClass]="{ 'read-only-input': !isAdding }"
+                />
+                <mat-autocomplete
+                  #unitAuto="matAutocomplete"
+                  (optionSelected)="onUnitSelect($event)"
+                  [displayWith]="displayUnit"
+                >
+                  <mat-option *ngFor="let option of unitData" [value]="option">
+                    {{ option.unitName }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="unitFc.hasError('required')">
+                  Unit is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select Applicant</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchApplicant($event)"
+                  [formControl]="applicantFc"
+                  [matAutocomplete]="applicantAuto"
+                  [readonly]="!isAdding"
+                  [ngClass]="{ 'read-only-input': !isAdding }"
+                />
+                <mat-autocomplete
+                  #applicantAuto="matAutocomplete"
+                  (optionSelected)="onApplicantSelectSelect($event)"
+                  [displayWith]="displayApplicant"
+                >
+                  <mat-option
+                    *ngFor="let option of applicantDetails"
+                    [value]="option"
+                  >
+                    {{ option.firstApplicantName }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="applicantFc.hasError('required')">
+                  Customer is required
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Search/Select Payment Source</mat-label>
+                <mat-select formControlName="sourceId">
+                  <mat-option
+                    *ngFor="let option of paymentSources"
+                    [value]="option.id"
+                  >
+                    {{ option.commonRefValue }}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="formData.get('sourceId')?.hasError('required')"
+                >
+                  Payment source is required.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Search/Select Payment Type</mat-label>
+                <mat-select formControlName="paymentTypeId">
+                  <mat-option
+                    *ngFor="let option of paymentTypes"
+                    [value]="option.id"
+                  >
+                    {{ option.commonRefValue }}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="formData.get('paymentTypeId')?.hasError('required')"
+                >
+                  Payment type is required.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select Payment Source</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchPaymentSource($event)"
+                  [formControl]="paymentTypeSourceFc"
+                  [matAutocomplete]="paymentSourceAuto"
+                />
+                <mat-autocomplete
+                  #paymentSourceAuto="matAutocomplete"
+                  (optionSelected)="onPaymentSourceSelect($event)"
+                  [displayWith]="displayPaymentSource"
+                >
+                  <mat-option
+                    *ngFor="let option of paymentSources"
+                    [value]="option"
+                  >
+                    {{ option.commonRefValue }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error
+                  *ngIf="
+                    paymentTypeSourceFc.hasError('required') &&
+                    (paymentTypeSourceFc.dirty || paymentTypeSourceFc.touched)
+                  "
+                >
+                  Payment Source is required
+                </mat-error>
+              </mat-form-field> -->
+              <!-- <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select Payment Mode</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  [value]="
+                    selectedPaymnetMode.commonRefValue
+                      ? selectedPaymnetMode.commonRefValue
+                      : ''
+                  "
+                  (input)="searchPayments($event)"
+                  [formControl]="paymentTypeModeFc"
+                  [matAutocomplete]="paymentAuto"
+                />
+                <mat-autocomplete
+                  #paymentAuto="matAutocomplete"
+                  (optionSelected)="onPaymentTypeSelect($event)"
+                  [displayWith]="displayPaymentMode"
+                >
+                  <mat-option
+                    *ngFor="let option of paymentTypes"
+                    [value]="option"
+                  >
+                    {{ option.commonRefValue }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error
+                  *ngIf="
+                    paymentTypeModeFc.hasError('required') &&
+                    (paymentTypeModeFc.dirty || paymentTypeModeFc.touched)
+                  "
+                >
+                  Payment Mode is required
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select Transaction Type</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchTransactionType($event)"
+                  [formControl]="transTractionTypeModeFc"
+                  [matAutocomplete]="transactionTypeAuto"
+                />
+                <mat-autocomplete
+                  #transactionTypeAuto="matAutocomplete"
+                  (optionSelected)="onTransactionTypeSelect($event)"
+                  [displayWith]="displayTransActionType"
+                >
+                  <mat-option
+                    *ngFor="let option of transactionType"
+                    [value]="option"
+                  >
+                    {{ option.commonRefValue }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error
+                  *ngIf="
+                    transTractionTypeModeFc.hasError('required') &&
+                    (transTractionTypeModeFc.dirty ||
+                      transTractionTypeModeFc.touched)
+                  "
+                >
+                  Transaction Type is required.
+                </mat-error>
+              </mat-form-field> -->
+
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Search/Select Transaction Type</mat-label>
+                <mat-select formControlName="transactionTypeId">
+                  <mat-option
+                    *ngFor="let option of transactionType"
+                    [value]="option.id"
+                  >
+                    {{ option.commonRefValue }}
+                  </mat-option>
+                </mat-select>
+                <mat-error
+                  *ngIf="
+                    formData.get('transactionTypeId')?.hasError('required')
+                  "
+                >
+                  Transaction type is required.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Enter Reference Number</mat-label>
+                <input matInput type="text" formControlName="referenceNumber" />
+                <mat-error
+                  *ngIf="formData.get('referenceNumber')?.hasError('required')"
+                >
+                  Reference Number is required.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Payment Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  (click)="picker.open()"
+                  formControlName="paymentDate"
+                />
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+
+                <mat-error
+                  *ngIf="formData.get('paymentDate')?.hasError('required')"
+                >
+                  Payment date is required.
+                </mat-error>
+                <mat-error
+                  *ngIf="formData.get('paymentDate')?.hasError('futureDate')"
+                >
+                  Payment date cannot be in the future.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Bank Name</mat-label>
+                <input
+                  matInput
+                  formControlName="bankName"
+                  type="text"
+                  (input)="convertFirstLetterToUpperCase('bankName')"
+                />
+                <mat-error
+                  *ngIf="formData.get('bankName')?.hasError('required')"
+                >
+                  Bank Name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="row">
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Branch Name</mat-label>
+                <input
+                  matInput
+                  formControlName="branchName"
+                  type="text"
+                  (input)="convertFirstLetterToUpperCase('branchName')"
+                />
+                <!-- <mat-error
+                  *ngIf="formData.get('branchName')?.hasError('required')"
+                >
+                  Branch Name is required
+                </mat-error> -->
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>IFSC Code/BRS Code</mat-label>
+                <input matInput formControlName="ifscCode" type="text" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Account Number</mat-label>
+                <input matInput formControlName="accountNumber" type="text" />
+              </mat-form-field>
+            </div>
+            <div class="row">
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Paid Amount</mat-label>
+                <input
+                  matInput
+                  formControlName="receivedAmount"
+                  type="text"
+                  (input)="formatRate($event)"
+                  (keydown)="restrictToNumbers($event)"
+                />
+                <mat-error
+                  *ngIf="formData.get('receivedAmount')?.hasError('required')"
+                >
+                  Paid Amount is required
+                </mat-error>
+                <mat-error
+                  *ngIf="formData.get('receivedAmount')?.hasError('min')"
+                >
+                  Paid Amount must be greater than 0.
+                </mat-error>
+              </mat-form-field>
+              <div appearance="outline" class="mat-45">
+                <textarea
+                  id="al-otr-rsn"
+                  matInput
+                  formControlName="description"
+                  rows="1"
+                  placeholder="Description"
+                  style="
+                    flex: 1;
+                    width: 100%;
+                    padding: 5px 10px;
+                    font-size: 13px;
+                  "
+                  (input)="
+                    autoResize(); convertFirstLetterToUpperCase('description')
+                  "
+                  #textArea
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    formData.get('description')?.invalid &&
+                    formData.get('description')?.touched
+                  "
+                >
+                  Description is required.
+                </mat-error>
+              </div>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Payment Attachment</mat-label>
+                <input
+                  matInput
+                  [attr.placeholder]="'Choose File'"
+                  [attr.type]="'text'"
+                  [attr.readonly]="true"
+                  (click)="checkFileInput.click()"
+                  [value]="fileNames.check || 'No file chosen'"
+                />
+                <input
+                  type="file"
+                  #checkFileInput
+                  (change)="onCheckFileChange($event, 'check')"
+                  style="display: none"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="checkFileInput.click()"
+                  type="button"
+                >
+                  <mat-icon>attach_file</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+            <div class="row">
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Challan</mat-label>
+                <input
+                  matInput
+                  [attr.placeholder]="'Choose File'"
+                  [attr.type]="'text'"
+                  [attr.readonly]="true"
+                  (click)="challanaFileInput.click()"
+                  [value]="fileNames.challana || 'No file chosen'"
+                />
+                <input
+                  type="file"
+                  #challanaFileInput
+                  (change)="onCheckFileChange($event, 'challana')"
+                  style="display: none"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="challanaFileInput.click()"
+                  type="button"
+                >
+                  <mat-icon>attach_file</mat-icon>
+                </button>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Mail</mat-label>
+                <input
+                  matInput
+                  [attr.placeholder]="'Choose File'"
+                  [attr.type]="'text'"
+                  [attr.readonly]="true"
+                  (click)="emailFileInput.click()"
+                  [value]="fileNames.email || 'No file chosen'"
+                />
+                <input
+                  type="file"
+                  #emailFileInput
+                  (change)="onCheckFileChange($event, 'email')"
+                  style="display: none"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="emailFileInput.click()"
+                  type="button"
+                >
+                  <mat-icon>attach_file</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+
+          <mat-card-footer class="add-mat-card-footer">
+            <div>
+              <button
+                mat-flat-button
+                (click)="goToPayments()"
+                class="btn-class accent"
+                type="button"
+              >
+                BACK
+              </button>
+              <button
+                mat-flat-button
+                class="btn-class warn"
+                (click)="clearForm()"
+                type="button"
+              >
+                RESET
+              </button>
+              <button mat-flat-button class="btn-class primary" type="submit">
+                {{ isAdding ? "ADD" : "UPDATE" }}
+              </button>
+            </div>
+          </mat-card-footer>
+        </mat-card>
+      </div>
+    </form>
+  </div>
+</div>

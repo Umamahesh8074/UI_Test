@@ -1,0 +1,74 @@
+.mat-card-scroll {
+    max-height: 98vh;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+  
+  .mat-45 {
+    width: 33%;
+  }
+  .crm-payment {
+    border: 0.5px solid #004869;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-wrap: wrap;
+    width: 75%;
+    padding: 5px;
+    margin: auto;
+  }
+  
+  .pac-header {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    margin: 1% !important;
+    color: #306e03;
+  }
+  
+  .column1 {
+    width: 30%;
+  }
+  .column2 {
+    width: 30%;
+  }
+  .column3 {
+    width: 30%;
+  }
+  .column4 {
+    width: 30%;
+  }
+
+  .example-container {
+    text-align: center;
+  }
+  
+  .card {
+    margin: 0px;
+    text-align: left;
+    width: 75%;
+    margin: auto;
+    padding: 15px 30px;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+.row {
+  display: flex;
+  justify-content: space-between;
+  text-align: start;
+  margin-top: 10px;
+}
+  .material-icons {
+    font-size: 20px !important;
+  }
+  @media screen and (max-device-width: 480px) {
+    .mat-45 {
+      width: 90% !important;
+      margin: 15px auto 0px;
+    }
+    .card {
+      width: 100%;
+      padding: 10px 10px;
+    }
+  }
+  

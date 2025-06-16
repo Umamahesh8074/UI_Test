@@ -1,0 +1,176 @@
+<h3 class="header">Attendance Report</h3>
+<div class="example-button-row">
+  <mat-form-field appearance="outline" class="search-class">
+    <mat-label>User Name</mat-label>
+    <input
+      type="text"
+      matInput
+      [value]="selectedUser.userName ? selectedUser.userName : ''"
+      (input)="searchUserForAuto($event)"
+      [matAutocomplete]="usernameauto"
+    />
+    <mat-autocomplete
+      #usernameauto="matAutocomplete"
+      (optionSelected)="onUserSelectForAuto($event)"
+      [displayWith]="displayUserForAuto"
+    >
+      <mat-option *ngFor="let option of userData" [value]="option">
+        {{ option.userName }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Location</mat-label>
+    <mat-select
+      (selectionChange)="selectedLocation($event.value)"
+      [(value)]="selectlocationId"
+    >
+    <mat-option value="0">All</mat-option>
+      <mat-option *ngFor="let element of locationForOrg" [value]="element.id">
+        {{ element.location }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- <div
+  (click)="navigateToWorkingDays()"
+  class="working-days-message"
+  style="margin: 20px; display: flex"
+>
+   <h3 style="padding-right: 30px">Current Month Number Of Working Days</h3> 
+   <div class="working-days-value">
+    <h2>{{ newWorkingDays }}</h2>
+  </div>
+</div> -->
+
+  <mat-form-field appearance="outline">
+    <mat-label>Select Day</mat-label>
+    <mat-select
+      (selectionChange)="handleDaySelection($event.value)"
+      [value]="selectedDay"
+    >
+      <mat-option *ngFor="let day of days" [value]="day">
+        {{ day.commonRefValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field
+    *ngIf="showDateRangePicker"
+    class="time-picker"
+    appearance="outline"
+  >
+    <mat-label>Select Date Range</mat-label>
+    <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+      <input
+        matStartDate
+        placeholder="Start date"
+        formControlName="customStartDate"
+        (focus)="picker.open()"
+      />
+      <input
+        matEndDate
+        placeholder="End date"
+        formControlName="customEndDate"
+        (focus)="picker.open()"
+      />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="attendanceData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            User Name
+          </th>
+          <td mat-cell *matCellDef="let attendance">
+            {{ attendance.userName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="location">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            User Name
+          </th>
+          <td mat-cell *matCellDef="let attendance">
+            {{ attendance.locationName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="present">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Present Count
+          </th>
+          <td mat-cell *matCellDef="let attendance">
+            {{ attendance.presentCount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="absent">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Absent Count
+          </th>
+          <td mat-cell *matCellDef="let attendance">
+            {{ attendance.absentCount }}
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="location">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+          Location
+            </th>
+
+           <td mat-cell *matCellDef="let attendanceData">
+              {{ attendanceData.attendanceInTime }}
+            </td>
+          </ng-container> -->
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let attendance of attendanceData;
+            columns: displayedColumns
+          "
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator"
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

@@ -1,0 +1,115 @@
+<h4 class="header"><b>{{ isAdding ? "ADD ROLE" : "UPDATE ROLE" }}</b></h4>
+
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+
+<form
+  [formGroup]="formData"
+  (ngSubmit)="save()"
+  style="width: 70%; margin: auto"
+>
+  <div class="example-container">
+    <mat-card class="card">
+      <!-- <mat-card-header
+        ><b>{{ isAdding ? "ADD ROLE" : "EDIT ROLE" }}</b></mat-card-header
+      > -->
+      <mat-card-content class="mat-content">
+        <ng-container *ngIf="organizationId == 0">
+          <mat-form-field appearance="outline" class="mat-50">
+            <mat-label> Organization</mat-label>
+            <mat-select
+              formControlName="organizationId"
+              (selectionChange)="onOrganizationSelete($event)"
+            >
+              <mat-option value="">Select Organization</mat-option>
+              <mat-option
+                *ngFor="let organization of organizations"
+                [value]="organization.organizationId"
+              >
+                {{ organization.organizationName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- <mat-form-field class="example-full-width" style="margin: 10px">
+            <mat-label>Search/Select Organization</mat-label>
+            <input
+              type="text"
+              matInput
+              aria-label="Number"
+              (input)="onOrganizationSerach($any($event).target?.value)"
+              [formControl]="organization"
+              [matAutocomplete]="auto"
+            />
+
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              (optionSelected)="onOrganizationSelete($event)"
+              [displayWith]="displayOrganization"
+            >
+              <mat-option *ngFor="let option of organizations" [value]="option">
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field> -->
+        </ng-container>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Role Name</mat-label>
+          <input matInput formControlName="roleName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50" *ngIf="!isAdding">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="">Select Status</mat-option>
+            <mat-option
+              *ngFor="let element of statuses"
+              [value]="element.commonRefKey"
+            >
+              {{ element.commonRefValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('status')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Dashboard </mat-label>
+          <mat-select
+            formControlName="homePageId"
+            (selectionChange)="dashBoardValue($event)"
+          >
+            <mat-option value="0">Select </mat-option>
+            <mat-option *ngFor="let element of dashBoards" [value]="element.id">
+              {{ element.commonRefKey }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('homePageId')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoRoles()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

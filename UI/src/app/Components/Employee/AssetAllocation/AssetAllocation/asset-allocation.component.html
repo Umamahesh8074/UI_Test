@@ -1,0 +1,201 @@
+<h4 class="header">
+  <b>{{ isAdding ? "ADD ASSET ALLOCATION" : "UPDATE ASSET ALLOCATION" }}</b>
+</h4>
+
+<form
+  [class.blur-background]="isModalVisible"
+  [formGroup]="formData"
+  (ngSubmit)="save()"
+>
+  <div class="example-container add-lead-main">
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="cmn-mat-card-content mat-card-scroll">
+        <div class="form-row">
+          <!-- <mat-form-field
+          class="example-full-width"
+          class="input-field-33"
+          appearance="outline"
+        >
+          <mat-label>Search/Select Employee Name</mat-label>
+          <input
+          type="text"
+          matInput
+          [value]="
+            selectedEmployee.firstName ? selectedEmployee.firstName : ''
+          "
+            (input)="searchEmployee($event)"
+            [formControl]="employee"
+            [matAutocomplete]="employeeAuto"
+          />
+          <mat-autocomplete
+            #employeeAuto="matAutocomplete"
+            (optionSelected)="onEmployeeSelect($event)"
+            [displayWith]="displayEmployeeName"
+          >
+            <mat-option *ngFor="let option of employeeData" [value]="option">
+              {{ option.firstName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field> -->
+
+        <mat-form-field class="example-full-width input-field-33" appearance="outline">
+          <mat-label>Search/Select Employee Name</mat-label>
+          <input
+            type="text"
+            matInput
+            [formControl]="employee"
+            [matAutocomplete]="employeeAuto"
+            (input)="searchEmployee($event)"
+          />
+          <mat-autocomplete
+            #employeeAuto="matAutocomplete"
+            (optionSelected)="onEmployeeSelect($event)"
+            [displayWith]="displayEmployeeName"
+          >
+            <mat-option *ngFor="let option of employeeData" [value]="option">
+              {{ option.firstName }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="employee.hasError('required')">
+            Employee selection is required
+          </mat-error>
+        </mat-form-field>
+
+
+
+
+        <mat-form-field
+        class="example-full-width"
+        class="input-field-33"
+        appearance="outline"
+      >
+        <mat-label>Search/Select Asset Name</mat-label>
+        <input
+        type="text"
+        matInput
+        [value]="
+          selectedAsset.assetName ? selectedAsset.assetName : ''
+        "
+          (input)="searchAssets($event)"
+          [formControl]="asset"
+          [matAutocomplete]="assetAuto"
+        />
+        <mat-autocomplete
+          #assetAuto="matAutocomplete"
+          (optionSelected)="onAssetsSelect($event)"
+          [displayWith]="displayAssetName"
+        >
+          <mat-option *ngFor="let option of assetsData" [value]="option">
+            {{ option.assetName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+
+
+
+
+          <mat-form-field appearance="outline" class="input-field-33">
+            <mat-label>Allocated Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="allocatedDate"
+              formControlName="allocatedDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="allocatedDate"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #allocatedDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+
+
+
+
+
+
+          <mat-form-field
+          class="example-full-width"
+          class="input-field-33"
+          appearance="outline"
+        >
+          <mat-label>Allocated By</mat-label>
+          <input
+            type="text"
+            matInput
+            [value]="selectedUser.userName ? selectedUser.userName : ''"
+            (input)="searchUserForAuto($event)"
+            [formControl]="userControll"
+            [matAutocomplete]="usernameauto"
+            [readonly]="!isAdding"
+          />
+          <mat-autocomplete
+            #usernameauto="matAutocomplete"
+            (optionSelected)="onUserSelectForAuto($event)"
+            [displayWith]="displayUserForAuto"
+          >
+            <mat-option
+              *ngFor="let option of userData"
+              [value]="option"
+              [disabled]="!isAdding"
+            >
+              {{ option.userName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+
+
+
+          <mat-form-field appearance="outline" class="input-field-33">
+            <mat-label>Returned Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="returnedDate"
+              formControlName="returnedDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="returnedDate"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #returnedDate></mat-datepicker>
+          </mat-form-field>
+
+
+          <mat-form-field appearance="outline" class="input-field-33">
+            <mat-label>Condition At Return</mat-label>
+            <input matInput formControlName="conditionAtReturn" />
+          </mat-form-field>
+        </div>
+
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+          <button
+            mat-flat-button
+            type="button"
+            class="btn-class warn"
+            (click)="clearForm()"
+          >
+            RESET
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="gotoAsserts()"
+          >
+            BACK
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

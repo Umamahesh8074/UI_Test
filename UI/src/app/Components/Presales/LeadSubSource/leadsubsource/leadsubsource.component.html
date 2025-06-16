@@ -1,0 +1,83 @@
+<h4 class="header">
+  <b>{{ isAdding ? "ADD LEAD SUB-SOURCE" : "EDIT LEAD SUB-SOURCE" }}</b>
+</h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <div style="display: flex">
+        <mat-card-content
+          class="cmn-mat-card-content"
+          style="width: 50%; margin-top: 3%"
+        >
+          <mat-form-field
+            appearance="outline"
+            class="mat-45"
+            *ngIf="SourceDisplay"
+          >
+            <mat-label>Select Source</mat-label>
+            <mat-select formControlName="sourceId">
+              <mat-option value="">Select Source</mat-option>
+              <mat-option
+                *ngFor="let source of sources"
+                [value]="source.leadSourceId"
+              >
+                {{ source.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="mat-45"
+            *ngIf="!SourceDisplay"
+          >
+            <mat-label>Select Source</mat-label>
+            <mat-select formControlName="sourceId">
+              <mat-option value="">Select Source</mat-option>
+              <mat-option
+                *ngFor="let source of sources"
+                [value]="source.leadSourceId"
+              >
+                {{ source.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-content
+          class="mat-content"
+          style="width: 50%; margin-top: 3%"
+        >
+          <mat-form-field appearance="outline" class="mat-50">
+            <mat-label>Enter Sub-Source Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+        </mat-card-content>
+      </div>
+      <mat-card-footer>
+        <div style="text-align: right" class="button">
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoLeadSubSources()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

@@ -1,0 +1,99 @@
+<h3 class="header">REPORTS</h3>
+<div class="example-button-row">
+  <div>
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search on report name</mat-label>
+      <input matInput (input)="getReports($any($event).target?.value)" />
+    </mat-form-field>
+  </div>
+  <div>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addReport()"
+      class="btn-class"
+    >
+      <i class="bi bi-sign-intersection-fill h6"></i> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table matSort mat-table [dataSource]="reports" class="mat-elevation-z8">
+        <ng-container matColumnDef="rowNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            #
+          </th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Lead Source Name
+          </th>
+          <td mat-cell *matCellDef="let reprot">{{ reprot.reportName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let reprot">{{ reprot.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let report">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editReport(report)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <i
+              (click)="openConfirmDialog(report)"
+              style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger"
+              *ngIf="report.status != 'I'"
+            ></i>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let report of reports; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

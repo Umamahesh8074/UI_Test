@@ -1,0 +1,58 @@
+<!-- 
+<div
+  class="rectangle-box"
+  [ngClass]="{ 'menu-open': menuVisible }"
+  (click)="onBoxClick($event)"
+>
+  <div
+    class="box-header"
+    [ngStyle]="{ 'background-color': headerColor }"
+    (click)="onHeaderClick($event)"
+  >
+    <mat-icon class="header-icon">{{ icon }}</mat-icon> 
+    {{ headerText }}
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+  </div>
+
+  <mat-menu #menu="matMenu">
+    <ng-container *ngFor="let item of menuItems">
+      <button mat-menu-item (click)="navigateToPage(item.route)">
+        {{ item.label }}
+      </button>
+    </ng-container>
+  </mat-menu>
+
+  <div class="box-body" [ngStyle]="{ 'background-color': bodyColor }">
+    {{ bodyText }}
+  </div>
+</div>
+ -->
+<!-- dash-board.component.html -->
+<!-- Add inline styles for testing -->
+<div
+  class="mat-card"
+  [ngStyle]="{
+    'background': backgroundColor,
+    'width': styles['width'],
+    'height': styles['height'],
+    'color': styles['titleColor'],
+  }"
+>
+  <div class="mat-card-hdiv">
+    <h3 class="cardtitle">{{ heading }}</h3>
+  </div>
+  <div class="mat-card-countdiv">
+    <div class="mat-card-count">{{ count }}</div>
+    <div class="mat-card-icondiv">
+      <mat-icon class="menu-icon">{{ icon }}</mat-icon>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+

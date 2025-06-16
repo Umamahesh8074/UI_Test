@@ -1,0 +1,98 @@
+.units-container {
+  display: flex;
+  flex-direction: column;
+  width: 96%;
+  /* gap: 20px; */
+  margin: auto;
+}
+.head {
+  margin-top: 20px;
+}
+.table-container {
+  padding: 0px;
+  border-radius: 5px;
+  background: #fff;
+}
+.table-content {
+  width: 96%;
+  margin: auto;
+}
+.table-head {
+  padding: 10px 20px;
+  display: flex;
+}
+.table-content-lft {
+  width: 50%;
+}
+.table-content-rgt {
+  width: 50%;
+  text-align: right;
+}
+.mat-45 {
+  width:14%;
+}
+
+.head {
+  text-align: center;
+}
+
+.no-units {
+  text-align: center;
+  font-size: 18px;
+  color: #ff0000;
+  margin: 20px 0px;
+}
+
+.search-button {
+  width: 150px;
+  color: white;
+  background-color: #004869;
+  margin-bottom: 20px;
+  margin-left: 12px;
+}
+.download-button {
+  width: 150px;
+  color: white;
+  background-color: #004869;
+}
+
+/* *********Responsive CSS Start************* */
+
+@media screen and (max-device-width: 480px) {
+  .download-button {
+    width: 115px;
+    font-size: 12px;
+  }
+  .head {
+    font-size: 14px;
+  }
+  .table-head {
+    padding: 10px;
+  }
+}
+@media screen and (max-device-width: 1024px) {
+  .mat-45 {
+    width: 30%;
+  }
+}
+.title-div {
+  display: flex; /* Use Flexbox for layout */
+  align-items: center; /* Align items vertically in the center */
+  justify-content: center;
+  width: 100%; /* Full width */
+  max-width: 100%; /* Ensure it's responsive */
+}
+.lead-header {
+  font-weight: 400;
+  font-size: 22px;
+  text-align: center;
+  line-height: 38px;
+  letter-spacing: 3px;
+  z-index: 1;
+}
+.action-icon {
+  margin-top: 20px;
+  cursor: pointer;
+  color: #2d2c2cae;
+  font-size: 18px;
+}

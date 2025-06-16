@@ -1,0 +1,148 @@
+<div>
+  <div>
+    <h4 class="pac-header">Block Unit</h4>
+    <form [formGroup]="formData" (ngSubmit)="save()">
+      <div class="example-container">
+        <div class="row crm-payment" *ngIf="unitsDeatilsData">
+          <div class="column1">
+            <div>
+              <b>Project Name :</b>
+              {{ unitsDeatilsData.projectName }}
+            </div>
+            <br />
+            <div>
+              <b>Phase Name :</b>
+              {{ unitsDeatilsData.phase }}
+            </div>
+            <br />
+            <div>
+              <b>Balcony Area:</b>
+              {{ unitsDeatilsData.balconyArea }}
+            </div>
+            <br />
+          </div>
+          <br />
+          <div class="column2">
+            <div>
+              <b>Block Name :</b>
+              {{ unitsDeatilsData.blockName }}
+            </div>
+            <br />
+            <div>
+              <b>UnitType Name :</b>
+              {{ unitsDeatilsData.unitTypeName }}
+            </div>
+            <br />
+            <div>
+              <b>UDSA Area:</b>
+              {{ unitsDeatilsData.udsArea }}
+            </div>
+            <br />
+          </div>
+          <div class="column3">
+            <div>
+              <b>Level Name :</b>
+              {{ unitsDeatilsData.levelName }}
+            </div>
+            <br />
+            <div>
+              <b>SBA Area :</b>
+              {{ unitsDeatilsData.superArea }}
+            </div>
+            <br />
+          </div>
+          <div class="column4">
+            <div>
+              <b>Unit Name :</b>
+              {{ unitsDeatilsData.unitName }}
+            </div>
+            <br />
+            <div>
+              <b>Carpet Area :</b>
+              {{ unitsDeatilsData.carpetArea }}
+            </div>
+            <br />
+          </div>
+        </div>
+        <mat-card class="card">
+          <mat-card-content>
+            <div class="row">
+              <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select User</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchUser($event)"
+                  [formControl]="UserFc"
+                  [matAutocomplete]="userAuto"
+                />
+                <mat-autocomplete
+                  #userAuto="matAutocomplete"
+                  (optionSelected)="onUserSelect($event)"
+                  [displayWith]="displayUser"
+                >
+                  <mat-option *ngFor="let option of usersData" [value]="option">
+                    {{ option.userName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label> Date</mat-label>
+                <input
+                  matInput
+                  [min]="minDate"
+                  [matDatepicker]="picker"
+                  (click)="picker.open()"
+                  formControlName="blockedDate"
+                />
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+
+                <mat-error
+                  *ngIf="formData.get('paymentDate')?.hasError('required')"
+                >
+                  date is required.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="mat-45">
+                <mat-label>Remarks</mat-label>
+                <input matInput formControlName="remarks" type="text" />
+              </mat-form-field>
+              
+            </div>
+          </mat-card-content>
+          <mat-card-footer class="add-mat-card-footer">
+            <div>
+              <button
+                mat-flat-button
+                (click)="goToUnits()"
+                class="btn-class accent"
+                type="button"
+              >
+                BACK
+              </button>
+              <button
+                mat-flat-button
+                class="btn-class warn"
+                (click)="clearForm()"
+                type="button"
+              >
+                RESET
+              </button>
+              <button mat-flat-button class="btn-class primary" type="submit">
+                ADD
+              </button>
+            </div>
+          </mat-card-footer>
+        </mat-card>
+      </div>
+    </form>
+  </div>
+</div>

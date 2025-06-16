@@ -1,0 +1,146 @@
+<h3 class="header">LEAD BUDGET</h3>
+<!-- <div class="example-button-row">
+  <div>
+    <mat-form-field appearance="outline" class="search-class">
+      <mat-label>Search On User Name</mat-label>
+      <input matInput (input)="getUsers($any($event).target?.value)" />
+    </mat-form-field>
+  </div>
+  <div>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addUser()"
+      class="btn-class"
+    >
+      <i class="bi bi-sign-intersection-fill h6"></i> ADD
+    </button>
+  </div>
+</div> -->
+<div class="example-button-row">
+  <button
+    mat-flat-button
+    style="color: white; background-color: #004869"
+    (click)="addLeadBuget()"
+    class="btn-class"
+  >
+    <i class="bi bi-sign-intersection-fill h6"></i> ADD
+  </button>
+</div>
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="leadBudgets"
+        class="mat-elevation-z8"
+      >
+        <!-- Column Definitions -->
+        <!-- <ng-container matColumnDef="menuName">
+                      <th mat-header-cell *matHeaderCellDef
+                          style="background-color: #004869; color: white">
+                          Menu Name
+                      </th>
+                      <td mat-cell *matCellDef="let menuItem">{{ menuItem.menuName}}</td>
+                  </ng-container> -->
+
+        <ng-container matColumnDef="sourceName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Source Name
+          </th>
+          <td mat-cell *matCellDef="let leadBudget">
+            {{ leadBudget.sourceName }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="subSourceName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Sub Source Name
+          </th>
+          <td mat-cell *matCellDef="let leadBudget">
+            {{ leadBudget.subSourceName }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="paymentDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Payment Date
+          </th>
+          <td mat-cell *matCellDef="let leadBudget">
+            {{ leadBudget.paymentDate }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Amount
+          </th>
+          <td mat-cell *matCellDef="let leadBudget">
+            {{ leadBudget.amount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let leadBudget">
+            <mat-icon
+              matTooltip="Edit"
+              (click)="updateLeadBuget(leadBudget.id)"
+              class="font"
+              >edit</mat-icon
+            >
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="password">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Password
+            </th>
+            <td mat-cell *matCellDef="let user">{{ user.password }}</td>
+          </ng-container> -->
+
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <!-- Data Rows -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+
+  <!-- Pagination Controls -->
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </mat-card-footer>
+</mat-card>

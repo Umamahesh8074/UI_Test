@@ -1,0 +1,151 @@
+<!-- securitypatrol.component.html -->
+
+<h4 class="header"><b>SECURITY PATROL</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header *ngIf="!isView">
+        <b>{{ isAdding ? "ADD SECURITY PATROL" : "EDIT SECURITY PATROL" }}</b>
+      </mat-card-header>
+      <mat-card-content style="margin-top: 2%">
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Project Name</mat-label>
+          <mat-select
+            formControlName="projectId"
+            (selectionChange)="onSelect($event)"
+          >
+            <mat-option
+              *ngFor="let item of building"
+              [value]="item.projectId"
+              [disabled]="isView"
+            >
+              {{ item.projectName }}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="formData.get('projectId')?.hasError('required')">
+            Please select project name
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Location Name</mat-label>
+          <mat-select
+            formControlName="generatorId"
+            (selectionChange)="onLocationSelect($event)"
+          >
+            <mat-option
+              *ngFor="let item of qr"
+              [value]="item.id"
+              [disabled]="isView"
+            >
+              {{ item.location }}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="formData.get('generatorId')?.hasError('required')">
+            Please select location
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Role Id</mat-label>
+          <mat-select formControlName="roleId">
+            <mat-option
+              *ngFor="let item of roles"
+              [value]="item.roleId"
+              [disabled]="isView"
+            >
+              {{ item.roleName }}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="formData.get('roleId')?.hasError('required')">
+            Please select role name
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-100">
+          <mat-label>Security Patrol Name</mat-label>
+          <input matInput formControlName="securityPatrolName" />
+        </mat-form-field>
+        <div formArrayName="scheduleItems" style="margin-top: 2%">
+          <div *ngFor="let item of scheduleItems.controls; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field appearance="outline" class="mat-100">
+                <mat-label>Schedule Time (HH) : </mat-label>
+                <mat-select
+                  formControlName="startTime"
+                  (selectionChange)="onHourChange($event.value)"
+                >
+                  <mat-option
+                    *ngFor="let hour of scheduleHours"
+                    [value]="hour.value"
+                    >{{ hour.value2 }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="mat-100">
+                <mat-label>Schedule Time (MM) : </mat-label>
+                <mat-select formControlName="endTime">
+                  <mat-option
+                    *ngFor="let minute of filteredScheduleMin"
+                    [value]="minute.value"
+                    >{{ minute.value }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+
+              <span>
+                <i
+                  *ngIf="showAdditionalFields.length != 1"
+                  style="color: red; cursor: pointer; margin-left: 1%"
+                  class="bi bi-trash text-danger"
+                  (click)="removeIcons(i)"
+                ></i>
+              </span>
+              <span *ngIf="i === showAdditionalFields.length - 1">
+                <i class="bi bi-plus h5 large-icon" (click)="addItems()"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoSecuritypatrols()"
+          >
+            BACK
+          </button>
+
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+          >
+            RESET
+          </button>
+          <!-- <button
+            *ngIf="isView"
+            mat-flat-button
+            style="color: white; background-color: rgb(97, 97, 38)"
+            class="btn-class"
+            (click)="clearForm()"
+          >
+            CLOSE
+          </button> -->
+
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

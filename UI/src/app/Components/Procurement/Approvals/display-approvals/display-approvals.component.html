@@ -1,0 +1,324 @@
+<div class="pac-header">INDENTS</div>
+
+<div class="filters-div">
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Indent Code</mat-label>
+      <input
+        matInput
+        [(ngModel)]="indentCode"
+        (input)="onSearch($any($event).target?.value)"
+        placeholder="Enter Indent Code "
+      />
+    </mat-form-field>
+
+    <mat-form-field class="search-class ml-2" appearance="outline">
+      <mat-label> Search/Select Project Name </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchProject($event)"
+        [formControl]="project"
+        [matAutocomplete]="projectAuto"
+      />
+      <mat-autocomplete
+        #projectAuto="matAutocomplete"
+        (optionSelected)="onProjectSelect($event)"
+        [displayWith]="displayProject"
+      >
+        <mat-option *ngFor="let option of projects" [value]="option">
+          {{ option.displayProjectName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="search-class-date ml-2">
+      <mat-label>Select Date Range</mat-label>
+      <mat-date-range-input
+        [formGroup]="formData"
+        [rangePicker]="picker"
+        (click)="picker.open()"
+      >
+        <input
+          matStartDate
+          placeholder="Start date"
+          formControlName="customStartDate"
+          (focus)="picker.open()"
+          (dateChange)="onDateChange()"
+        />
+        <input
+          matEndDate
+          placeholder="End date"
+          formControlName="customEndDate"
+          (focus)="picker.open()"
+          (dateChange)="onDateChange()"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+    <mat-icon
+      matTooltip="Clear Date"
+      (click)="clearDateRange()"
+      class="clear-date-div"
+      >sync</mat-icon
+    >
+
+    <mat-icon
+      matTooltip="Clear Filters"
+      (click)="resetForm()"
+      class="clear-date-div"
+      >filter_list_off</mat-icon
+    >
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="approvalIndents"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="IndentId">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let approvals">{{ approvals.indentId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="indentCode">
+          <th mat-header-cell *matHeaderCellDef>Indent Code</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.indentCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="CreatedDate">
+          <th mat-header-cell *matHeaderCellDef>Created Date</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.createdDate | date : "mediumDate" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="CreatedBy">
+          <th mat-header-cell *matHeaderCellDef>Created By</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.createdBy }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ProjectName">
+          <th mat-header-cell *matHeaderCellDef>Project Name</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.projecName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="RequiredDate">
+          <th mat-header-cell *matHeaderCellDef>Required Date</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.requiredDate | date : "mediumDate" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentStageName">
+          <th mat-header-cell *matHeaderCellDef>Current Stage Name</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.currentStageName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentStageOwner">
+          <th mat-header-cell *matHeaderCellDef>Current Stage Owner</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.currentStageOwner }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="currentStageStatus">
+          <th mat-header-cell *matHeaderCellDef>Current Stage Status</th>
+          <td mat-cell *matCellDef="let approvals">
+            {{ approvals.currentStageStatus }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="indentStatus">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td
+            mat-cell
+            *matCellDef="let approvals"
+            [ngClass]="getStatusClass(approvals.indentStatus)"
+          >
+            {{ approvals.indentStatus }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="indentType">
+          <th mat-header-cell *matHeaderCellDef>Indent Type</th>
+          <td
+            mat-cell
+            *matCellDef="let approvals"
+            [ngClass]="getStatusClass(approvals.indentType)"
+          >
+            {{ approvals.indentType }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let approvals">
+            <mat-icon
+              matTooltip="View Indents"
+              (click)="displayApprovalDetails(approvals)"
+              class="font icon-spacing icon"
+              style="color: purple"
+              >rule</mat-icon
+            >
+
+            <mat-icon
+              matTooltip="Supported Files"
+              (click)="viewDownLoads(approvals, 'INDENT_DOCUMENTS')"
+              class="font icon-spacing icon"
+              data-bs-toggle="modal"
+              data-bs-target="#documentModel"
+              style="color: rgb(34, 34, 164)"
+              >attach_file</mat-icon
+            >
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>
+
+<div
+  class="modal fade modal-xl"
+  id="documentModel"
+  tabindex="-1"
+  aria-labelledby="documentModel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #004869">DOCUMENTS</h3>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body wo-modal-body">
+        <div *ngIf="!documents || documents.length === 0; else documentsTable">
+          <p>No documents available.</p>
+        </div>
+
+        <div class="tab-head">
+          <ng-template #documentsTable>
+            <table
+              matSort
+              mat-table
+              [dataSource]="documents"
+              class="table table-striped"
+            >
+              <ng-container matColumnDef="fileName">
+                <th mat-header-cell *matHeaderCellDef>File Name</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.documentName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.createdDate | date : "medium" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status" *ngIf="isIndentDocuments">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let document">Done</td>
+              </ng-container>
+
+              <ng-container matColumnDef="status" *ngIf="!isIndentDocuments">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let document">
+                  <span>
+                    <span *ngIf="document === documents[0]" class="approved"
+                      >Current Document</span
+                    >
+                    <span *ngIf="document !== documents[0]" class="rework"
+                      >Past Document</span
+                    >
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let document">
+                  <mat-icon
+                    matTooltip="Download PDF"
+                    (click)="downloadDocument(document.documentPath)"
+                    class="font icon-spacing icon"
+                    style="color: #004869"
+                    >download</mat-icon
+                  >
+
+                  <mat-icon
+                    matTooltip="Review PDF"
+                    (click)="viewDocument(document.documentPath)"
+                    class="font icon-spacing icon"
+                    style="color: #004869"
+                    >visibility</mat-icon
+                  >
+                </td>
+              </ng-container>
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumnsDocuments"
+              ></tr>
+              <tr
+                class="table-row"
+                mat-row
+                *matRowDef="let row; columns: displayedColumnsDocuments"
+              ></tr>
+            </table>
+          </ng-template>
+        </div>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="documentTotalItems"
+            [pageSize]="documentPageSize"
+            [pageSizeOptions]="documentPageSizeOptions"
+            (page)="onDocumentPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

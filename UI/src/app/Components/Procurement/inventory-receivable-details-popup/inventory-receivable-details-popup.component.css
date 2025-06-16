@@ -1,0 +1,45 @@
+.column1 {
+  width: 34%;
+}
+.column2 {
+  width: 33%;
+}
+.column1 div {
+  margin-bottom: 10px;
+  margin-top: 0px;
+}
+
+.column2 div {
+  margin-bottom: 10px;
+}
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+.card {
+  margin: 0px;
+  text-align: left;
+  width: 97%;
+  margin: auto;
+  padding: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  text-align: start;
+  margin: 2rem;
+}
+
+.indent-details-card {
+  margin: 2%;
+}
+.radio-button-id {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}

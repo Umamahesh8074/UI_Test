@@ -1,0 +1,133 @@
+<div class="head">CUSTOMER CONSUMPTION</div>
+<div class="container">
+  <div class="row">
+    <mat-form-field appearance="fill" class="mat-45">
+      <mat-label>Select Client</mat-label>
+      <mat-select (selectionChange)="onselectClientName($event)">
+        <mat-option *ngFor="let monthlyInvoiceReport of clients" [value]="monthlyInvoiceReport.clientName">
+          {{ monthlyInvoiceReport.clientName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="mat-45">
+      <mat-label>Service Type</mat-label>
+      <mat-select formControlName="serviceName" (selectionChange)="onselectServiceName($event)">
+        <mat-option *ngFor="let item of CustomerServiceList" [value]="item.commonRefValue">
+          {{ item.commonRefValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="mat-45">
+      <mat-label>Month</mat-label>
+      <mat-select (selectionChange)="onselectInvoiceDate($event)">
+        <mat-option *ngFor="let monthlyInvoice of monthlyInvoiceReportData" [value]="monthlyInvoice.invoiceDate">
+          {{ monthlyInvoice.invoiceDate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button style="color: white; background-color: #004869; width: 8%" class="btn-class"
+      (click)="getClientInvoiceReport()">
+      <mat-icon>search</mat-icon>
+      Search
+    </button>
+  </div>
+</div>
+
+<!-- <div class="example-button-row" *ngIf="flag">
+  <span><strong>Client Name : </strong> {{ clientName}}</span>
+
+  </div> -->
+<mat-card>
+  <div *ngIf="flag">
+    <mat-nav-list>
+      <ng-container *ngFor="let data of monthlyInvoiceReportData; let i = index">
+        <mat-list-item class="main-header" (click)="toggle(i)">
+          <div class="list-item-content">
+            <mat-icon class="menu-icon">description</mat-icon>
+            <span mat-subheader class="menu-head">
+              <span class="label">{{ data.clientName }}</span>
+              <span class="info">
+                <span><strong>Service Name : </strong> {{ data.serviceName }}</span>
+                <span><strong>Service Salary : </strong>
+                  {{ data.serviceSalary }}</span>
+
+                <mat-icon class="toggle-icon">
+                  {{
+                  expandedIndex.includes(i) ? "expand_more" : "chevron_right"
+                  }}
+                </mat-icon>
+              </span>
+            </span>
+          </div>
+        </mat-list-item>
+        <ng-container *ngIf="expandedIndex.includes(i)">
+          <div class="container">
+            <h4><strong>Consumption Details</strong></h4>
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="data.invoices" matSort class="mat-table">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Id </th>
+                  <td mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </td>
+                </ng-container>
+                <ng-container matColumnDef="clientName">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Client Name </th>
+                  <td mat-cell *matCellDef="let element"> {{ element.clientName }} </td>
+                </ng-container>
+                <ng-container matColumnDef="location">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Location </th>
+                  <td mat-cell *matCellDef="let element"> {{ element.location }} </td>
+                </ng-container>
+                <ng-container matColumnDef="serviceName">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Service Name </th>
+                  <td mat-cell *matCellDef="let element"> {{ element.serviceName }} </td>
+                </ng-container>
+                <ng-container matColumnDef="manPower">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Man Power </th>
+                  <td mat-cell *matCellDef="let element"> {{ element.manPower }} </td>
+                </ng-container>
+                <ng-container matColumnDef="serviceSalary">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Service Salary </th>
+                  <td mat-cell *matCellDef="let element"> {{ element.serviceSalary }} </td>
+                </ng-container>
+                <ng-container matColumnDef="invoiceDate">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Invoice Date </th>
+                  <td mat-cell *matCellDef="let element"> {{ element.invoiceDate }} </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef style="background-color: #004869; color: white"> Actions </th>
+                  <td mat-cell *matCellDef="let monthlyInvoiceReport">
+                    <i class="bi bi-pencil action-icon" (click)="editClientInvoiceReport(monthlyInvoiceReport)"></i>
+                    <i (click)="openConfirmDialog(monthlyInvoiceReport.monthlyInvoiceReportId)" class="bi bi-trash text-danger action-icon" style="color: red"></i>
+                    <i (click)="viewClientInvoiceReport(monthlyInvoiceReport)" class="bi bi-eye text-primary action-icon" style="color: blue"></i>
+                  </td>
+                </ng-container>
+                
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+          </div>
+          <mat-card-footer></mat-card-footer>
+        </ng-container>
+      </ng-container>
+    </mat-nav-list>
+  </div>
+
+  <div *ngIf="!flag" class="no-invoices">
+    <h4>No Monthly Invoices</h4>
+  </div>
+
+  
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

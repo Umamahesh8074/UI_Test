@@ -1,0 +1,140 @@
+<h4 class="header">LEVELS</h4>
+<div class="example-button-row">
+  <div>
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Project</mat-label>
+      <input matInput (input)="onSerachProject($any($event).target?.value)" />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Tower</mat-label>
+      <input matInput (input)="onSerachTower($any($event).target?.value)" />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addLevel()"
+      class="btn-class"
+    >
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="levelsData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let level">{{ level.projectName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="blockName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Tower Name
+          </th>
+          <td mat-cell *matCellDef="let level">{{ level.blockName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="levelname">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Floor Name
+          </th>
+          <td mat-cell *matCellDef="let level">{{ level.levelname }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="noOfUnits">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Units
+          </th>
+          <td mat-cell *matCellDef="let level">{{ level.noOfUnits }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let level">{{ level.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let level">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editLevel(level)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <i
+              (click)="openConfirmDialog(level.levelId)"
+              style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger"
+              *ngIf="level.status == 'A'"
+            ></i>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let level of levelsData; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

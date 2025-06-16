@@ -1,0 +1,606 @@
+<!-- <div class="lead-header">Manage Leads</div> -->
+<div class="customer-component-bg-color">
+ <div class="button-row">
+
+    <h3 class="header">LEADS</h3>
+    
+  
+    <div style="margin-bottom: 0rem">
+      <div class="search-container stages-mdc-text-field" [formGroup]="formData">
+        <!-- <mat-form-field appearance="outline" class="search-class ml-2" >
+          <mat-label>Opportunity Id</mat-label>
+          <input
+            matInput
+            [value]="opportunityId === undefined ? '' : opportunityId"
+            (input)="onSearchOpportunityId($any($event).target?.value)"
+            placeholder="Enter Opportunity Id"
+          />
+        </mat-form-field> -->
+        <mat-form-field
+          appearance="outline"
+          class="display-reports-search-class" style="margin-left: 30px"
+        >
+          <mat-label>Phone No</mat-label>
+          <input
+            [value]="phoneNumber === undefined ? '' : phoneNumber"
+            matInput
+            (input)="onSearch($any($event).target?.value)"
+            placeholder="Enter Phone No"
+          />
+        </mat-form-field>
+  
+        <mat-form-field
+        class="display-reports-search-class" style="margin-left: 30px"
+          appearance="outline"
+        >
+          <mat-label>Project</mat-label>
+          <input
+            type="text"
+            matInput
+            [value]="
+              selectedProject.projectName ? selectedProject.projectName : ''
+            "
+            (input)="searchProject($event)"
+            [formControl]="project"
+            [matAutocomplete]="projectAuto"
+          />
+          <mat-autocomplete
+            #projectAuto="matAutocomplete"
+            (optionSelected)="onProjectSelect($event)"
+            [displayWith]="displayProject"
+          >
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let option of projects" [value]="option">
+              {{ option.projectName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+  
+        <!-- <mat-form-field
+          appearance="outline"
+          class="search-class ml-2"
+          *ngIf="!isUnassignedLeads"
+          style="width: 340px"
+        >
+          <mat-label>Select Status</mat-label>
+          <mat-select
+            [(value)]="statusId"
+            (selectionChange)="onStatusSelectionChange($event)"
+          > -->
+            <!-- <mat-option value="">Select Status</mat-option> -->
+            <!-- <mat-option value="all">All</mat-option>
+            <mat-option *ngFor="let item of leadStatus" [value]="item.id">
+              {{ item.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> -->
+  
+        <mat-form-field appearance="outline" class="display-reports-search-class" style="margin-left: 30px">
+          <mat-label>Select Day</mat-label>
+          <mat-select
+            (selectionChange)="handleDaySelection($event.value)"
+            [value]="selectedDay"
+          >
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let day of days" [value]="day">
+              {{ day.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field
+          *ngIf="showDateRangePicker"
+          class="display-reports-search-class" style="margin-left: 30px"
+          appearance="outline"
+        
+        >
+          <mat-label>Select Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="customStartDate"
+              (focus)="picker.open()"
+            />
+            <input
+              matEndDate
+              placeholder="End date"
+              formControlName="customEndDate"
+              (focus)="picker.open()"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <div>
+            <mat-form-field
+              appearance="outline"
+              class="display-reports-search-class" style="margin-left: 30px"
+            
+            >
+              <mat-label>Name</mat-label>
+              <input
+                matInput
+                [value]="userName === undefined ? '' : userName"
+                (input)="onSearchUserName($any($event).target?.value)"
+                placeholder="Enter Customer Name"
+              />
+            </mat-form-field>
+          </div>
+          <div class="button-container">
+            <button
+              mat-flat-button
+            (click)="addLead()"
+              class="btn-class primary"
+            >
+            <mat-icon class="font">add</mat-icon> ADD
+            </button>
+          </div>
+      </div>
+    </div>
+  </div>
+  
+  <mat-card class="customer-cmn-card">
+    <mat-card-content class="cmn-card-content">
+      <div class="tab-head">
+        <table
+          matSort
+          mat-table
+          [dataSource]="this.leads"
+          class="mat-elevation-z8"
+        >
+          <ng-container matColumnDef="rowNumber">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let i = index">
+              {{ pageIndex * pageSize + i + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+            <td mat-cell *matCellDef="let lead">
+              <!-- Display Name -->
+              <div [ngClass]="{ bold: lead.starCount >= 1 }">
+                {{ lead.name }}
+              </div>
+  
+              <!-- Display Stars if getStarCount(lead) > 0 -->
+              <div
+                *ngIf="getStarCount(lead) > 0 && isDisplayStars()"
+                class="star-container"
+              >
+                <div
+                  *ngFor="let star of [].constructor(getStarCount(lead))"
+                  class="star"
+                  (click)="onDialogOpen(lead.phoneNumber)"
+                  [ngStyle]="{ color: getStarColor(lead.projectName) }"
+                >
+                  <mat-icon class="star-icon">grade</mat-icon>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="projectName">
+            <th mat-header-cell *matHeaderCellDef>Project</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.projectName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="sourceName">
+            <th mat-header-cell *matHeaderCellDef>Source</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.sourceName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Current Status</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.status }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="prevStatus">
+            <th mat-header-cell *matHeaderCellDef>Preview Status</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.prevStatus }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="createdDate">
+            <th mat-header-cell *matHeaderCellDef>Created Date</th>
+            <td
+              mat-cell
+              *matCellDef="let lead"
+              matTooltip="{{ lead.createdDate | date : 'medium' }}"
+            >
+              {{ lead.createdDate | date : "mediumDate" }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="assignedToSaleDate">
+            <th mat-header-cell *matHeaderCellDef>Assigned To Sales On</th>
+            <td
+              mat-cell
+              *matCellDef="let lead"
+              matTooltip="{{ lead.assignedToSaleDate | date : 'medium' }}"
+            >
+              {{
+                lead.assignedToSaleDate
+                  ? (lead.assignedToSaleDate | date : "mediumDate")
+                  : "NA"
+              }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="remarks">
+            <th mat-header-cell *matHeaderCellDef>Remarks</th>
+            <td mat-cell *matCellDef="let lead">
+              <span
+                class="remarks-short"
+                matTooltip="{{
+                  lead.remarks?.length ? lead.remarks : 'No remarks'
+                }}"
+              >
+                {{
+                  lead.remarks?.length
+                    ? (lead.remarks | slice : 0 : 10) + "..."
+                    : "N/A"
+                }}
+              </span>
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="assignedTo">
+            <th mat-header-cell *matHeaderCellDef>Assigned To</th>
+            <td mat-cell *matCellDef="let lead">
+              <!-- Display based on role -->
+              <ng-container
+                *ngIf="isRole(['presales manager']) || !isChannelPartner"
+              >
+                {{ lead.assignedPresalesUserName }}
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  isRole(['sales manager', 'sales member']) || !isChannelPartner
+                "
+              >
+                {{ lead.assignedSalesUserName }}
+              </ng-container>
+              <!-- Add more conditions as needed -->
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="presalesMember">
+            <th mat-header-cell *matHeaderCellDef>Presales</th>
+            <td mat-cell *matCellDef="let lead">
+              {{
+                lead.assignedPresalesUserName == null
+                  ? "NA"
+                  : lead.assignedPresalesUserName
+              }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="salesMember">
+            <th mat-header-cell *matHeaderCellDef>Sales</th>
+            <td mat-cell *matCellDef="let lead">
+              <!-- Show 'NA' if assignedSalesUserName is null, otherwise show the name -->
+              {{
+                lead.assignedSalesUserName == null
+                  ? "NA"
+                  : lead.assignedSalesUserName
+              }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="opportunityId">
+            <th mat-header-cell *matHeaderCellDef>Id</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.opportunityId }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="mobileNumber">
+            <th mat-header-cell *matHeaderCellDef>Mobile Number</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.phoneNumber }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="subSource">
+            <th mat-header-cell *matHeaderCellDef>Sub Source</th>
+            <td mat-cell *matCellDef="let lead">{{ lead.subSourceName }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let lead">
+              <mat-icon
+                matTooltip="Followups"
+                (click)="handleFollowups(lead.id)"
+                class="font icon-spacing"
+                *ngIf="isChannelPartner"
+                >event_note</mat-icon
+              >
+              <mat-icon
+                matTooltip="Schedule Visits"
+                (click)="handleScheduleVisits(lead.id)"
+                class="font icon-spacing"
+                *ngIf="isChannelPartner"
+                >schedule</mat-icon
+              >
+              <mat-icon
+                matTooltip="History"
+                (click)="viewLeadHistories(lead.id)"
+                class="font icon-spacing"
+                >history</mat-icon
+              >
+              <!-- *ngIf="!isChannelPartner" -->
+              <mat-icon
+                matTooltip="Edit"
+                (click)="updateLead(lead.id)"
+                class="font icon-spacing"
+                *ngIf="
+                  (lead.assignedToSales === null ||
+                    lead.assignedToSales === 0 ||
+                    !user.roleName.toLowerCase().includes('presales member')) &&
+                  isChannelPartner
+                "
+                >edit</mat-icon
+              >
+              <mat-icon
+                matTooltip="Recordings"
+                *ngIf="lead.subSourceName === 'Mcube'"
+                (click)="openAudioFilesDialog(lead.id)"
+                class="font icon-spacing"
+                >headphones</mat-icon
+              >
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  
+          <tr
+            class="table-row"
+            mat-row
+            *matRowDef="let lead of leads; columns: displayedColumns"
+          ></tr>
+        </table>
+      </div>
+    </mat-card-content>
+    <b>
+      <hr style="margin: 0" />
+    </b>
+    <div class="leads-footer">
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            id="pageNumber"
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          >
+          </mat-paginator>
+        </mat-card-footer>
+      </div>
+    </div>
+  </mat-card>
+  <div class="ps-1" *ngIf="isDisplayStars()">
+    <!-- <small>
+     
+      <ol>
+        <li class="note-text">Note:</li>
+        <li>1. Customer Names in <b>Bold</b> have multiple entries.</li>
+        <li>
+          2. <i class="bi bi-star"></i> Customer also part of another project.
+        </li>
+        <li>
+          3. <i class="bi bi-star"></i><i class="bi bi-star"></i> Customer site
+          visit done in another project.
+        </li>
+      </ol>
+    </small> -->
+    <!-- <small>
+      <span class="text-danger">Note :</span>
+      <ul>
+        <li>Lead Names in <b>Bold</b> have multiple entries.</li>
+        <li><i class="bi bi-star"></i> Lead also part of another project.</li>
+        <li>
+          <i class="bi bi-star"></i><i class="bi bi-star"></i> Lead site visit
+          done in another project.
+        </li>
+      </ul>
+    </small> -->
+  </div>
+  <div
+    *ngIf="openDialog"
+    class="modal fade show"
+    tabindex="-1"
+    style="display: block"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            Projects Assigned to Customer
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="onCancelAndClose()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mat-elevation-z8">
+            <table
+              mat-table
+              [dataSource]="leadHistories"
+              class="mat-elevation-z8"
+            >
+              <ng-container matColumnDef="opportunityId">
+                <th mat-header-cell *matHeaderCellDef>Opportunity Id</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.opportunityId }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="leadName">
+                <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.leadName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="projectName">
+                <th mat-header-cell *matHeaderCellDef>Project Name</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.projectName }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="leadStatus">
+                <th mat-header-cell *matHeaderCellDef>Lead Status</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.leadStatus }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.createdDate | date : "medium" }}
+                </td>
+              </ng-container>
+  
+              <ng-container matColumnDef="remarks">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  class="column-remarks"
+                  style="background-color: #004869; color: white"
+                >
+                  Remarks
+                </th>
+                <td mat-cell *matCellDef="let element" class="column-remarks">
+                  <div class="remarks-cell">{{ element.remarks }}</div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="display"></tr>
+              <tr mat-row *matRowDef="let row; columns: display"></tr>
+            </table>
+          </div>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="onCancelAndClose()">Cancel</button>
+        </div> -->
+        <!-- <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer> -->
+      </div>
+    </div>
+  </div>
+  
+  <div
+    *ngIf="openAudioDialog"
+    class="modal fade show"
+    tabindex="-1"
+    style="display: block"
+    aria-labelledby="audioModal"
+    aria-hidden="true"
+  >
+    <div class="audio-modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="audioModal">Call Recordings</h1>
+          <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="onAudioDialogClose()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="audio && audio.length > 0; else noData">
+            <table mat-table [dataSource]="audio" class="mat-elevation-z8">
+              <!-- Created Date Column -->
+              <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                <td mat-cell *matCellDef="let audioItem">
+                  {{ audioItem.createdDate | date : "medium" }}
+                </td>
+              </ng-container>
+  
+              <!-- Called To Column -->
+              <ng-container matColumnDef="calledTo">
+                <th mat-header-cell *matHeaderCellDef>Called Number</th>
+                <td mat-cell *matCellDef="let audioItem">
+                  {{ audioItem.calledTo }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="assignedTo">
+                <th mat-header-cell *matHeaderCellDef>Called To</th>
+                <td mat-cell *matCellDef="let audioItem">
+                  {{ audioItem.assignedTo || "N/A" }}
+                </td>
+              </ng-container>
+              <!-- Play/Pause Buttons Column -->
+              <ng-container matColumnDef="controls">
+                <th mat-header-cell *matHeaderCellDef>Controls</th>
+                <td mat-cell *matCellDef="let audioItem">
+                  <button
+                    *ngIf="!audioItem.isPlaying"
+                    class="btn btn-link"
+                    (click)="playAudio(audioItem)"
+                    aria-label="Play"
+                  >
+                    <i class="fa fa-play"></i>
+                  </button>
+  
+                  <button
+                    *ngIf="audioItem.isPlaying"
+                    class="btn btn-link"
+                    (click)="pauseAudio(audioItem)"
+                    aria-label="Pause"
+                  >
+                    <i class="fa fa-pause"></i>
+                  </button>
+  
+                  <button
+                    class="btn btn-link"
+                    (click)="forwardAudio(audioItem)"
+                    aria-label="Forward"
+                  >
+                    <i class="fa fa-forward"></i>
+                  </button>
+                </td>
+              </ng-container>
+  
+              <!-- Progress Column -->
+              <ng-container matColumnDef="progress">
+                <th mat-header-cell *matHeaderCellDef>Progress</th>
+                <td mat-cell *matCellDef="let audioItem">
+                  <progress
+                    [value]="audioItem.currentTime || 0"
+                    [max]="audioItem.duration || 1"
+                    (click)="changeAudioTime($event, audioItem)"
+                  ></progress>
+                  <span>
+                    <!-- Display in seconds if less than a minute -->
+                    <ng-container *ngIf="audioItem.duration < 60">
+                      {{ audioItem.currentTime | number : "1.0-0" }} sec /
+                      {{ audioItem.duration | number : "1.0-0" }} sec
+                    </ng-container>
+                    <!-- Display in minutes if more than or equal to a minute -->
+                    <ng-container *ngIf="audioItem.duration >= 60">
+                      {{ (audioItem.currentTime || 0) / 60 | number : "1.2-2" }}
+                      min /
+                      {{ (audioItem.duration || 0) / 60 | number : "1.2-2" }} min
+                    </ng-container>
+                  </span>
+                </td>
+              </ng-container>
+  
+              <!-- Table Header and Rows -->
+              <tr mat-header-row *matHeaderRowDef="audioDialogColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: audioDialogColumns"></tr>
+            </table>
+          </div>
+  
+          <ng-template #noData>No audio files available.</ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

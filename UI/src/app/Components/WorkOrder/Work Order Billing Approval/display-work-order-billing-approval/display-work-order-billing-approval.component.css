@@ -1,0 +1,52 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+.ml-2 {
+  margin-left: 2%;
+}
+
+.search-container {
+  display: flex;
+  flex-grow: 1;
+}
+.green-amount {
+  color: green;
+  font-weight: bold;
+}
+.approved {
+  color: green;
+  font-weight: bold;
+}
+
+.rejected {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+
+.pending {
+  color: green;
+  font-weight: bold;
+}
+.rework {
+  color: rgb(185, 123, 6);
+  font-weight: bold;
+}
+.amendment {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+}
+
+.modal-body1 {
+  margin: 15px 15px 15px 15px;
+}
+
+.radio-button {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}

@@ -1,0 +1,367 @@
+<h4 class="header">
+  {{ isApproval ? "CHANNEL PARTNER APPROVAL" : "CHANNEL PARTNERS" }}
+</h4>
+
+<div class="example-button-row">
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Company Name</mat-label>
+      <input matInput (input)="onSearch($any($event).target?.value)" />
+    </mat-form-field>
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="onClickSearchName()"
+      type="button"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="!isApproval">
+    <mat-form-field appearance="outline" class="ml-4">
+      <mat-label>Select Status</mat-label>
+      <mat-select
+        [(value)]="statusName"
+        (selectionChange)="onStatusSelectionChange($event)"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option value="Approved">Approved</mat-option>
+        <mat-option value="Rejected">Rejected</mat-option>
+        <mat-option value="Not Registered">Not Registered</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="channelPartnerData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Name
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{ channelPartner.name || "N/A" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="phoneNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Contact Number
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{ channelPartner.phoneNumber || "N/A" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="officeNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Office Number
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{ channelPartner.officeNumber || "N/A" }}
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="email">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Email
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{ channelPartner.email }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="companyName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Company Name
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{ channelPartner.companyName ?? channelPartner.subsourceName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="registrationDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Registration Date
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{
+              channelPartner.registeredDate
+                ? (channelPartner.registeredDate | date : "mediumDate")
+                : "N/A"
+            }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="expirationDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Rera Expire Date
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{
+              channelPartner.reraExpDate
+                ? (channelPartner.reraExpDate | date : "mediumDate")
+                : "N/A"
+            }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <b
+              [ngClass]="{
+                'text-success': channelPartner.status === 'Approved',
+                'text-warn': channelPartner.status === 'Pending',
+                'text-danger':
+                  channelPartner.status !== 'Approved' &&
+                  channelPartner.status !== 'Pending'
+              }"
+            >
+              {{ channelPartner.status }}
+            </b>
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="Bulk Upload">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Bulk Upload
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <b
+              [ngClass]="
+                channelPartner.isCanBulkUpload === 'Yes'
+                  ? 'text-success'
+                  : 'text-danger'
+              "
+            >
+              {{ channelPartner.isCanBulkUpload }}
+            </b>
+          </td>
+        </ng-container> -->
+        <ng-container matColumnDef="Upload Limit">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Upload Limit
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            {{ channelPartner.bulkUploadLimit || "N/A" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="pan">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            PAN
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <mat-icon
+              *ngIf="channelPartner.panUrl"
+              matTooltip="Download Pan"
+              (click)="download(channelPartner.panUrl, channelPartner.name)"
+              class="material-symbols-outlined font icon-spacing"
+            >
+              download</mat-icon
+            >
+            <b [ngClass]="!channelPartner.panUrl ? 'text-danger' : ''">
+              {{ !channelPartner.panUrl ? "No" : "" }}
+            </b>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="aadhar">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Aadhar
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <mat-icon
+              *ngIf="channelPartner.aadharUrl"
+              matTooltip="Download Aadhar"
+              (click)="download(channelPartner.aadharUrl, channelPartner.name)"
+              class="material-symbols-outlined font icon-spacing"
+            >
+              download</mat-icon
+            >
+
+            <b [ngClass]="!channelPartner.aadharUrl ? 'text-danger' : ''">
+              {{ !channelPartner.aadharUrl ? "No" : "" }}
+            </b>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="rera">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            RERA
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <mat-icon
+              *ngIf="channelPartner.reraUrl"
+              matTooltip="Download Rera"
+              (click)="download(channelPartner.reraUrl, channelPartner.name)"
+              class="material-symbols-outlined font icon-spacing"
+            >
+              download</mat-icon
+            >
+            <b [ngClass]="!channelPartner.reraUrl ? 'text-danger' : ''">
+              {{ !channelPartner.reraUrl ? "No" : "" }}
+            </b>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="person">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Person Aadhar
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <mat-icon
+              *ngIf="channelPartner.personUrl"
+              matTooltip="Download Behalf Of Person"
+              (click)="download(channelPartner.personUrl, channelPartner.name)"
+              class="material-symbols-outlined font"
+            >
+              download</mat-icon
+            >
+
+            <b
+              [ngClass]="!channelPartner.personUrl ? 'text-danger' : ''"
+              style="text-align: center"
+            >
+              {{ !channelPartner.personUrl ? "No" : "" }}
+            </b>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="gst">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            GST
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <mat-icon
+              *ngIf="channelPartner.gstCertificateUrl"
+              matTooltip="Download Gst"
+              (click)="
+                download(channelPartner.gstCertificateUrl, channelPartner.name)
+              "
+              class="material-symbols-outlined font icon-spacing"
+            >
+              download</mat-icon
+            >
+            <b
+              [ngClass]="!channelPartner.gstCertificateUrl ? 'text-danger' : ''"
+            >
+              {{ !channelPartner.gstCertificateUrl ? "No" : "" }}
+            </b>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let channelPartner">
+            <mat-icon
+              matTooltip="Approvals"
+              (click)="goForApprovalsComp(channelPartner.id)"
+              class="font icon-spacing"
+              *ngIf="!isApproval"
+              style="cursor: pointer"
+              >visibility</mat-icon
+            >
+            <mat-icon
+              matTooltip="edit"
+              (click)="goToEditCpComp(channelPartner.id)"
+              class="font icon-spacing"
+              style="cursor: pointer"
+              *ngIf="!isApproval && channelPartner.status === 'Approved'"
+              >edit</mat-icon
+            >
+            <mat-icon
+              matTooltip="Approvals"
+              (click)="goForApprovals(channelPartner.id)"
+              class="font icon-spacing"
+              style="cursor: pointer"
+              *ngIf="isApproval"
+              >rule</mat-icon
+            >
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let channelPartner of channelPartnerData;
+            columns: displayedColumns
+          "
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

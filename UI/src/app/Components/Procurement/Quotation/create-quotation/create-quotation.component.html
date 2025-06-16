@@ -1,0 +1,779 @@
+<div class="pac-header">QUOTATION</div>
+
+<form [formGroup]="formData">
+  <div>
+    <mat-card class="qo-details-card">
+      <mat-card-content class="cmn-card-content">
+        <div class="tab-head">
+          <div class="row" class="upload-doc-div">
+            <div class="green-amount">
+              <b style="font-size: 14px">TOTAL AMOUNT EXCLUDE GST:</b>
+              {{ quotationData.totalCostWithOutGst | currency : "INR" }}
+            </div>
+
+            <div class="green-amount">
+              <b style="font-size: 14px"> TOTAL AMOUNT INCLUDE GST:</b>
+              {{ quotationData.totalCostWithGst | currency : "INR" }}
+            </div>
+
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              type="button"
+              (click)="viewTermsAndCon()"
+              data-bs-toggle="modal"
+              data-bs-target="#termsAndConModel"
+            >
+              TERMS & CON
+            </button>
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              type="button"
+              (click)="viewIndent()"
+            >
+              INDENT
+            </button>
+          </div>
+
+          <div class="row sub-details-div">
+            <div class="column1">
+              <div *ngIf="quotationData?.projectName">
+                <b class="column-div">PROJECT:</b>
+                {{ quotationData.projectName }}
+              </div>
+              <div *ngIf="quotationData?.quotationCode">
+                <b class="column-div">QUOTATION CODE:</b>
+                {{ quotationData.quotationCode }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="quotationData?.code">
+                <b class="column-div">INDENT CODE:</b>
+                {{ quotationData.code }}
+              </div>
+
+              <div *ngIf="quotationData?.vendorName">
+                <b class="column-div">VENDOR:</b>
+                {{ quotationData.vendorName }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="quotationData?.requiredDate">
+                <b class="column-div">INDENT REQUIRED DATE:</b>
+                {{ quotationData.requiredDate | date : "MMM d, yyyy" }}
+              </div>
+              <div *ngIf="quotationData?.deliveryInDays">
+                <b class="column-div">DELIVERY IN DAYS:</b>
+                {{ quotationData.deliveryInDays }}
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0rem 1rem">
+            <div class="radio-button-id">QUOTATION ITEMS</div>
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="quotationItems" class="mat-table">
+                <ng-container matColumnDef="ItemId">
+                  <th mat-header-cell *matHeaderCellDef>Id</th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    {{ i + 1 }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="category">
+                  <th mat-header-cell *matHeaderCellDef>Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.categoryName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subCategory">
+                  <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.subCategoryName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="specification">
+                  <th mat-header-cell *matHeaderCellDef>Specification</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.specificationName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="unit">
+                  <th mat-header-cell *matHeaderCellDef>Unit</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.unitName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cost">
+                  <th mat-header-cell *matHeaderCellDef>Price</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.price | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                  <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.quantity | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="gst">
+                  <th mat-header-cell *matHeaderCellDef>GST</th>
+                  <td mat-cell *matCellDef="let element">{{ element.gst }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="discount">
+                  <th mat-header-cell *matHeaderCellDef>Discount</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.discount }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quotationItemCostWithGst">
+                  <th mat-header-cell *matHeaderCellDef>Cost With Gst</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.quotationItemCostWithGst | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quotationItemCostWithOutGst">
+                  <th mat-header-cell *matHeaderCellDef>Cost With Out Gst</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.quotationItemCostWithOutGst | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="btn-class.primary"
+                  >
+                    Item History
+                  </th>
+                  <td mat-cell *matCellDef="let quotation">
+                    <mat-icon
+                      matTooltip="Previous Quotation Item"
+                      (click)="viewVendorHistory(quotation)"
+                      class="font icon-spacing icon"
+                      style="color: purple"
+                      >visibility</mat-icon
+                    >
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+              </table>
+            </div>
+            <mat-paginator
+              [length]="totalItems"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="[5, 10, 15, 20, 25]"
+              (page)="onPageChange($event)"
+              showFirstLastButtons
+              class="custom-paginator"
+              style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+            ></mat-paginator>
+          </div>
+
+          <div style="padding: 0rem 1rem">
+            <div class="radio-button-id">QUOTATION CHARGES</div>
+            <div class="mat-elevation-z8">
+              <table
+                mat-table
+                [dataSource]="quotationCharges"
+                class="mat-table"
+              >
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>Id</th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    {{ i + 1 }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="transportCharge">
+                  <th mat-header-cell *matHeaderCellDef>Transport</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.transportCharge }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="loadingCharge">
+                  <th mat-header-cell *matHeaderCellDef>Loading</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.loadingCharge }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="unLoadingCharge">
+                  <th mat-header-cell *matHeaderCellDef>UnLoading</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.unLoadingChange }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="installationCharge">
+                  <th mat-header-cell *matHeaderCellDef>Installation</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.installationCharge }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="otherCharge">
+                  <th mat-header-cell *matHeaderCellDef>Other</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.otherCharge }}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns2"
+                ></tr>
+              </table>
+            </div>
+          </div>
+
+          <div
+            *ngIf="!isLoading && stages.length > 0"
+            style="padding: 0rem 1rem"
+          >
+            <div class="radio-button-id">STAGE DETAILS</div>
+            <ng-container>
+              <app-workorder-stage [stagesDto]="stages"></app-workorder-stage>
+            </ng-container>
+          </div>
+
+          <div
+            style="padding: 0rem 1rem"
+            *ngIf="previousQuotationtems && previousQuotationtems.length > 0"
+          >
+            <div class="radio-button-id">PREVIOUS QUOTATION ITEMS</div>
+            <div class="mat-elevation-z8">
+              <table
+                mat-table
+                [dataSource]="previousQuotationtems"
+                class="mat-table"
+              >
+                <ng-container matColumnDef="ItemId">
+                  <th mat-header-cell *matHeaderCellDef>Id</th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    {{ i + 1 }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="category">
+                  <th mat-header-cell *matHeaderCellDef>Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.categoryName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subCategory">
+                  <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.subCategoryName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="specification">
+                  <th mat-header-cell *matHeaderCellDef>Specification</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.specificationName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="unit">
+                  <th mat-header-cell *matHeaderCellDef>Unit</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.unitName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cost">
+                  <th mat-header-cell *matHeaderCellDef>Price</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.price | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                  <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.quantity | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="gst">
+                  <th mat-header-cell *matHeaderCellDef>GST</th>
+                  <td mat-cell *matCellDef="let element">{{ element.gst }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="discount">
+                  <th mat-header-cell *matHeaderCellDef>Discount</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.discount }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quotationItemCostWithGst">
+                  <th mat-header-cell *matHeaderCellDef>Cost With Gst</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.quotationItemCostWithGst | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quotationItemCostWithOutGst">
+                  <th mat-header-cell *matHeaderCellDef>Cost With Out Gst</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.quotationItemCostWithOutGst | number }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="btn-class.primary"
+                  >
+                    Item History
+                  </th>
+                  <td mat-cell *matCellDef="let quotation">
+                    <mat-icon
+                      matTooltip="Previous Quotation Item"
+                      (click)="viewVendorHistory(quotation)"
+                      class="font icon-spacing icon"
+                      style="color: purple"
+                      >visibility</mat-icon
+                    >
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+              </table>
+            </div>
+            <mat-paginator
+              [length]="previousTotalItems"
+              [pageSize]="previousPageSize"
+              [pageSizeOptions]="[5, 10, 15, 20, 25]"
+              (page)="onPreviousQuotationPageChange($event)"
+              showFirstLastButtons
+              class="custom-paginator"
+              style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div *ngIf="routeStatus === 'pending'; else backButton">
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="goBack()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            type="button"
+            (click)="approvalStatus('Rejected')"
+          >
+            REJECT
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class primary"
+            type="button"
+            (click)="approvalStatus('Rework')"
+          >
+            REWORK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class success"
+            type="button"
+            (click)="approvalStatus('Approval')"
+          >
+            APPROVE
+          </button>
+        </div>
+        <ng-template #backButton>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="goBack()"
+          >
+            BACK
+          </button>
+        </ng-template>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>
+
+<div
+  *ngIf="openDialog"
+  class="modal fade show"
+  tabindex="-1"
+  style="display: block"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="onClose()"
+        ></button>
+      </div>
+      <div class="modal-body1">
+        <div style="padding: 0rem 1rem">
+          <div class="radio-button-id">INDENT ITEMS</div>
+          <app-indent-items [indentItems]="indentItems"></app-indent-items>
+          <mat-paginator
+            [length]="indentTotalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 15, 20, 25]"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+            style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+          ></mat-paginator>
+        </div>
+
+        <div
+          *ngIf="!isLoading && indentStages.length > 0"
+          style="padding: 0rem 1rem"
+        >
+          <div class="radio-button-id">INDENT STAGE DETAILS</div>
+          <ng-container>
+            <app-workorder-stage
+              [stagesDto]="indentStages"
+            ></app-workorder-stage>
+          </ng-container>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade modal-xl"
+  id="termsAndConModel"
+  tabindex="-1"
+  aria-labelledby="serviceCodeSearchModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #004869">TERMS & CONDITIONS</h3>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body wo-modal-body">
+        <div
+          *ngIf="
+            !termsAndConditions || termsAndConditions.length === 0;
+            else documentsTable
+          "
+        >
+          <p>No Terms And Conditions available.</p>
+        </div>
+
+        <div class="tab-head">
+          <ng-template #documentsTable>
+            <table
+              matSort
+              mat-table
+              [dataSource]="termsAndConditions"
+              class="table table-striped"
+            >
+              <ng-container matColumnDef="rowNumber">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let i = index">
+                  {{ pageIndex * pageSize + i + 1 }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="termsAndConditions">
+                <th mat-header-cell *matHeaderCellDef>Terms & Conditions</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.qoTermsAndConditionDes }}
+                </td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumnsTermsAndCon"
+              ></tr>
+              <tr
+                class="table-row"
+                mat-row
+                *matRowDef="let row; columns: displayedColumnsTermsAndCon"
+              ></tr>
+            </table>
+          </ng-template>
+        </div>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="termsAndConTotalItems"
+            [pageSize]="termsAndConPageSize"
+            [pageSizeOptions]="termsAndConPageSizeOptions"
+            (page)="onTermsAndCondPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isVendorHistoryPresent"
+  class="modal fade show"
+  tabindex="-1"
+  style="display: block"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="column-div" id="serviceCodeSearchModalLabel">
+          PREVIOUS QUOTATION ITEMS
+        </h4>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="onCloseVendorHistory()"
+        ></button>
+      </div>
+
+      <div class="model-filter-div">
+        <div style="width: 60%">
+          <mat-form-field
+            class="cre-qo-search-class-div cre-qo-ml-2-div"
+            appearance="outline"
+          >
+            <mat-label> Search/Select Vendor</mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchVendor($event)"
+              [formControl]="vendor"
+              [matAutocomplete]="vendorAuto"
+            />
+            <mat-autocomplete
+              #vendorAuto="matAutocomplete"
+              (optionSelected)="onVendorSelect($event)"
+              [displayWith]="displayVendor"
+            >
+              <mat-option *ngFor="let option of vendors" [value]="option">
+                {{ option.vendorName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field
+            class="cre-qo-search-class-div cre-qo-ml-2-div"
+            appearance="outline"
+          >
+            <mat-label> Search/Select Project Name </mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchProject($event)"
+              [formControl]="project"
+              [matAutocomplete]="projectAuto"
+            />
+            <mat-autocomplete
+              #projectAuto="matAutocomplete"
+              (optionSelected)="onProjectSelect($event)"
+              [displayWith]="displayProject"
+            >
+              <mat-option *ngFor="let option of projects" [value]="option">
+                {{ option.displayProjectName }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div style="width: 40%">
+          <div class="current-price-div cre-qo-ml-2-div">
+            <b class="green-amount">CURRENT ITEM PRICE :</b>
+            {{ currentItemPrice | currency : "INR" }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body1">
+        <div style="padding: 0rem 1rem">
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="vendorHistory" class="mat-table">
+              <ng-container matColumnDef="ItemId">
+                <th mat-header-cell *matHeaderCellDef>Id</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="vendorName">
+                <th mat-header-cell *matHeaderCellDef>Vendor</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ element.vendorName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="projectName">
+                <th mat-header-cell *matHeaderCellDef>Project</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ element.projectName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="approvedDate">
+                <th mat-header-cell *matHeaderCellDef>Approved Date</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ element.approvedDate | date : "MMM d, yyyy" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>Category</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.categoryName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="subCategory">
+                <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.subCategoryName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="specification">
+                <th mat-header-cell *matHeaderCellDef>Specification</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.specificationName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="unit">
+                <th mat-header-cell *matHeaderCellDef>Unit</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.unitName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef>Price</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.price | number }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.quantity | number }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="gst">
+                <th mat-header-cell *matHeaderCellDef>GST</th>
+                <td mat-cell *matCellDef="let element">{{ element.gst }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="discount">
+                <th mat-header-cell *matHeaderCellDef>Discount</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.discount }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="quotationItemCostWithGst">
+                <th mat-header-cell *matHeaderCellDef>Cost With Gst</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.quotationItemCostWithGst | number }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="quotationItemCostWithOutGst">
+                <th mat-header-cell *matHeaderCellDef>Cost With Out Gst</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.quotationItemCostWithOutGst | number }}
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
+            </table>
+          </div>
+          <mat-paginator
+            [length]="vendorTotalItems"
+            [pageSize]="vendorPageSize"
+            [pageSizeOptions]="[5, 10, 15, 20, 25]"
+            (page)="onVendorHistoryPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+            style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+          ></mat-paginator>
+        </div>
+      </div>
+      <div class="modal-footer" style="margin-top: 1rem">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="onCloseVendorHistory()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

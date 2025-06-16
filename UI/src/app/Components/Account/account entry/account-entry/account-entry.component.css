@@ -1,0 +1,59 @@
+/* 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 55vh;
+  }
+  .card {
+    width: 90%;
+  }
+  .mat-45 {
+    width: 50%;
+  }
+ 
+  .header {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .button {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 2% 2% 0;
+  }
+  
+  
+  .btn-class {
+    margin-left: 10px;
+  }
+  .head {
+    margin-top: 3rem;
+    text-align: center;
+  }
+   */
+   
+   .mat-card-scroll {
+    max-height: 60vh;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+  
+  .mat-45 {
+    width: 50%;
+  }
+  
+  /* *********Responsive CSS Start************* */
+  @media screen and (max-device-width: 480px) {
+    .mat-card-scroll {
+      max-height: inherit;
+      overflow: unset;
+      overflow-y: unset;
+    }
+    .mat-45 {
+      width: 97%;
+      margin-top: 0px;
+      padding-top: 0px;
+    }
+  }
+  

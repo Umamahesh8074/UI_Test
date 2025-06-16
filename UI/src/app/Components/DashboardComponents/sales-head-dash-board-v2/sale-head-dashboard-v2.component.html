@@ -1,0 +1,1537 @@
+<div style="width: 100%; height: 100%; overflow: scroll">
+  <div class="main-head">
+    <div class="header-div">
+      <div class="header-cont">
+        <h1 class="head-text">Dashboard</h1>
+        <p class="date-txt" style="margin: 0">{{ today }}</p>
+      </div>
+    </div>
+    <!-- <p class="user-txt">
+        Hi {{ user.userName }}, here's what's happening today
+      </p> -->
+
+    <div class="day-selector" [formGroup]="formData">
+      <div class="project-srch">
+        <mat-form-field
+          class="example-full-width"
+          class="mat-45"
+          appearance="outline"
+        >
+          <mat-label>Project</mat-label>
+          <input
+            id="project"
+            type="text"
+            matInput
+            (input)="searchProject($event)"
+            [formControl]="project"
+            [matAutocomplete]="projectAuto"
+          />
+          <mat-autocomplete
+            #projectAuto="matAutocomplete"
+            (optionSelected)="onProjectSelect($event)"
+            [displayWith]="displayProject"
+          >
+            <mat-option value=""> All </mat-option>
+            <mat-option *ngFor="let option of projects" [value]="option">
+              {{ option.projectName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field
+          class="example-full-width"
+          class="mat-50"
+          appearance="outline"
+          *ngIf="
+            !(
+              user.roleName.toLowerCase() === 'channel partner' ||
+              user.roleName.toLowerCase() === 'cp user'
+            )
+          "
+        >
+          <mat-label>Select Source</mat-label>
+          <mat-select
+            id="source"
+            [value]="sourceIds"
+            multiple
+            (selectionChange)="onSelectionSourceChange($event)"
+          >
+            <mat-option value="">All</mat-option>
+            <mat-option
+              *ngFor="let source of sources"
+              [value]="source.leadSourceId"
+            >
+              {{ source.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field
+          class="example-full-width"
+          class="mat-50"
+          appearance="outline"
+          *ngIf="
+            !(
+              user.roleName.toLowerCase() === 'channel partner' ||
+              user.roleName.toLowerCase() === 'cp user'
+            )
+          "
+          style="padding-left: 10px; padding-right: 10px"
+        >
+          <input
+            type="text"
+            placeholder="Select Sub Sources"
+            aria-label="Select Sub Sources"
+            matInput
+            [matAutocomplete]="auto"
+            [formControl]="subSourceControl"
+            (input)="searchSubSource($event)"
+            id="subSource"
+          />
+
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let subSource of filteredSubSources"
+              (click)="$event.preventDefault()"
+            >
+              <div (click)="$event.stopPropagation()">
+                <mat-checkbox
+                  [checked]="isSelected(subSource.leadSubSourceId)"
+                  (change)="onSelectionSubSourceChange(subSource, $event)"
+                  (click)="$event.stopPropagation()"
+                >
+                  {{ subSource.name }}
+                </mat-checkbox>
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div>
+        <span style="padding-right: 10px">
+          <mat-form-field appearance="outline" class="mat-50">
+            <mat-label>Digital Partner</mat-label>
+            <mat-select
+              id="digitalPartner"
+              [(value)]="digitalPartnerName"
+              (selectionChange)="handleDigitalParterSelection($event.value)"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option
+                *ngFor="let element of digitalPartner"
+                [value]="element.commonRefValue"
+              >
+                {{ element.commonRefValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </span>
+      </div>
+      <div>
+        <mat-form-field
+          appearance="outline"
+          class="mat-50"
+          style="padding-left: 10px"
+        >
+          <mat-label>Select Day</mat-label>
+          <mat-select
+            id="dateSelection"
+            [(value)]="selectedDay"
+            (selectionChange)="handleDaySelection($event.value)"
+          >
+            <mat-option *ngFor="let day of days" [value]="day">
+              {{ day.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field
+          *ngIf="showDateRangePicker"
+          class="time-picker mat-50"
+          appearance="outline"
+          style="padding-left: 10px"
+        >
+          <mat-label>Select Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="customStartDate"
+              (focus)="picker.open()"
+              (dateChange)="onDateRangeChange()"
+            />
+            <input
+              matEndDate
+              placeholder="End date"
+              formControlName="customEndDate"
+              (focus)="picker.open()"
+              (dateChange)="onDateRangeChange()"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <div class="proxy-srch">
+        <mat-form-field
+          class="example-full-width"
+          class="mat-45"
+          appearance="outline"
+          style="padding-left: 10px"
+        >
+          <mat-label>Proxy Login</mat-label>
+          <input
+            id="proxyId"
+            type="text"
+            matInput
+            (input)="searchUser($event)"
+            [formControl]="User"
+            [matAutocomplete]="userAuto"
+          />
+          <mat-autocomplete
+            #userAuto="matAutocomplete"
+            (optionSelected)="onUserSelect($event)"
+            [displayWith]="displayUser"
+          >
+            <mat-option *ngFor="let option of UserDetails" [value]="option">
+              {{ option.userName }} - {{ option.roleName | uppercase }}
+            </mat-option>
+          </mat-autocomplete>
+          <!-- <input
+            type="text"
+            matInput
+            [value]="
+              selectedProject.projectName ? selectedProject.projectName : ''
+            "
+            (input)="searchProject($event)"
+            [formControl]="project"
+            [matAutocomplete]="projectAuto"
+          />
+          <mat-autocomplete
+            #projectAuto="matAutocomplete"
+            (optionSelected)="onProjectSelect($event)"
+            [displayWith]="displayProject"
+          >
+            <mat-option *ngFor="let option of projects" [value]="option">
+              {{ option.projectName }}
+            </mat-option>
+          </mat-autocomplete> -->
+        </mat-form-field>
+      </div>
+
+      <!-- <div>
+        <app-refresh-button (refreshEvent)="ngOnInit()"></app-refresh-button>
+      </div> -->
+    </div>
+
+    <!-- Current Status start -->
+    <div class="margin-20">
+      <mat-accordion>
+        <mat-expansion-panel
+          [expanded]="panel1Expanded"
+          (opened)="setPanelOpen(1)"
+          (closed)="setPanelClose(1)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Lead Segmentation </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div style="margin-left: 1rem; padding: 0.5rem 1rem">
+            This section shows the total number of leads received within the
+            selected date range and their current status. The sum of all
+            categories always equals the total lead count.
+          </div>
+          <div class="cards">
+            <mat-card
+              (click)="navigateToLeadsCurrentStatus()"
+              class="mat-card bg-six"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="leads">Total Leads</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentTotalLeads">
+                    {{ currentDashboardTotalLeads }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >assignment_add</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <!-- <mat-card (click)="navigateToSaleLeads()" class="mat-card bg-darkColor">
+        <div class="mat-card-hdiv">
+          <h3 class="cardtitle" id="assignedLeads">Sales Assigned Leads</h3>
+        </div>
+        <div class="mat-card-countdiv">
+          <div class="mat-card-count">
+            <h2 class="total" id="assignedLeadsCount">{{ salesLeads }}</h2>
+          </div>
+          <div class="mat-card-icondiv">
+            <mat-icon
+              class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+              >assignment_add</mat-icon
+            >
+          </div>
+        </div>
+      </mat-card> -->
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(newLeadId)"
+              class="mat-card bg-nine"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="newLeads">Pending Leads</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentNewLeadsCount">
+                    {{ currentNewLeads }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >contact_page</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <!-- <mat-card
+        (click)="navigateToUnassignedLeads()"
+        class="mat-card bg-twelve"
+      >
+        <div class="mat-card-hdiv">
+          <h3 class="cardtitle" id="unassignedLeads">Unassigned Leads</h3>
+        </div>
+        <div class="mat-card-countdiv">
+          <div class="mat-card-count">
+            <h2 class="total" id="unassignedLeadsCount">
+              {{ unassignedLeads }}
+            </h2>
+          </div>
+          <div class="mat-card-icondiv">
+            <mat-icon
+              class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+              >assignment_sub</mat-icon
+            >
+          </div>
+        </div>
+      </mat-card> -->
+
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(followUpId)"
+              class="mat-card bg-seven"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="followups">Follow Ups</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="CurrentFollowupCount">
+                    {{ currentFollowups }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >contact_phone</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(siteVisitConfirmId)"
+              class="mat-card bg-fifteen"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="followups">Site Visit Confirm</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentSiteVisitConfirmCount">
+                    {{ currentSiteVisitConfirm }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >directions_walk</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <!-- <mat-card
+        (click)="navigateToFollowups('Site visit Confirm ')"
+        class="mat-card bg-purple"
+      >
+        <h3 class="cardtitle">Scheduled Visits</h3>
+        <h2 class="total">{{ scheduledVisits }}</h2>
+      </mat-card> -->
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(ncStatusId)"
+              class="mat-card bg-eleven"
+            >
+              <!-- <h3 class="cardtitle">Non Contactable</h3>
+        <h2 class="total">{{ nonContactableCount }}</h2> -->
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="nonContactable">Non Contactable</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="CurrentNonContactableCount">
+                    {{ currentNonContactableCount || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >phone_disabled</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(siteVisitProspectId)"
+              class="mat-card bg-five"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="visitProspect">Visit Prospect</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentVisitProspectCount">
+                    {{ currentSiteVisitProspectFollowups }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >share_location</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(siteVisitDoneId)"
+              class="mat-card bg-one"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="siteVisitDone">Site Visit Done</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentSiteVisitDoneCount">
+                    {{ currentSiteVisitDoneCount }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >person_pin_circle</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(currentReVisitProposedId)"
+              class="mat-card bg-eigthteen"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="siteVisitDone">ReVisit Proposed</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentReVisitProposedCount">
+                    {{ currentReVisitProposed }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >person_pin_circle</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(reVisitDoneId)"
+              class="mat-card bg-sixteen"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="siteVisitDone">ReVisit Done</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentRevisitDoneCount">
+                    {{ currentrevisitDoneCount }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >person_pin_circle</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(bookedId)"
+              class="mat-card bg-three"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="booked">Booked</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentBookedCount">
+                    {{ currentBookedCount }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >real_estate_agent</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(bookedCancelledId)"
+              class="mat-card bg-eight"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="bookedCancelled">
+                  Cancelled Bookings
+                </h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentBookedCancelledCount">
+                    {{ currentBookedCancelledCount || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >domain_disabled</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(qualifiedId)"
+              class="mat-card bg-seventeen"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="lost">Qualified</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentQualifiedCount">
+                    {{ currentQualified || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >how_to_reg</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(lostId)"
+              class="mat-card bg-ten"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="lost">Lost</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentLostCount">
+                    {{ currentLost || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >close</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByCurrentStatus(junkId)"
+              class="mat-card bg-twelve"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="lost">Junk</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="currentJunkCount">
+                    {{ currentJunk || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >devices_fold</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <!-- class="mat-card bg-thirteen" -->
+            <div style="width: 200px">
+              <mat-card
+                (click)="navigateToLeadsByCurrentStatus(eoiReceivedId)"
+                class="mat-card bg-thirteen"
+              >
+                <div class="mat-card-hdiv">
+                  <h3 class="cardtitle" id="eoiReceived">EOI Received</h3>
+                </div>
+                <div class="mat-card-countdiv">
+                  <div class="mat-card-count">
+                    <h2 class="total" id="currentEoiReceivedCount">
+                      {{ currentEoiReceivedStatus || 0 }}
+                    </h2>
+                  </div>
+                  <div class="mat-card-icondiv">
+                    <mat-icon
+                      class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                      >feedback</mat-icon
+                    >
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <!--current status end   -->
+
+    <div class="margin-20" style="width: 100%">
+      <mat-accordion>
+        <mat-expansion-panel
+          [expanded]="panel2Expanded"
+          (opened)="setPanelOpen(2)"
+          (closed)="setPanelClose(2)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Activity Overview </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div style="margin-left: 1rem; padding: 0.5rem 1rem">
+            This section shows all key activities that occurred within the
+            selected date range, regardless of when the lead was created.
+          </div>
+          <div class="cards">
+            <mat-card (click)="navigateToLeads()" class="mat-card bg-six">
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="leads">Assigned Leads</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="assignedleadsCount">
+                    {{ dashboardTotalLeads }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >assignment_add</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToSaleLeads()"
+              class="mat-card bg-darkColor"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="assignedLeads">
+                  Sales Assigned Leads
+                </h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="salesAssignedLeadsCount">
+                    {{ salesLeads }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >assignment_add</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByStatus(newLeadId)"
+              class="mat-card bg-nine"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="newLeads">Pending Leads</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="newLeadsCount">{{ newLeads }}</h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >contact_page</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToUnassignedLeads()"
+              class="mat-card bg-twelve"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="unassignedLeads">Unassigned Leads</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="unassignedLeadsCount">
+                    {{ unassignedLeads }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >assignment_sub</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByStatus(followUpId)"
+              class="mat-card bg-seven"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="followups">Follow Ups</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="leadFollowupCount">
+                    {{ followUpCount }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >contact_phone</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByStatus(followupIds)"
+              class="mat-card bg-fifteen"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="followups">Site Visit Confirm</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="laedsfollowupCount">
+                    {{ dashboardFollowups }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >directions_walk</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <!-- <mat-card
+        (click)="navigateToFollowups('Site visit Confirm ')"
+        class="mat-card bg-purple"
+      >
+        <h3 class="cardtitle">Scheduled Visits</h3>
+        <h2 class="total">{{ scheduledVisits }}</h2>
+      </mat-card> -->
+            <mat-card
+              (click)="navigateToLeadsByStatus(ncStatusId)"
+              class="mat-card bg-eleven"
+            >
+              <!-- <h3 class="cardtitle">Non Contactable</h3>
+        <h2 class="total">{{ nonContactableCount }}</h2> -->
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="nonContactable">Non Contactable</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="nonContactableCount">
+                    {{ nonContactableCount || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >phone_disabled</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByStatus(siteVisitProspectId)"
+              class="mat-card bg-five"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="visitProspect">Visit Prospect</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="visitProspectCount">
+                    {{ siteVisitProspectFollowups }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >share_location</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByStatus(siteVisitDoneId)"
+              class="mat-card bg-one"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="siteVisitDone">Site Visit Done</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="siteVisitDoneCount">
+                    {{ siteVisitDoneCount }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >person_pin_circle</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+
+            <mat-card
+              (click)="navigateToLeadsByStatus(bookedId)"
+              class="mat-card bg-three"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="booked">Booked</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="bookedCount">{{ bookedCount }}</h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >real_estate_agent</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByStatus(bookedCancelledId)"
+              class="mat-card bg-eight"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="bookedCancelled">
+                  Cancelled Bookings
+                </h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="bookedCancelledCount">
+                    {{ bookedCancelledCount || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >domain_disabled</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <mat-card
+              (click)="navigateToLeadsByStatus(lostId)"
+              class="mat-card bg-ten"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="lost">Lost</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="lostCount">{{ lostCount || 0 }}</h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >close</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+            <!-- class="mat-card bg-thirteen" -->
+            <mat-card
+              (click)="navigateToLeadsByStatus(eoiReceivedId)"
+              class="mat-card bg-thirteen"
+            >
+              <div class="mat-card-hdiv">
+                <h3 class="cardtitle" id="eoiReceived">EOI Received</h3>
+              </div>
+              <div class="mat-card-countdiv">
+                <div class="mat-card-count">
+                  <h2 class="total" id="eoiReceivedCount">
+                    {{ eoiReceivedStatus || 0 }}
+                  </h2>
+                </div>
+                <div class="mat-card-icondiv">
+                  <mat-icon
+                    class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+                    >feedback</mat-icon
+                  >
+                </div>
+              </div>
+            </mat-card>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <!-- <div class="cards"></div> -->
+
+    <div class="margin-20" style="width: 100%">
+      <mat-accordion>
+        <mat-expansion-panel
+          [expanded]="panel3Expanded"
+          (opened)="setPanelOpen(3)"
+          (closed)="setPanelClose(3)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Team-wise Leads Report </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="content" style="width: 100%">
+            <div
+              class="team-data-table-container leads-asigned-div"
+              style="width: 100%; margin-bottom: 30px"
+            >
+              <h3 class="table-header">Team-wise Leads Report</h3>
+              <div class="team-data-table" style="height: 400px">
+                <table class="tree-table">
+                  <thead>
+                    <tr>
+                      <th class="row-heads">Leads</th>
+                      <th class="row-heads">Project</th>
+                      <th class="row-heads">User</th>
+                      <th class="row-heads">Assign Leads</th>
+                      <th class="row-heads">Junk</th>
+                      <th class="row-heads">Non Contactable</th>
+                      <th class="row-heads">SV Done</th>
+                      <th class="row-heads">Booked</th>
+                      <th class="row-heads">Cancelled Booking</th>
+                      <th class="row-heads">Lost</th>
+                      <th class="row-heads">Follow-Up</th>
+                      <th class="row-heads">Qualified</th>
+                      <th class="row-heads">SV Confirm</th>
+                      <th class="row-heads">Visit Prospect</th>
+                      <th class="row-heads">Revisit Proposed</th>
+                      <th class="row-heads">Revisit Done</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let node of treeData; let i = index">
+                      <tr
+                        [ngClass]="{
+                          'main-row-active': isActive(getUniqueId(node, i))
+                        }"
+                        style="cursor: cell"
+                      >
+                        <td (click)="toggle(getUniqueId(node, i))">
+                          <mat-icon
+                            class="menu-icon"
+                            *ngIf="node.children && node.children.length > 0"
+                          >
+                            {{
+                              isExpanded(getUniqueId(node, i))
+                                ? "remove"
+                                : "add"
+                            }}
+                          </mat-icon>
+                          {{ node.name }}
+                        </td>
+                        <td></td>
+                        <td></td>
+
+                        <td>{{ node.assignedLeads || "0" }}</td>
+                        <td>{{ node.junk || "0" }}</td>
+                        <td>{{ node.nonContactable || "0" }}</td>
+                        <td>{{ node.siteVisitDone || "0" }}</td>
+                        <td>{{ node.booked || "0" }}</td>
+                        <td>{{ node.cancelledBooking || "0" }}</td>
+                        <td>{{ node.lost || "0" }}</td>
+                        <td>{{ node.followUp || "0" }}</td>
+                        <td>{{ node.qualified || "0" }}</td>
+                        <td>{{ node.siteVisitConfirm || "0" }}</td>
+                        <td>{{ node.visitProspect || "0" }}</td>
+
+                        <td>{{ node.reVisitProposed || "0" }}</td>
+                        <td>{{ node.reVisitDone || "0" }}</td>
+                      </tr>
+                      <ng-container
+                        *ngIf="
+                          node.children && isExpanded(getUniqueId(node, i))
+                        "
+                      >
+                        <ng-container
+                          *ngFor="let child of node.children; let j = index"
+                        >
+                          <tr
+                            [ngClass]="{
+                              'child-row-active': isActive(
+                                getUniqueId(child, i, j)
+                              )
+                            }"
+                            style="cursor: cell"
+                          >
+                            <td></td>
+                            <td (click)="toggle(getUniqueId(child, i, j))">
+                              <mat-icon
+                                class="menu-icon"
+                                *ngIf="
+                                  child.children && child.children.length > 0
+                                "
+                              >
+                                {{
+                                  isExpanded(getUniqueId(child, i, j))
+                                    ? "remove"
+                                    : "add"
+                                }}
+                              </mat-icon>
+                              {{ child.name }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ child.assignedLeads || "0" }}</td>
+                            <td>{{ child.junk || "0" }}</td>
+                            <td>{{ child.nonContactable || "0" }}</td>
+                            <td>{{ child.siteVisitDone || "0" }}</td>
+                            <td>{{ child.booked || "0" }}</td>
+                            <td>{{ child.cancelledBooking || "0" }}</td>
+                            <td>{{ child.lost || "0" }}</td>
+                            <td>{{ child.followUp || "0" }}</td>
+                            <td>{{ child.qualified || "0" }}</td>
+                            <td>{{ child.siteVisitConfirm || "0" }}</td>
+
+                            <td>{{ child.visitProspect || "0" }}</td>
+                            <td>{{ child.reVisitProposed || "0" }}</td>
+                            <td>{{ child.reVisitDone || "0" }}</td>
+                          </tr>
+                          <ng-container
+                            *ngIf="
+                              child.children &&
+                              isExpanded(getUniqueId(child, i, j))
+                            "
+                          >
+                            <ng-container
+                              *ngFor="
+                                let subchild of child.children;
+                                let k = index
+                              "
+                            >
+                              <tr
+                                [ngClass]="{
+                                  'sub-child-row-active': isActive(
+                                    getUniqueId(subchild, i, j, k)
+                                  )
+                                }"
+                              >
+                                <td></td>
+                                <td></td>
+                                <td
+                                  (click)="
+                                    toggle(getUniqueId(subchild, i, j, k))
+                                  "
+                                >
+                                  <mat-icon
+                                    class="menu-icon"
+                                    *ngIf="
+                                      subchild.children &&
+                                      subchild.children.length > 0
+                                    "
+                                  >
+                                    {{
+                                      isExpanded(getUniqueId(subchild, i, j, k))
+                                        ? "remove"
+                                        : "add"
+                                    }}
+                                  </mat-icon>
+                                  {{ subchild.name }}
+                                </td>
+
+                                <td>{{ subchild.assignedLeads || "0" }}</td>
+                                <td>{{ subchild.junk || "0" }}</td>
+                                <td>{{ subchild.nonContactable || "0" }}</td>
+                                <td>{{ subchild.siteVisitDone || "0" }}</td>
+                                <td>{{ subchild.booked || "0" }}</td>
+                                <td>{{ subchild.canceledBooking || "0" }}</td>
+                                <td>{{ subchild.lost || "0" }}</td>
+                                <td>{{ subchild.followUp || "0" }}</td>
+                                <td>{{ subchild.qualified || "0" }}</td>
+                                <td>{{ subchild.siteVisitConfirm || "0" }}</td>
+
+                                <td>{{ subchild.visitProspect || "0" }}</td>
+                                <td>{{ subchild.reVisitProposed || "0" }}</td>
+                                <td>{{ subchild.reVisitDone || "0" }}</td>
+                              </tr>
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <!-- <div class="team-data-table-container leads-asigned-div">
+        <h3 class="table-header">Team-wise Leads Report</h3>
+        <div class="team-data-table">
+          <table
+            mat-table
+            [dataSource]="teamData"
+            class="mat-elevation-z8 tableFixHead"
+          >
+            <ng-container matColumnDef="teamName">
+              <th mat-header-cell *matHeaderCellDef>Team Name</th>
+              <td mat-cell *matCellDef="let element">{{ element.teamName }}</td>
+            </ng-container>
+  
+            <ng-container matColumnDef="assignedLeads">
+              <th mat-header-cell *matHeaderCellDef>Assigned Leads</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.assignedLeads }}
+              </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="siteVisitDone">
+              <th mat-header-cell *matHeaderCellDef>Site Visit Done</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.siteVisitDone }}
+              </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="nonContactable">
+              <th mat-header-cell *matHeaderCellDef>Non-Contactable</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.nonContactable }}
+              </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="followUps">
+              <th mat-header-cell *matHeaderCellDef>Follow Ups</th>
+              <td mat-cell *matCellDef="let element">{{ element.followUps }}</td>
+            </ng-container>
+  
+            <tr mat-header-row *matHeaderRowDef="teamWiseDataColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: teamWiseDataColumns"></tr>
+          </table>
+        </div>
+      </div> -->
+    <div class="margin-20" style="width: 100%">
+      <mat-accordion>
+        <mat-expansion-panel
+          [expanded]="panel8Expanded"
+          (opened)="setPanelOpen(8)"
+          (closed)="setPanelClose(8)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Members Report </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="memberreport" id="memberreport">
+            <div style="width: 50%">
+              <mat-card class="remarks-history">
+                <h1 style="text-align: center">Presale Member Report</h1>
+
+                <div>
+                  <div class="table-container">
+                    <table
+                      matSort
+                      mat-table
+                      [dataSource]="presaleMemberReport"
+                      class="mat-elevation-z8"
+                    >
+                      <ng-container matColumnDef="userName">
+                        <th
+                          mat-sort-header
+                          mat-header-cell
+                          *matHeaderCellDef
+                          style="background-color: #004869; color: white"
+                        >
+                          Member Name
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.userName }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="assignedCount">
+                        <th
+                          mat-sort-header
+                          mat-header-cell
+                          *matHeaderCellDef
+                          style="background-color: #004869; color: white"
+                        >
+                          Lead Assigned
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.assignedCount }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="followUpsCount">
+                        <th
+                          mat-sort-header
+                          mat-header-cell
+                          *matHeaderCellDef
+                          style="background-color: #004869; color: white"
+                        >
+                          Follow Up Count
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.followUpCount }}
+                        </td>
+                      </ng-container>
+
+                      <tr
+                        mat-header-row
+                        *matHeaderRowDef="memberActivityColumns"
+                      ></tr>
+                      <tr
+                        mat-row
+                        *matRowDef="let element; columns: memberActivityColumns"
+                      ></tr>
+                    </table>
+                  </div>
+                </div>
+                <div>
+                  <mat-card-footer> </mat-card-footer>
+                </div>
+              </mat-card>
+            </div>
+            <div style="width: 50%; padding-left: 20px">
+              <mat-card class="remarks-history">
+                <h1 style="text-align: center">Sale Member Report</h1>
+                <div>
+                  <div class="table-container">
+                    <table
+                      matSort
+                      mat-table
+                      [dataSource]="saleMemberReport"
+                      class="mat-elevation-z8"
+                    >
+                      <ng-container matColumnDef="userName">
+                        <th
+                          mat-sort-header
+                          mat-header-cell
+                          *matHeaderCellDef
+                          style="background-color: #004869; color: white"
+                        >
+                          Member Name
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.userName }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="assignedCount">
+                        <th
+                          mat-sort-header
+                          mat-header-cell
+                          *matHeaderCellDef
+                          style="background-color: #004869; color: white"
+                        >
+                          Lead Assigned
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.assignedCount }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="followUpsCount">
+                        <th
+                          mat-sort-header
+                          mat-header-cell
+                          *matHeaderCellDef
+                          style="background-color: #004869; color: white"
+                        >
+                          Follow Up Count
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.followUpCount }}
+                        </td>
+                      </ng-container>
+
+                      <tr
+                        mat-header-row
+                        *matHeaderRowDef="memberActivityColumns"
+                      ></tr>
+                      <tr
+                        mat-row
+                        *matRowDef="let element; columns: memberActivityColumns"
+                      ></tr>
+                    </table>
+                  </div>
+                </div>
+                <div>
+                  <mat-card-footer> </mat-card-footer>
+                </div>
+              </mat-card>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <div class="margin-20" style="width: 100%">
+      <mat-accordion>
+        <mat-expansion-panel
+          [expanded]="panel9Expanded"
+          (opened)="setPanelOpen(9)"
+          (closed)="setPanelClose(9)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Calendar </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="calender" id="calender" style="padding: 10px">
+            <app-lead-followup-calendar
+              *ngIf="panel9Expanded"
+              [isMemberDashBoard]="false"
+              [isManagerDashBoard]="false"
+              [isSalesHeadDashboard]="true"
+            ></app-lead-followup-calendar>
+            <div class="pie-chart" *ngIf="isShowSourcePie">
+              <h2 style="padding-left: 15px">Lead Source Count</h2>
+              <apx-chart
+                [series]="leadSourceChartOptions.series"
+                [chart]="leadSourceChartOptions.chart"
+                [labels]="leadSourceChartOptions.labels"
+                [colors]="leadSourceChartOptions.colors"
+                [responsive]="leadSourceChartOptions.responsive"
+              ></apx-chart>
+            </div>
+          </div>
+          <div class="calender" id="piechart">
+            <div class="pie-chart" *ngIf="isShow">
+              <h2 style="padding-left: 15px">Internal Source Leads Status</h2>
+              <apx-chart
+                [series]="chartOptions.series"
+                [chart]="chartOptions.chart"
+                [labels]="chartOptions.labels"
+                [colors]="chartOptions.colors"
+                [responsive]="chartOptions.responsive"
+              ></apx-chart>
+            </div>
+            <div class="pie-chart" *ngIf="isShow">
+              <h2 style="padding-left: 15px">Cp Source Leads Status</h2>
+              <apx-chart
+                [series]="cpChartOptions.series"
+                [chart]="cpChartOptions.chart"
+                [labels]="cpChartOptions.labels"
+                [colors]="cpChartOptions.colors"
+                [responsive]="cpChartOptions.responsive"
+              ></apx-chart>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <!-- <div class="status-pie-charts">
+      <div style="margin-left: 15px">
+        <mat-accordion>
+          <mat-expansion-panel
+            [expanded]="panel4Expanded"
+            (opened)="setPanelOpen(4)"
+            (closed)="setPanelClose(4)"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Lead Source Count </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="pie-chart" *ngIf="isShowSourcePie">
+              <apx-chart
+                [series]="leadSourceChartOptions.series"
+                [chart]="leadSourceChartOptions.chart"
+                [labels]="leadSourceChartOptions.labels"
+                [colors]="leadSourceChartOptions.colors"
+                [responsive]="leadSourceChartOptions.responsive"
+              ></apx-chart>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div>
+        <mat-accordion>
+          <mat-expansion-panel
+            [expanded]="panel5Expanded"
+            (opened)="setPanelOpen(5)"
+            (closed)="setPanelClose(5)"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Internal Source Leads Status </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="pie-chart" *ngIf="isShow">
+              <apx-chart
+                [series]="chartOptions.series"
+                [chart]="chartOptions.chart"
+                [labels]="chartOptions.labels"
+                [colors]="chartOptions.colors"
+                [responsive]="chartOptions.responsive"
+              ></apx-chart>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+
+      <div style="margin-left: 15px">
+        <mat-accordion>
+          <mat-expansion-panel
+            [expanded]="panel6Expanded"
+            (opened)="setPanelOpen(6)"
+            (closed)="setPanelClose(6)"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Cp Source Leads Status </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="pie-chart" *ngIf="isShow">
+              <apx-chart
+                [series]="cpChartOptions.series"
+                [chart]="cpChartOptions.chart"
+                [labels]="cpChartOptions.labels"
+                [colors]="cpChartOptions.colors"
+                [responsive]="cpChartOptions.responsive"
+              ></apx-chart>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div> -->
+
+    <!-- Lead Source Count -->
+
+    <!-- Member report -->
+
+    <!-- <div style="width: 50%">
+        <mat-accordion>
+          <mat-expansion-panel
+            [expanded]="panel7Expanded"
+            (opened)="setPanelOpen(7)"
+            (closed)="setPanelClose(7)"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title> Presale Member Report </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="remarks-history">
+              <div>
+                <div class="table-container">
+                  <table
+                    matSort
+                    mat-table
+                    [dataSource]="presaleMemberReport"
+                    class="mat-elevation-z8"
+                  >
+                    <ng-container matColumnDef="userName">
+                      <th
+                        mat-sort-header
+                        mat-header-cell
+                        *matHeaderCellDef
+                        style="background-color: #004869; color: white"
+                      >
+                        Member Name
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{ element.userName }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="assignedCount">
+                      <th
+                        mat-sort-header
+                        mat-header-cell
+                        *matHeaderCellDef
+                        style="background-color: #004869; color: white"
+                      >
+                        Lead Assigned
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{ element.assignedCount }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="followUpsCount">
+                      <th
+                        mat-sort-header
+                        mat-header-cell
+                        *matHeaderCellDef
+                        style="background-color: #004869; color: white"
+                      >
+                        Follow Up Count
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        {{ element.followUpCount }}
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      mat-header-row
+                      *matHeaderRowDef="memberActivityColumns"
+                    ></tr>
+                    <tr
+                      mat-row
+                      *matRowDef="let element; columns: memberActivityColumns"
+                    ></tr>
+                  </table>
+                </div>
+              </div>
+              <div>
+                <mat-card-footer> </mat-card-footer>
+              </div>
+            </mat-card>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div> -->
+  </div>
+</div>

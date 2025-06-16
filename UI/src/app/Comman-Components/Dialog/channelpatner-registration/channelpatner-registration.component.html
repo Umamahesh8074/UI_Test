@@ -1,0 +1,50 @@
+<div class="modal-content" *ngIf="isVisible">
+  <div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" class="close-btn" (click)="closeModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" [(ngModel)]="data.name"  (input)="clearErrorMessage('name')" />
+      <div *ngIf="errorMessages['general']" class="text-danger">
+        {{ errorMessages['general'] }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="contactNumber" class="form-label">Contact Number</label>
+      <input 
+        type="tel" 
+        class="form-control" 
+        id="contactNumber" 
+        [(ngModel)]="data.contactNumber" 
+        (input)="clearErrorMessage('contactNumber')"
+        required
+       
+      />
+      <div *ngIf="errorMessages['contactNumber']" class="text-danger">
+        {{ errorMessages['contactNumber'] }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" [(ngModel)]="data.email"required  (input)="clearErrorMessage('email')"  />
+      <div *ngIf="errorMessages['email']" class="text-danger">
+        {{ errorMessages['email'] }}
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label">Company Name</label>
+      <input type="text" class="form-control" id="companyName" [(ngModel)]="data.companyName" />
+      <!-- <div *ngIf="errorMessages['email']" class="text-danger">
+        {{ errorMessages['email'] }}
+      </div> -->
+    </div>
+
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="onSave()">Submit</button>
+  </div>
+</div>

@@ -1,0 +1,397 @@
+<div class="duplicateheader-container">
+  <!-- <div class="header">
+    <h1>DUPLICATE LEADS</h1>
+  </div> -->
+  <div class="title-div">
+    <span class="lead-header">DUPLICATE LEADS</span>
+  </div>
+  <button mat-flat-button class="btn-class" (click)="generateLeadsReport()">
+    <mat-icon class="font">
+      <span class="material-symbols-outlined"> download </span>
+    </mat-icon>
+    Download
+  </button>
+</div>
+
+<div class="dup-search-container" [formGroup]="formData">
+  <mat-form-field
+    appearance="outline"
+    class="search-class"
+    style="width: 200px"
+  >
+    <mat-label>Search by Phone No</mat-label>
+    <input
+      [value]="phoneNumber === undefined ? '' : phoneNumber"
+      matInput
+      (input)="onSearch($any($event).target?.value)"
+      placeholder="Enter Phone No"
+    />
+  </mat-form-field>
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="onClickSearchButton()"
+    type="button"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+  <mat-form-field class="" appearance="outline">
+    <input
+      type="text"
+      placeholder="Select Projects"
+      aria-label="Select projects"
+      matInput
+      [matAutocomplete]="projectAuto"
+      [formControl]="project"
+      (input)="searchProject($event)"
+    />
+  </mat-form-field>
+
+  <mat-autocomplete #projectAuto="matAutocomplete">
+    <mat-option>
+      <mat-checkbox
+        #allProjectSelected
+        (click)="onAllSelectProject()"
+        [checked]="isProjectAllSelected()"
+        >All</mat-checkbox
+      ></mat-option
+    >
+    <mat-option
+      *ngFor="let project of projects"
+      (click)="$event.preventDefault()"
+    >
+      <div (click)="$event.stopPropagation()">
+        <mat-checkbox
+          [checked]="isSelectedProject(project.projectId)"
+          (change)="onProjectSelect(project, $event)"
+          (click)="$event.stopPropagation()"
+        >
+          {{ project.projectName }}
+        </mat-checkbox>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="onProjectSelectButtonClick()"
+    type="button"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+  <mat-form-field
+    class="ml-2 search-class"
+    appearance="outline"
+    *ngIf="
+      !(
+        user.roleName.toLowerCase() === 'channel partner' ||
+        user.roleName.toLowerCase() === 'cp user'
+      )
+    "
+  >
+    <!-- <mat-label>Select Source</mat-label>
+    <mat-select
+      [value]="sourceIds"
+      multiple
+      (selectionChange)="onSelectionSourceChange($event)"
+    >
+      <mat-option value="">All</mat-option>
+      <mat-option *ngFor="let source of sources" [value]="source.leadSourceId">
+        {{ source.name }}
+      </mat-option>
+    </mat-select> -->
+
+    <mat-label>Select Source</mat-label>
+    <mat-select formControlName="sourceIds" multiple>
+      <mat-option #allSelected (click)="toggleAllSelection()" [value]="0"
+        >All</mat-option
+      >
+      <mat-option
+        (click)="tosslePerOne()"
+        *ngFor="let source of sources"
+        [value]="source.leadSourceId"
+      >
+        {{ source.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field
+    class="ml-4 search-class"
+    appearance="outline"
+    *ngIf="
+      !(
+        user.roleName.toLowerCase() === 'channel partner' ||
+        user.roleName.toLowerCase() === 'cp user'
+      )
+    "
+    style="padding-left: 10px"
+  >
+    <input
+      type="text"
+      placeholder="Select Sub Sources"
+      aria-label="Select Sub Sources"
+      matInput
+      [matAutocomplete]="auto"
+      [formControl]="subSourceControl"
+      (input)="searchSubSource($event)"
+    />
+  </mat-form-field>
+
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option
+      *ngFor="let subSource of filteredSubSources"
+      (click)="$event.preventDefault()"
+    >
+      <div (click)="$event.stopPropagation()">
+        <mat-checkbox
+          [checked]="isSelected(subSource.leadSubSourceId)"
+          (change)="onSelectionSubSourceChange(subSource, $event)"
+          (click)="$event.stopPropagation()"
+        >
+          {{ subSource.name }}
+        </mat-checkbox>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+
+  <mat-form-field appearance="outline" class="ml-2 search-class">
+    <mat-label>Select Day</mat-label>
+    <mat-select
+      (selectionChange)="handleDaySelection($event.value)"
+      [value]="selectedDay"
+    >
+      <mat-option value="">All</mat-option>
+      <mat-option *ngFor="let day of days" [value]="day">
+        {{ day.commonRefValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field
+    *ngIf="showDateRangePicker"
+    class="time-picker ml-2 search-class"
+    appearance="outline"
+    style="width: 180px"
+  >
+    <mat-label>Select Date Range</mat-label>
+    <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+      <input
+        matStartDate
+        placeholder="Start date"
+        formControlName="customStartDate"
+        (focus)="picker.open()"
+      />
+      <input
+        matEndDate
+        placeholder="End date"
+        formControlName="customEndDate"
+        (focus)="picker.open()"
+      />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+  <mat-form-field
+    appearance="outline"
+    class="search-class"
+    style="margin-right: 1.5rem"
+    *ngIf="
+      !user.roleName.toLowerCase().includes('digital_partner') &&
+      !user.roleName.toLowerCase().includes('digital marketing')
+    "
+  >
+    <mat-label>Digital Partner</mat-label>
+    <mat-select
+      [(value)]="digitalPartnerName"
+      (selectionChange)="handleDigitalParterSelection($event.value)"
+    >
+      <mat-option value="">All</mat-option>
+      <mat-option
+        *ngFor="let element of digitalPartner"
+        [value]="element.commonRefValue"
+      >
+        {{ element.commonRefValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field
+    class="example-full-width search-class ml-2"
+    appearance="outline"
+    *ngIf="
+      user.roleName.toLowerCase().includes('digital_partner') ||
+      user.roleName.toLowerCase().includes('digital marketing')
+    "
+  >
+    <mat-label>Campaign</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="campagin"
+      [matAutocomplete]="campaginAuto"
+      [value]="campaginName ? campaginName : 'All'"
+      (input)="onSearchCampaginName($any($event).target?.value)"
+    />
+    <mat-autocomplete
+      #campaginAuto="matAutocomplete"
+      (optionSelected)="onCampaginSelect($event)"
+      [displayWith]="displayFn"
+    >
+      <mat-option value="">All</mat-option>
+      <mat-option *ngFor="let option of campaginNames" [value]="option">{{
+        option.campaginName
+      }}</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
+
+<mat-card class="cmn-card" style="margin-bottom: 1rem">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table matSort mat-table [dataSource]="leads" class="mat-elevation-z8">
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Customer Name
+          </th>
+          <td mat-cell *matCellDef="let lead">
+            {{ lead.name || "N/A" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="createdDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Created Date
+          </th>
+          <td mat-cell *matCellDef="let lead">
+            {{ lead.createdDate | date : "medium" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="phoneNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Contact Number
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.phoneNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Email
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.email || "N/A" }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.projectName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="sourceName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Source
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.sourceName }}</td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="subSourceName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Sub Source
+          </th>
+          <td mat-cell *matCellDef="let lead">{{ lead.subSourceName }}</td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="subSourceName">
+          <th mat-header-cell *matHeaderCellDef>Sub Source</th>
+          <td mat-cell *matCellDef="let lead">
+            <ng-container
+              *ngIf="
+                user.roleName === 'DIGITAL_PARTNER' ||
+                  user.roleName === 'Digital Marketing';
+                else elseifBlock
+              "
+            >
+              {{ lead.subSourceName }}
+            </ng-container>
+            <ng-template #elseifBlock>
+              <ng-container
+                *ngIf="
+                  lead.digitalPartner === null || lead.digitalPartner === '';
+                  else elseBlock
+                "
+              >
+                {{ lead.subSourceName }}
+              </ng-container>
+            </ng-template>
+
+            <ng-template #elseBlock>
+              {{ lead.subSourceName }}
+            </ng-template>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let lead">
+            <mat-icon
+              matTooltip="History"
+              style="cursor: pointer"
+              (click)="onHistoryBtnClick(lead.phoneNumber, lead.id, lead.name)"
+              class="font icon-spacing"
+              >update</mat-icon
+            >
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="
+            isNotLastColumn($event)
+              ? onLeadRowClick(lead.phoneNumber, lead.id, lead.name)
+              : null
+          "
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

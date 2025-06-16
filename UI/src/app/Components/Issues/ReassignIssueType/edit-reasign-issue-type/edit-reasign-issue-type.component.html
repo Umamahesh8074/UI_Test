@@ -1,0 +1,70 @@
+<h4 class="header"><b>EDIT REASSIGN ISSUE TYPE</b></h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <!-- <mat-card-header
+        ><b>{{ isAdding ? "ADD WORKFLOWSTAGE" : "EDIT WORKFLOWSTAGE" }}</b></mat-card-header
+      > -->
+      <h3><strong>Ticket No. : {{ issueData.issueNumber }}</strong></h3>
+      <div class="row">
+        <div class="col-md-4">
+          <p><strong>Customer Name:</strong> {{ issueData.customerName }}</p>
+          <p><strong>Block Name:</strong> {{ issueData.blockName }}</p>
+         
+        </div>
+        <div class="col-md-4">
+          <p><strong>Contact Number:</strong> {{ issueData.phoneNumber }}</p>
+          <p><strong>Level Name:</strong> {{ issueData.levelName }}</p>
+          
+        </div>
+        <div class="col-md-4">
+          <p><strong>Project Name:</strong> {{ issueData.projectName }}</p>
+          <p><strong>Unit Name:</strong> {{ issueData.unitName }}</p>
+         
+        </div>
+                
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <mat-card-content class="mat-content">
+            <mat-form-field appearance="outline" class="mat-30">
+              <mat-label>Present Issue Type:</mat-label>
+              <input matInput formControlName="issueTypeName" readonly [(ngModel)]="issueData.issueTypeName"/>
+            </mat-form-field>
+          </mat-card-content>
+          </div>
+          <div class="col-md-4">
+            <mat-card-content class="mat-content">
+              <mat-form-field appearance="outline" class="mat-30">
+                <mat-label> Reassing Issue Type</mat-label>
+                <mat-select formControlName="issueTypeId" (selectionChange)="onIssueTypeChange($event)">
+                <mat-option *ngFor="let issuesTypes of issuesTypeData" [value]="issuesTypes">
+                  {{ issuesTypes.commonRefValue }}
+                </mat-option>
+              </mat-select> 
+              </mat-form-field>
+            </mat-card-content>
+        </div>
+      </div>
+      <mat-card-content class="mat-content">
+        <mat-form-field appearance="outline" class="mat-30">
+          <mat-label>Remarks</mat-label>
+          <input matInput formControlName="remarks" />
+        </mat-form-field>
+      </mat-card-content>
+      
+      <mat-card-footer>
+        <div style="text-align: right" class="button">
+          <button mat-flat-button style="color: white; background-color: red" class="btn-class">
+            Reassign
+          </button>
+          <button mat-flat-button style="color: white; background-color: rgb(97, 97, 38)" class="btn-class"
+            (click)="gotoWorkflowstages()">
+            BACK
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

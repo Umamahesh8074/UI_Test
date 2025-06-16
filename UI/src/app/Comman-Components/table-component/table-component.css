@@ -1,0 +1,28 @@
+.amount-column {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+}
+
+.approved-column {
+  color: green;
+  font-weight: bold;
+}
+
+.rejected-column {
+  color: rgb(173, 19, 19);
+  font-weight: bold;
+}
+
+.pending-column {
+  color: rgb(185, 123, 6);
+  font-weight: bold;
+}
+
+.rework-column {
+  color: rgb(31, 84, 152);
+  font-weight: bold;
+}
+.status-column {
+  color: purple;
+  font-weight: bold;
+}

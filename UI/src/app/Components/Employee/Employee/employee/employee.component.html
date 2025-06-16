@@ -1,0 +1,1489 @@
+<h4 class="header">
+  <b>{{ heading }}</b>
+</h4>
+
+<mat-horizontal-stepper [linear]="isAdding" #stepper>
+  <!-- Step 1: Basic Details -->
+  <mat-step [stepControl]="employeeBasicDetails" label="Basic Details">
+    <form
+      *ngIf="employeeBasicDetails"
+      [class.blur-background]="isModalVisible"
+      [formGroup]="employeeBasicDetails"
+    >
+      <div class="example-container add-lead-main">
+        <div class="section-container">
+          <div style="display: flex; justify-content: space-between">
+            <h3 class="section-title">Employee Basic Details</h3>
+            <div
+              *ngIf="employeeBasicDetails.get('stepperTwoStatus')?.value === 1"
+            >
+              <p class="section-title" style="color: green">Approved</p>
+            </div>
+            <div
+              *ngIf="employeeBasicDetails.get('stepperTwoStatus')?.value === 2"
+            >
+              <p class="section-title" style="color: red">Rejected</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Employee Number</mat-label>
+              <input matInput formControlName="employeeId" />
+              <mat-error
+                *ngIf="isAdding && employeeIdControl?.hasError('required')"
+              >
+                Employee Number is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                formControlName="email"
+                (blur)="checkEmailUniqueness()"
+              />
+              <mat-error *ngIf="emailExists">
+                This email ID already exists. Please enter another email.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Phone Number</mat-label>
+              <input
+                matInput
+                formControlName="phoneNumber"
+                (blur)="checkPhoneNumberExists()"
+              />
+              <mat-error
+                *ngIf="isAdding && phoneNumberControl?.hasError('required')"
+              >
+                Phone Number is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Date of Birth</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dobPicker"
+                formControlName="dateOfBirth"
+                (dateChange)="onDateChange($event)"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dobPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dobPicker></mat-datepicker>
+
+              <mat-error *ngIf="dateOfBirth?.hasError('futureDate')">
+                Date of birth cannot be in the future.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>State</mat-label>
+              <mat-select formControlName="state">
+                <mat-option *ngFor="let state of indianStates" [value]="state">
+                  {{ state }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Postal Code</mat-label>
+              <input matInput formControlName="postalCode" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Add As User</mat-label>
+              <mat-select formControlName="isAddAsUserNeeded">
+                <mat-option value="Yes">Yes</mat-option>
+                <mat-option value="No">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="section-container">
+          <h3 class="section-title">Employee Personal Details</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Enter Aadhaar/Pan Id</mat-label>
+              <input matInput formControlName="nationalId" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="Male">Male</mat-option>
+                <mat-option value="Female">Female</mat-option>
+                <mat-option value="Other">Other</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Marital Status</mat-label>
+              <mat-select formControlName="maritalStatus">
+                <mat-option value="Single">Single</mat-option>
+                <mat-option value="Married">Married</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="address" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Religion</mat-label>
+              <input matInput formControlName="religion" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Cast</mat-label>
+              <input matInput formControlName="cast" />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Blood Group</mat-label>
+              <input matInput formControlName="bloodGroup" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Height</mat-label>
+              <input matInput formControlName="height" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Weight</mat-label>
+              <input matInput formControlName="weight" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Identification Mark</mat-label>
+              <input matInput formControlName="identificationMark" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Father Name</mat-label>
+              <input matInput formControlName="fatherName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Spouse Name</mat-label>
+              <input matInput formControlName="spouseName" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Marriage Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="domPicker"
+                formControlName="marriageDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="domPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #domPicker></mat-datepicker>
+
+              <mat-error *ngIf="marriageDate?.hasError('futureDate')">
+                Marriage Date cannot be in the future.
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Nationality</mat-label>
+              <input matInput formControlName="nationality" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Personal Email</mat-label>
+              <input matInput formControlName="personalEmail" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Emergency Contact Name</mat-label>
+              <input matInput formControlName="emergencyContactName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>emergency Contact Number</mat-label>
+              <input matInput formControlName="emergencyContactNumber" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Police Station Limits</mat-label>
+              <input matInput formControlName="policeStationLimits" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Age</mat-label>
+
+              <input matInput formControlName="age" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>plcae Of Birth</mat-label>
+              <input matInput formControlName="plcaeOfBirth" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-radio-group formControlName="physicallyChallenged">
+              <mat-label>Physically Challenged</mat-label>
+              <mat-radio-button value="Yes">Yes</mat-radio-button>
+              <mat-radio-button value="No">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card-footer class="add-mat-card-footer">
+          <div>
+            <!-- Next button will be enabled only if the form is valid -->
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              [disabled]="!employeeBasicDetails.valid"
+              (click)="stepper.next()"
+            >
+              Next
+            </button>
+          </div>
+        </mat-card-footer>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="employeeBasicDetails" label="Position Details">
+    <form
+      *ngIf="employeeBasicDetails"
+      [class.blur-background]="isModalVisible"
+      [formGroup]="employeeBasicDetails"
+    >
+      <div class="example-container add-lead-main">
+        <div class="section-container">
+          <div style="display: flex; justify-content: space-between">
+            <h3 class="section-title">Employee Joining And Position Details</h3>
+            <div
+              *ngIf="employeeBasicDetails.get('stepperOneStatus')?.value === 1"
+            >
+              <p class="section-title" style="color: green">Approved</p>
+            </div>
+            <div
+              *ngIf="employeeBasicDetails.get('stepperOneStatus')?.value === 2"
+            >
+              <p class="section-title" style="color: red">Rejected</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Date of Joining</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dojPicker"
+                formControlName="dateOfJoining"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dojPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dojPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Reporting Manager</mat-label>
+              <mat-select formControlName="reportingManager">
+                <mat-option *ngFor="let user of users" [value]="user.userId">
+                  {{ user.userName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Search/Select Project</mat-label>
+              <input
+                type="text"
+                matInput
+                [value]="
+                  selectedProject.projectName ? selectedProject.projectName : ''
+                "
+                (input)="searchProject($event)"
+                [formControl]="projectFc"
+                [matAutocomplete]="projectAuto"
+              />
+              <mat-autocomplete
+                #projectAuto="matAutocomplete"
+                (optionSelected)="onProjectSelect($event)"
+                [displayWith]="displayProject"
+              >
+                <mat-option *ngFor="let option of project" [value]="option">
+                  {{ option.projectName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Employee Status</mat-label>
+              <mat-select formControlName="employeeStatus">
+                <mat-option
+                  *ngFor="let status of employeeStatusList"
+                  [value]="status.commonRefValue"
+                >
+                  {{ status.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="department">
+                <mat-option
+                  *ngFor="let dept of departmentList"
+                  [value]="dept.id"
+                >
+                  {{ dept.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Shift</mat-label>
+              <mat-select formControlName="shiftId">
+                <mat-option
+                  *ngFor="let status of shiftIdList"
+                  [value]="status.id"
+                >
+                  {{ status.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Rotational Shift</mat-label>
+              <mat-select formControlName="shift">
+                <mat-option value="Yes">Yes</mat-option>
+                <mat-option value="No">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Work Location</mat-label>
+              <input matInput formControlName="workLocation" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="employeeRoleId">
+                <mat-option *ngFor="let role of roles" [value]="role.roleId">
+                  {{ role.roleName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Date of Resignation</mat-label>
+              <input
+                matInput
+                [matDatepicker]="dorPicker"
+                formControlName="dateOfResignation"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dorPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #dorPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Notice Period End Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="npedPicker"
+                formControlName="noticePeriodEndDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="npedPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #npedPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Last Working Day</mat-label>
+              <input
+                matInput
+                [matDatepicker]="lwdPicker"
+                formControlName="lastWorkingDay"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="lwdPicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #lwdPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Division</mat-label>
+              <mat-select formControlName="divisionId">
+                <mat-option *ngFor="let div of divisionList" [value]="div.id">
+                  {{ div.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Costcenter</mat-label>
+              <mat-select formControlName="costCenterId">
+                <mat-option
+                  *ngFor="let cost of costCenterList"
+                  [value]="cost.id"
+                >
+                  {{ cost.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Probation Period</mat-label>
+              <input matInput formControlName="probationPeriod" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <!-- <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Refered By</mat-label>
+              <mat-select formControlName="referredBy">
+                <mat-option
+                  *ngFor="let status of employeeStatusList"
+                  [value]="status.commonRefValue"
+                >
+                  {{ status.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Refered By</mat-label>
+              <input
+                type="text"
+                matInput
+                [formControl]="employeefc"
+                [matAutocomplete]="employeeAuto"
+                (input)="searchEmployee($event)"
+              />
+              <mat-autocomplete
+                #employeeAuto="matAutocomplete"
+                (optionSelected)="onEmployeeSelect($event)"
+                [displayWith]="displayEmployeeName"
+              >
+                <mat-option
+                  *ngFor="let option of employeeData"
+                  [value]="option"
+                >
+                  {{ option.firstName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Grade Id</mat-label>
+              <mat-select formControlName="gradeId">
+                <mat-option *ngFor="let grd of gradesList" [value]="grd.id">
+                  {{ grd.commonRefValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Company</mat-label>
+              <input matInput formControlName="company" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-radio-group formControlName="isPmsEligible">
+              <mat-label>Is Pms Eligible</mat-label>
+              <mat-radio-button value="Yes">Yes</mat-radio-button>
+              <mat-radio-button value="No">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card-footer class="add-mat-card-footer">
+          <div>
+            <!-- Next button will be enabled only if the form is valid -->
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              [disabled]="!employeeBasicDetails.valid"
+              (click)="stepper.next()"
+            >
+              Next
+            </button>
+          </div>
+        </mat-card-footer>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="employeeBasicDetails" label="Documents">
+    <form
+      *ngIf="employeeBasicDetails"
+      [class.blur-background]="isModalVisible"
+      [formGroup]="employeeBasicDetails"
+    >
+      <div class="example-container add-lead-main"></div>
+      <div class="section-container">
+        <div style="display: flex; justify-content: space-between">
+          <h3 class="section-title">Employee Documents</h3>
+          <div
+            *ngIf="employeeBasicDetails.get('stepperThreeStatus')?.value === 1"
+          >
+            <p class="section-title" style="color: green">Approved</p>
+          </div>
+          <div
+            *ngIf="employeeBasicDetails.get('stepperThreeStatus')?.value === 2"
+          >
+            <p class="section-title" style="color: red">Rejected</p>
+          </div>
+        </div>
+        <!-- Adhar Card Section -->
+        <div class="form-row">
+          <mat-card class="card">
+            <mat-card-content class="cpr-mat-card-content">
+              <div>
+                <label for="adharUrl" class="document-name">Adhar card </label>
+              </div>
+              <div>
+                <mat-form-field class="cpr-mat-25" appearance="outline">
+                  <mat-label>Aadhar Card</mat-label>
+
+                  <!-- Display the selected file name (readonly input) -->
+                  <input
+                    matInput
+                    formControlName="adharUrl"
+                    [attr.placeholder]="'Choose File'"
+                    [attr.type]="'text'"
+                    [attr.readonly]="true"
+                    (click)="adharUrlInput.click()"
+                    [value]="fileNames.Adhar_card"
+                  />
+
+                  <!-- Hidden file input for file selection -->
+                  <input
+                    type="file"
+                    #adharUrlInput
+                    accept=".pdf"
+                    (change)="onFileChange($event, 'Adhar_card')"
+                    style="display: none"
+                  />
+
+                  <!-- Button to trigger file input click -->
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="adharUrlInput.click()"
+                    type="button"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+
+                  <!-- Validation error for Aadhar card file -->
+                  <mat-error
+                    *ngIf="
+                      employeeBasicDetails.get('adharUrl')?.touched &&
+                      employeeBasicDetails.get('adharUrl')?.hasError('required')
+                    "
+                  >
+                    Please upload your Aadhar Card.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Pan Card Section -->
+        <div class="form-row">
+          <mat-card class="card">
+            <mat-card-content class="cpr-mat-card-content">
+              <div>
+                <label for="panUrl" class="document-name">Pan card </label>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field class="cpr-mat-25" appearance="outline">
+                  <mat-label>Pan Card</mat-label>
+
+                  <!-- Display the selected file name (readonly input) -->
+                  <input
+                    matInput
+                    formControlName="panUrl"
+                    [attr.placeholder]="'Choose File'"
+                    [attr.type]="'text'"
+                    [attr.readonly]="true"
+                    (click)="panUrlInput.click()"
+                    [value]="fileNames.Pan_card"
+                  />
+
+                  <!-- Hidden file input for file selection -->
+                  <input
+                    type="file"
+                    #panUrlInput
+                    accept=".pdf"
+                    (change)="onFileChange($event, 'Pan_card')"
+                    style="display: none"
+                  />
+
+                  <!-- Button to trigger file input click -->
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="panUrlInput.click()"
+                    type="button"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+
+                  <!-- Validation error for Aadhar card file -->
+                  <mat-error
+                    *ngIf="
+                      employeeBasicDetails.get('panUrl')?.touched &&
+                      employeeBasicDetails.get('panUrl')?.hasError('required')
+                    "
+                  >
+                    Please upload your Pan Card.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Voter Card Section -->
+        <div class="form-row">
+          <mat-card class="card">
+            <mat-card-content class="cpr-mat-card-content">
+              <div>
+                <label for="voterIdUrl" class="document-name"
+                  >Voter card
+                </label>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field class="cpr-mat-25" appearance="outline">
+                  <mat-label>Voter Card</mat-label>
+
+                  <!-- Display the selected file name (readonly input) -->
+                  <input
+                    matInput
+                    formControlName="voterIdUrl"
+                    [attr.placeholder]="'Choose File'"
+                    [attr.type]="'text'"
+                    [attr.readonly]="true"
+                    (click)="voterUrlInput.click()"
+                    [value]="fileNames.Voter_card"
+                  />
+
+                  <!-- Hidden file input for file selection -->
+                  <input
+                    type="file"
+                    #voterUrlInput
+                    accept=".pdf"
+                    (change)="onFileChange($event, 'Voter_card')"
+                    style="display: none"
+                  />
+
+                  <!-- Button to trigger file input click -->
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="voterUrlInput.click()"
+                    type="button"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+
+                  <!-- Validation error for Aadhar card file -->
+                  <mat-error
+                    *ngIf="
+                      employeeBasicDetails.get('voterIdUrl')?.touched &&
+                      employeeBasicDetails
+                        .get('voterIdUrl')
+                        ?.hasError('required')
+                    "
+                  >
+                    Please upload your Pan Card.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Passport Section -->
+        <div class="form-row">
+          <mat-card class="card">
+            <mat-card-content class="cpr-mat-card-content">
+              <div>
+                <label for="passPortUrl" class="document-name"
+                  >PassPort card
+                </label>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field class="cpr-mat-25" appearance="outline">
+                  <mat-label>Voter Card</mat-label>
+
+                  <!-- Display the selected file name (readonly input) -->
+                  <input
+                    matInput
+                    formControlName="passPortUrl"
+                    [attr.placeholder]="'Choose File'"
+                    [attr.type]="'text'"
+                    [attr.readonly]="true"
+                    (click)="passPortUrlInput.click()"
+                    [value]="fileNames.PassPort_card"
+                  />
+
+                  <!-- Hidden file input for file selection -->
+                  <input
+                    type="file"
+                    #passPortUrlInput
+                    accept=".pdf"
+                    (change)="onFileChange($event, 'PassPort_card')"
+                    style="display: none"
+                  />
+
+                  <!-- Button to trigger file input click -->
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="passPortUrlInput.click()"
+                    type="button"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+
+                  <!-- Validation error for Aadhar card file -->
+                  <mat-error
+                    *ngIf="
+                      employeeBasicDetails.get('passPortUrl')?.touched &&
+                      employeeBasicDetails
+                        .get('passPortUrl')
+                        ?.hasError('required')
+                    "
+                  >
+                    Please upload your Pan Card.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Ration Card Section -->
+        <div class="form-row">
+          <mat-card class="card">
+            <mat-card-content class="cpr-mat-card-content">
+              <div>
+                <label for="rationCardUrl" class="document-name"
+                  >Ration Card
+                </label>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field class="cpr-mat-25" appearance="outline">
+                  <mat-label>Ration Card</mat-label>
+
+                  <!-- Display the selected file name (readonly input) -->
+                  <input
+                    matInput
+                    formControlName="rationCardUrl"
+                    [attr.placeholder]="'Choose File'"
+                    [attr.type]="'text'"
+                    [attr.readonly]="true"
+                    (click)="rationCardUrlInput.click()"
+                    [value]="fileNames.Ration_card"
+                  />
+
+                  <!-- Hidden file input for file selection -->
+                  <input
+                    type="file"
+                    #rationCardUrlInput
+                    accept=".pdf"
+                    (change)="onFileChange($event, 'Ration_card')"
+                    style="display: none"
+                  />
+
+                  <!-- Button to trigger file input click -->
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    (click)="rationCardUrlInput.click()"
+                    type="button"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+
+                  <!-- Validation error for Aadhar card file -->
+                  <mat-error
+                    *ngIf="
+                      employeeBasicDetails.get('rationCardUrl')?.touched &&
+                      employeeBasicDetails
+                        .get('rationCardUrl')
+                        ?.hasError('required')
+                    "
+                  >
+                    Please upload your Pan Card.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Footer with Next Button -->
+        <mat-card-footer class="add-mat-card-footer">
+          <div>
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              [disabled]="!employeeBasicDetails.valid"
+              (click)="stepper.next()"
+            >
+              Next
+            </button>
+          </div>
+        </mat-card-footer>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="educationDetails" label="Education Details">
+    <form
+      *ngIf="educationDetails"
+      [class.blur-background]="isModalVisible"
+      [formGroup]="educationDetails"
+    >
+      <div class="example-container add-lead-main">
+        <!-- Form to handle dynamic education entries -->
+
+        <div formArrayName="education">
+          <!-- Loop through the education FormArray -->
+          <div
+            *ngFor="let education of education.controls; let i = index"
+            [formGroupName]="i"
+            class="section-container"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <h3 class="section-title">Employee Education</h3>
+              <div *ngIf="education.get('stepperStatus')?.value === 1">
+                <p class="section-title" style="color: green">Approved</p>
+              </div>
+              <div *ngIf="education.get('stepperStatus')?.value === 2">
+                <p class="section-title" style="color: red">Rejected</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Qualification</mat-label>
+                <mat-select formControlName="qualification">
+                  <mat-option
+                    *ngFor="let qua of qualificationList"
+                    [value]="qua.id"
+                  >
+                    {{ qua.commonRefValue }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Institute</mat-label>
+                <input matInput formControlName="institute" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Qualification Area</mat-label>
+                <mat-select formControlName="qualificationArea">
+                  <mat-option
+                    *ngFor="let qua of qualificationAreaList"
+                    [value]="qua.id"
+                  >
+                    {{ qua.commonRefValue }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Grade</mat-label>
+                <input matInput formControlName="grade" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Remarks</mat-label>
+                <input matInput formControlName="remarks" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Start Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="stdate"
+                  formControlName="startDate"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="stdate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #stdate></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>End Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="enddate"
+                  formControlName="endDate"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="enddate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #enddate></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- Remove button for a specific education entry -->
+            <button mat-button (click)="removeEducation(i)">Remove</button>
+          </div>
+        </div>
+
+        <!-- Button to add another education entry -->
+        <button mat-raised-button (click)="addEducation()">
+          Add More Education
+        </button>
+
+        <mat-card-footer class="add-mat-card-footer">
+          <div>
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              [disabled]="!educationDetails.valid"
+              (click)="stepper.next()"
+            >
+              Next
+            </button>
+          </div>
+        </mat-card-footer>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="empBankDetails" label="Bank Details">
+    <form
+      *ngIf="empBankDetails"
+      [class.blur-background]="isModalVisible"
+      [formGroup]="empBankDetails"
+    >
+      <div class="example-container add-lead-main">
+        <div class="section-container">
+          <div *ngIf="empBankDetails.get('stepperStatus')?.value === 1">
+            <p class="section-title" style="color: green">Approved</p>
+          </div>
+          <div *ngIf="empBankDetails.get('stepperStatus')?.value === 2">
+            <p class="section-title" style="color: red">Rejected</p>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Bank Name</mat-label>
+              <input matInput formControlName="bankName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Account Number</mat-label>
+              <input matInput formControlName="bankAccountNumber" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>IFSC Code</mat-label>
+              <input matInput formControlName="bankIfscCode" />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Account Type</mat-label>
+              <input matInput formControlName="accountType" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Adhar Number</mat-label>
+              <input matInput formControlName="aadhaarNumber" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Pan Number</mat-label>
+              <input matInput formControlName="panNumber" />
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-radio-group
+              formControlName="esicInclude"
+              class="input-field-33"
+            >
+              <mat-label>esic Include</mat-label>
+              <mat-radio-button value="Yes">Yes</mat-radio-button>
+              <mat-radio-button value="No">No</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-radio-group formControlName="pfInclude" class="input-field-33">
+              <mat-label>PF Include</mat-label>
+              <mat-radio-button value="Yes">Yes</mat-radio-button>
+              <mat-radio-button value="No">No</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-radio-group
+              formControlName="lwfInclude"
+              class="input-field-33"
+            >
+              <mat-label>LWF Include</mat-label>
+              <mat-radio-button value="Yes">Yes</mat-radio-button>
+              <mat-radio-button value="No">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="mobileNumber" />
+            </mat-form-field>
+            <mat-form-field
+              *ngIf="empBankDetails.get('esicInclude')?.value === 'Yes'"
+              appearance="outline"
+              class="input-field-33"
+            >
+              <mat-label>esic Number</mat-label>
+              <input matInput formControlName="esicNumber" />
+            </mat-form-field>
+            <mat-form-field
+              *ngIf="empBankDetails.get('pfInclude')?.value === 'Yes'"
+              appearance="outline"
+              class="input-field-33"
+            >
+              <mat-label>PF Number</mat-label>
+              <input matInput formControlName="pfNumber" />
+            </mat-form-field>
+
+            <mat-form-field
+              *ngIf="empBankDetails.get('pfInclude')?.value === 'Yes'"
+              appearance="outline"
+              class="input-field-33"
+            >
+              <mat-label>UAN Number</mat-label>
+              <input matInput formControlName="uanNumber" />
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-card-footer class="add-mat-card-footer">
+          <div>
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              [disabled]="!empBankDetails.valid"
+              (click)="stepper.next()"
+            >
+              Next
+            </button>
+          </div>
+        </mat-card-footer>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Step 2: Employment Details (Optional) -->
+  <mat-step [stepControl]="addressForm" label="Address Details">
+    <form *ngIf="permanentAddress" [formGroup]="permanentAddress">
+      <div class="example-container add-lead-main">
+        <div class="section-container">
+          <div style="display: flex; justify-content: space-between">
+            <h3 class="section-title">Pemanent Address</h3>
+            <div *ngIf="permanentAddress.get('stepperStatus')?.value === 1">
+              <p class="section-title" style="color: green">Approved</p>
+            </div>
+            <div *ngIf="permanentAddress.get('stepperStatus')?.value === 2">
+              <p class="section-title" style="color: red">Rejected</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Door Number</mat-label>
+              <input matInput formControlName="doorNo" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>House Owner Name</mat-label>
+              <input matInput formControlName="houseOwnerName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Street/Main Rode</mat-label>
+              <input matInput formControlName="streetOrRoad" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Post</mat-label>
+              <input matInput formControlName="post" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Pin Code</mat-label>
+              <input matInput formControlName="pincode" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>State</mat-label>
+              <mat-select formControlName="state">
+                <mat-option *ngFor="let state of indianStates" [value]="state">
+                  {{ state }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Police Station Limits</mat-label>
+              <input matInput formControlName="policeStationLimits" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+    <form *ngIf="temporaryAddress" [formGroup]="temporaryAddress">
+      <div class="example-container add-lead-main">
+        <div class="section-container">
+          <div style="display: flex; justify-content: space-between">
+            <h3 class="section-title">Temporary Address</h3>
+            <div *ngIf="temporaryAddress.get('stepperStatus')?.value === 1">
+              <p class="section-title" style="color: green">Approved</p>
+            </div>
+            <div *ngIf="temporaryAddress.get('stepperStatus')?.value === 2">
+              <p class="section-title" style="color: red">Rejected</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Door Number</mat-label>
+              <input matInput formControlName="doorNo" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>House Owner Name</mat-label>
+              <input matInput formControlName="houseOwnerName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Street/Main Rode</mat-label>
+              <input matInput formControlName="streetOrRoad" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Post</mat-label>
+              <input matInput formControlName="post" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Pin Code</mat-label>
+              <input matInput formControlName="pincode" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>State</mat-label>
+              <mat-select formControlName="state">
+                <mat-option *ngFor="let state of indianStates" [value]="state">
+                  {{ state }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="input-field-33">
+              <mat-label>Police Station Limits</mat-label>
+              <input matInput formControlName="policeStationLimits" />
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <h5>Set Point of Contact</h5>
+            <mat-radio-group [formControl]="selectedContactControl">
+              <mat-radio-button value="permanent"
+                >Permanent Address</mat-radio-button
+              >
+              <mat-radio-button value="temporary"
+                >Temporary Address</mat-radio-button
+              >
+            </mat-radio-group>
+          </div>
+
+          <div>
+            <!-- Next button will be enabled only if the form is valid -->
+            <button
+              mat-flat-button
+              class="btn-class primary"
+              (click)="sameAsPermanent()"
+            >
+              Same As Permanent
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <mat-card-footer class="add-mat-card-footer">
+      <div>
+        <!-- Next button will be enabled only if the form is valid -->
+        <button
+          mat-flat-button
+          class="btn-class primary"
+          [disabled]="!permanentAddress.valid"
+          (click)="stepper.next()"
+        >
+          Next
+        </button>
+      </div>
+    </mat-card-footer>
+  </mat-step>
+
+  <!-- Step 3: Resignation Details (Optional) -->
+  <mat-step [stepControl]="empFamilyDetails" label="Employee Family Details">
+    <form *ngIf="empFamilyDetails" [formGroup]="empFamilyDetails">
+      <div class="example-container add-lead-main">
+        <!-- Loop through familyDetails FormArray -->
+        <div formArrayName="familyDetails">
+          <div
+            *ngFor="let familyDetail of familyDetails.controls; let i = index"
+            [formGroupName]="i"
+            class="section-container"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <h3 class="section-title">Family Details</h3>
+              <div *ngIf="familyDetail.get('stepperStatus')?.value === 1">
+                <p class="section-title" style="color: green">Approved</p>
+              </div>
+              <div *ngIf="familyDetail.get('stepperStatus')?.value === 2">
+                <p class="section-title" style="color: red">Rejected</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Relationship</mat-label>
+                <input matInput formControlName="relationship" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Contact No</mat-label>
+                <input matInput formControlName="contactNo" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Age</mat-label>
+                <input matInput formControlName="age" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Date Of Birth</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="famdobpicker"
+                  formControlName="dateOfBirth"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="famdobpicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #famdobpicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Remarks</mat-label>
+                <input matInput formControlName="remarks" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="address" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label> Country</mat-label>
+                <input matInput formControlName="country" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="input-field-33">
+                <mat-label>Pincode</mat-label>
+                <input matInput formControlName="pincode" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-card class="card">
+                <mat-card-content class="cpr-mat-card-content">
+                  <!-- <div class="label-div">
+                    <label for="familyMemberId" class="document-name"
+                      >ID card
+                    </label>
+                  </div> -->
+
+                  <div class="form-row">
+                    <mat-form-field class="cpr-mat-25" appearance="outline">
+                      <mat-label >ID Card</mat-label>
+
+                      <!-- Display the selected file name (readonly input) -->
+                      <input
+                        matInput
+                        formControlName="familyMemberId"
+                        [attr.placeholder]="'Choose File'"
+                        [attr.type]="'text'"
+                        [attr.readonly]="true"
+                        (click)="familyMemberIdInput.click()"
+                        [value]="fileNames.family_member"
+                      />
+
+                      <!-- Hidden file input for file selection -->
+                      <input
+                        type="file"
+                        #familyMemberIdInput
+                        accept=".pdf"
+                        (change)="onFileChange($event, 'family_member' ,i)"
+                        style="display: none"
+                      />
+
+                      <!-- Button to trigger file input click -->
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="familyMemberIdInput.click()"
+                        type="button"
+                      >
+                        <mat-icon>attach_file</mat-icon>
+                      </button>
+
+                      <!-- Validation error for Aadhar card file -->
+                      <mat-error
+                        *ngIf="
+                          employeeBasicDetails.get('familyMemberId')?.touched &&
+                          employeeBasicDetails
+                            .get('familyMemberId')
+                            ?.hasError('required')
+                        "
+                      >
+                        Please upload your Family MemberId Card.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <!-- Button to remove a family detail entry -->
+            <button mat-button (click)="removeFamilyDetail(i)">Remove</button>
+          </div>
+        </div>
+
+        <!-- Button to add new family detail entry -->
+        <button mat-raised-button (click)="addFamilyDetail()">
+          Add More Family Details
+        </button>
+      </div>
+    </form>
+
+    <mat-card-footer class="add-mat-card-footer">
+      <div>
+        <button
+          mat-flat-button
+          class="btn-class primary"
+          (click)="submitAllForms()"
+        >
+          {{ submitting }}
+        </button>
+        <button
+          *ngIf="roleName === 'HR Super Admin' && !isAdding"
+          (click)="setSubmitting('REJECTED')"
+          mat-flat-button
+          class="btn-class warn"
+          type="button"
+        >
+          Reject
+        </button>
+        <button
+          *ngIf="isAdding"
+          mat-flat-button
+          class="btn-class warn"
+          (click)="clearForm()"
+          type="button"
+        >
+          RESET
+        </button>
+        <!-- Next button will be enabled only if the form is valid -->
+        <button
+          mat-flat-button
+          class="btn-class accent"
+          type="button"
+          (click)="gotoEmployee()"
+          class="btn-class primary"
+          [disabled]="!empFamilyDetails.valid"
+        >
+          BACK Next
+        </button>
+      </div>
+    </mat-card-footer>
+  </mat-step>
+</mat-horizontal-stepper>
+<!-- 
+<mat-card-footer class="add-mat-card-footer">
+   <div>
+    <button mat-flat-button class="btn-class primary">
+      {{ isAdding ? "ADD" : "UPDATE" }}
+    </button>
+    <button *ngIf="isAdding" mat-flat-button class="btn-class warn" (click)="clearForm()" type="button">
+      RESET
+    </button>
+    <button mat-flat-button class="btn-class accent" type="button" (click)="gotoEmployee()">
+      BACK
+    </button>
+  </div> 
+</mat-card-footer> -->

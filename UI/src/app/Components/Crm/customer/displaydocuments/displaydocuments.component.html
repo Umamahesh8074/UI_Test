@@ -1,0 +1,95 @@
+<div class="customer-component-bg-color">
+  <div class="customer-documents">
+    <div class="units-heading">
+      <h2 class="booking-header">UNIT DOCUMENTS</h2>
+    </div>
+
+    <div class="example-button-row">
+      <!-- Display dropdown if multiple units -->
+      <mat-form-field
+        class="mat-20 custom-select stages-mdc-text-field"
+        appearance="outline"
+        *ngIf="units.length > 1"
+      >
+        <mat-label>Please Select Booked Units</mat-label>
+        <mat-select class="mat-mini" (selectionChange)="onUnitSelected($event)">
+          <mat-option *ngFor="let unit of units" [value]="unit.unitId">
+            {{ unit.unitName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Automatically display selected unit if only one -->
+      <div *ngIf="units.length === 1">
+        <mat-form-field
+          class="mat-45 stages-mdc-text-field"
+          appearance="outline"
+          [disabled]="true"
+        >
+          <mat-label>Selected Unit</mat-label>
+          <mat-select
+            class="mat-mini"
+            [value]="units[0].unitName"
+            (selectionChange)="onUnitSelected({ value: units[0].unitId })"
+          >
+            <mat-option [value]="units[0].unitName">
+              {{ units[0].unitName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="documentmain" *ngIf="paginatedDocuments && paginatedDocuments.length > 0">
+      <!-- Pagination previous button -->
+      <div class="pagination-controls" [hidden]="selectedUnitId === 0">
+        <div>
+          <i
+            class="bi bi-chevron-left"
+            (click)="goToPreviousPage()"
+            [hidden]="currentPage === 0"
+          ></i>
+        </div>
+      </div>
+
+      <!-- Document list display with 3 items per row -->
+      <div class="documentdev">
+        <div class="download-buttons">
+          <div class="button-group" *ngFor="let document of paginatedDocuments">
+            <span>{{ document.fileName }}</span>
+
+            <ng-container *ngIf="document.fileUrl; else noDataFound">
+              <div style="margin-top: 15px">
+                <i
+                  class="bi bi-file-earmark-arrow-down-fill"
+                  style="font-size: 20px"
+                  (click)="downloadDocument(document.fileUrl, document.fileName)"
+                ></i>
+              </div>
+            </ng-container>
+
+            <ng-template #noDataFound>
+              <div style="margin-top: 15px">No File Present</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination next button -->
+      <div class="pagination-controls" [hidden]="selectedUnitId === 0">
+        <div style="padding: 10px">
+          <i
+            class="bi bi-chevron-right"
+            (click)="goToNextPage()"
+            [hidden]="!hasNextPage()"
+          ></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Handle case where no documents are available -->
+    <div *ngIf="documentsData && documentsData.length === 0">
+      <p>No documents available.</p>
+    </div>
+  </div>
+</div>

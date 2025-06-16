@@ -1,0 +1,8 @@
+.cp-invoice-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  width: 100%;
+  font-size: 1.5rem;
+}

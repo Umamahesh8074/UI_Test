@@ -1,0 +1,23 @@
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.input-field-33 {
+  flex: 1;
+  max-width: 32%;
+}
+
+.add-mat-card-footer {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.cmn-mat-card-content {
+  padding: 16px;
+}
+
+.btn-class {
+  margin: 0 8px;
+}

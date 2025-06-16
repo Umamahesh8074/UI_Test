@@ -1,0 +1,14 @@
+.ac-serach-class {
+  width: 20%;
+}
+
+.ac-ml-2 {
+  margin-left: 0.1%;
+}
+
+.ac-search-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin-left: 2%;
+}

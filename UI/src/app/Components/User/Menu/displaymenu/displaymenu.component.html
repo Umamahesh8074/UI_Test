@@ -1,0 +1,89 @@
+<h4 class="header">MENU</h4>
+<div class="example-button-row">
+  <span
+    ><mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Menu Name</mat-label>
+      <input
+        matInput
+        (input)="onSearch($any($event).target?.value)"
+      /> </mat-form-field
+  ></span>
+  <span>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addMenu()"
+      class="btn-class"
+    >
+      <i class="bi bi-sign-intersection-fill h6"></i> ADD
+    </button>
+  </span>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table matSort mat-table [dataSource]="menuData" class="mat-elevation-z8">
+        <ng-container matColumnDef="menuName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Menu Name
+          </th>
+          <td mat-cell *matCellDef="let menu">{{ menu.menuName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let menu">{{ menu.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let menu">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editMenu(menu)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <i
+              (click)="openConfirmDialog(menu.menuId)"
+              style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger"
+              *ngIf="menu.status == 'A'"
+            ></i>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let menu of menuData; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

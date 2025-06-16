@@ -1,0 +1,120 @@
+<div class="pac-header">PREVIEW INDENT</div>
+<form [formGroup]="formData">
+  <div>
+    <mat-card class="ind-details-card">
+      <mat-card-content class="cmn-card-content">
+        <div class="tab-head">
+          <div class="row sub-details-div">
+            <div class="column1">
+              <div *ngIf="approvalIndents?.projecName">
+                <b class="column-div">PROJECT NAME:</b>
+                {{ approvalIndents.projecName }}
+              </div>
+              <div *ngIf="approvalIndents?.createdBy">
+                <b class="column-div">CREATED BY:</b>
+                {{ approvalIndents.createdBy }}
+              </div>
+
+              <div *ngIf="approvalIndents?.currentStageOwner">
+                <b class="column-div">CURRENT STAGE OWNER:</b>
+                {{ approvalIndents.currentStageOwner }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="approvalIndents?.indentCode">
+                <b class="column-div">INDENT CODE:</b>
+                {{ approvalIndents.indentCode }}
+              </div>
+              <div *ngIf="approvalIndents?.createdDate">
+                <b class="column-div">CREATED DATE:</b>
+                {{ approvalIndents.createdDate | date : "MMM d, yyyy" }}
+              </div>
+
+              <div *ngIf="approvalIndents?.currentStageName">
+                <b class="column-div">CURRENT STAGE NAME:</b>
+                {{ approvalIndents.currentStageName }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="approvalIndents?.requiredDate">
+                <b class="column-div">REQUIRED DATE:</b>
+                {{ approvalIndents.requiredDate | date : "MMM d, yyyy" }}
+              </div>
+
+              <div *ngIf="approvalIndents?.indentStatus">
+                <b class="column-div">CURRENT STAGE STATUS:</b>
+                {{ approvalIndents.indentStatus }}
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0rem 1rem">
+            <div class="radio-button-id">INDENT ITEMS</div>
+            <app-indent-items [indentItems]="indentItems"></app-indent-items>
+            <mat-paginator
+              [length]="totalItems"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="[5, 10, 15, 20, 25]"
+              (page)="onPageChange($event)"
+              showFirstLastButtons
+              class="custom-paginator"
+              style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+            ></mat-paginator>
+          </div>
+
+          <div *ngIf="!isLoading" style="padding: 0rem 1rem">
+            <div class="radio-button-id">STAGE DETAILS</div>
+            <ng-container>
+              <app-workorder-stage [stagesDto]="stages"></app-workorder-stage>
+            </ng-container>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="gotoIndent()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            type="button"
+            (click)="approvalStatus('Rejected')"
+            *ngIf="isFromPendingApporvals"
+          >
+            REJECT
+          </button>
+<!--          
+          <button
+            mat-flat-button
+            class="btn-class primary"
+            type="button"
+            (click)="approvalStatus('Rework')"
+            *ngIf="isFromPendingApporvals"
+          >
+            REWORK
+          </button> -->
+          
+          <button
+            mat-flat-button
+            class="btn-class success"
+            type="button"
+            (click)="approvalStatus('Approval')"
+            type="button"
+            *ngIf="isFromPendingApporvals"
+          >
+            APPROVE
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

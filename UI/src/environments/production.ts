@@ -1,0 +1,15 @@
+export const environment = {
+  production: true,
+  userBaseUrl: 'http://65.2.49.230:1093/api/user',
+  projectBaseUrl: 'http://65.2.49.230:1093/api/project',
+  procurementBaseUrl: 'http://65.2.49.230:1093/api/procurement',
+  leadBaseUrl: 'http://65.2.49.230:1093/api/lead',
+  workflowBaseUrl: 'http://65.2.49.230:1093/api/workflow',
+  leaveBaseUrl: 'http://65.2.49.230:1093/api/leave',
+  facilitymanagementBaseUrl: 'http://65.2.49.230:1093/api/facility-management',
+  accountBaseUrl: 'http://65.2.49.230:1093/api/account',
+  hrmBaseUrl: 'http://65.2.49.230:1093/api/hrm',
+  projectUrl: 'http://65.2.49.230:1002/api/project',
+  supersetBaseUrl: 'http://65.2.49.230:8088',
+  crmDashBoardId: '197e02ea-db9d-47d0-8ec1-8af3571fc11d',
+};

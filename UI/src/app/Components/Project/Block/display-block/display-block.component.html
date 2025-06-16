@@ -1,0 +1,125 @@
+<h4 class="header" style="padding-top: 1%; font-weight: bold">TOWERS</h4>
+
+<div class="example-button-row">
+  <mat-form-field appearance="outline" class="serach-class">
+    <mat-label>Search On Project Name</mat-label>
+    <input matInput (input)="onSearchProject($any($event).target?.value)" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="search-class ml-2">
+    <mat-label>Search On Tower Name</mat-label>
+    <input matInput (input)="onSerachBlockName($any($event).target?.value)" />
+  </mat-form-field>
+
+  <div>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addBlock()"
+      class="btn-class"
+    >
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="blockData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let block">{{ block.projectName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="blockName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Tower Name
+          </th>
+          <td mat-cell *matCellDef="let block">{{ block.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="noOfLevels">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Number Of Floors
+          </th>
+          <td mat-cell *matCellDef="let block">{{ block.noOfLevels }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let block">{{ block.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let block">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editBlock(block)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <i
+              (click)="openConfirmDialog(block.id)"
+              style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger"
+              *ngIf="block.status == 'A'"
+            ></i>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let block of blockData; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

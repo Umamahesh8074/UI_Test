@@ -1,0 +1,39 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+.filters-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-right: 1.8rem;
+}
+.cat-search-container-div {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin-left: 2%;
+}
+.cat-serach-class {
+  width: 26%;
+}
+
+.cat-ml-div-2 {
+  margin-left: 2%;
+}
+
+.cat-clear-date-div {
+  color: white;
+  cursor: pointer;
+  border: 1px solid #333;
+  height: 26px !important;
+  font-size: 25px;
+  background: #fff;
+  width: 30px;
+  margin-left: 4px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: #004869;
+}

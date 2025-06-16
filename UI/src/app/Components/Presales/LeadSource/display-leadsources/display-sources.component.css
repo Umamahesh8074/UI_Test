@@ -1,0 +1,29 @@
+/* table {
+  width: 100%;
+}
+.header {
+  font-weight: bold;
+  text-align: center;
+  margin: 1%;
+}
+
+.example-button-row {
+  padding: 0 40px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+mat-card {
+  margin-left: 2%;
+  margin-right: 2%;
+  height: 69vh;
+}
+mat-card-content {
+  height: 100%;
+}
+
+.tab-head {
+  height: 100% !important;
+  overflow: auto;
+} */

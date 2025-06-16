@@ -1,0 +1,113 @@
+<h3 class="header"><b>Reasign Issue Type</b></h3>
+
+<div class="example-button-row">
+  <span
+  ><mat-form-field appearance="outline" class="serach-class">
+    <mat-label>Search On Issue Name</mat-label>
+    <input matInput  (input)="getIssuesByName($any($event).target?.value)" > </mat-form-field
+></span>
+</div>
+
+<mat-card>
+    <mat-card-content>
+      <div>
+        <table matSort mat-table [dataSource]="issuesData" class="mat-elevation-z8">
+          <ng-container matColumnDef="ticketNumber">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Ticket Number
+            </th>
+            <td mat-cell *matCellDef="let issues">{{ issues.issueNumber }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="issueType">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Issue Type
+            </th>
+            <td mat-cell *matCellDef="let issues">{{ issues.issueTypeName }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="issueDiscription">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Issue Description
+            </th>
+            <td mat-cell *matCellDef="let issues">{{ issues.issueDescription }}</td>
+          </ng-container>
+          <ng-container matColumnDef="issueStartDate">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Issue Start Date
+            </th>
+            <td mat-cell *matCellDef="let issues">
+             
+              {{
+                issues.issueRequestDate
+                ? (issues.issueRequestDate | date : "yyyy-MM-dd")
+                : ""
+                }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="issueStatus">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Issue Status
+            </th>
+            <td mat-cell *matCellDef="let issues">{{ issues.issueStatus }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="actions">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Actions
+            </th>
+            <td mat-cell *matCellDef="let issues">
+              <i class="bi bi-pencil " style="cursor: pointer" (click)="editIssue(issues)"></i>
+              <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+              <!-- <i
+                (click)="openConfirmDialog(issues.issuesId)"
+                style="color: red; cursor: pointer"
+                class="bi bi-trash text-danger"
+              ></i> -->
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let issues of issuesData; columns: displayedColumns"
+          ></tr>
+        </table>
+      </div>
+    </mat-card-content>
+    <mat-card-footer>
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 20]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      ></mat-paginator>
+    </mat-card-footer>
+  </mat-card>
+
+

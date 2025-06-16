@@ -1,0 +1,428 @@
+<div class="pac-header">
+  <div class="center">SALE AGREEMENTS</div>
+  <div class="right">
+    <button
+      mat-flat-button
+      class="btn-class-home"
+      id="goBack"
+      style="background-color: rgb(97, 97, 38); color: white; width: 8rem"
+      (click)="goBack()"
+    >
+      Go To Home
+    </button>
+  </div>
+</div>
+<div class="search-container">
+  <mat-form-field appearance="outline" class="search-class ml-2">
+    <mat-label>Search On Applicant Name</mat-label>
+    <input
+      matInput
+      placeholder="Enter Applicant Name"
+      (input)="onSearchApplicantName($any($event).target?.value)"
+    />
+  </mat-form-field>
+  <!-- PROJECT -->
+  <mat-form-field appearance="outline" class="search-class">
+    <input
+      type="text"
+      placeholder="Select Projects"
+      aria-label="Select projects"
+      matInput
+      [matAutocomplete]="projectAuto"
+      [formControl]="project"
+      (input)="searchProject($event)"
+    />
+  </mat-form-field>
+
+  <mat-autocomplete #projectAuto="matAutocomplete">
+    <mat-option>
+      <mat-checkbox
+        #allProjectSelected
+        (click)="onAllSelectProject()"
+        [checked]="isProjectAllSelected()"
+        >All</mat-checkbox
+      ></mat-option
+    >
+    <mat-option
+      *ngFor="let project of userManageprojects"
+      (click)="$event.preventDefault()"
+    >
+      <div (click)="$event.stopPropagation()">
+        <mat-checkbox
+          [checked]="isSelectedProject(project.projectId)"
+          (change)="onProjectSelect(project, $event)"
+          (click)="$event.stopPropagation()"
+        >
+          {{ project.projectName }}
+        </mat-checkbox>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="onProjectSelectButtonClick()"
+    type="button"
+    style="margin-left: -3px;"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+
+  <!-- BLOCK -->
+  <mat-form-field appearance="outline" class="search-class ml-2">
+    <input
+      type="text"
+      placeholder="Select Block"
+      aria-label="Select Blocks"
+      matInput
+      [matAutocomplete]="blockAuto"
+      [formControl]="block"
+      (input)="searchBlock($event)"
+    />
+  </mat-form-field>
+
+  <mat-autocomplete #blockAuto="matAutocomplete">
+    <mat-option>
+      <mat-checkbox
+        #allBlockSelected
+        (click)="onAllSelectBlock()"
+        [checked]="isBlockAllSelected()"
+        >All</mat-checkbox
+      ></mat-option
+    >
+    <mat-option *ngFor="let block of blocks" (click)="$event.preventDefault()">
+      <div (click)="$event.stopPropagation()">
+        <mat-checkbox
+          [checked]="isSelectedBlock(block.id)"
+          (change)="onBlockSelect(block, $event)"
+          (click)="$event.stopPropagation()"
+        >
+          {{ block.name + " ( " + block.projectCode + " )" }}
+        </mat-checkbox>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="onBlockSelectButtonClick()"
+    type="button"
+    style="margin-left: -3px;"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+  <!-- UNIT -->
+  <mat-form-field class="search-class" appearance="outline">
+    <mat-label>Search/Select Unit</mat-label>
+    <input
+      type="text"
+      matInput
+      (input)="searchUnit($event)"
+      [formControl]="unit"
+      [matAutocomplete]="unitAuto"
+    />
+    <mat-autocomplete
+      #unitAuto="matAutocomplete"
+      (optionSelected)="onUnitSelect($event)"
+      [displayWith]="displayUnit"
+    >
+      <mat-option *ngFor="let option of units" [value]="option">
+        {{ option.unitName }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="search-class ml-2">
+    <mat-label>Select Status</mat-label>
+    <mat-select
+      [(ngModel)]="actionStatusId"
+      (selectionChange)="onStatusChange($event)"
+    >
+      <mat-option
+        *ngFor="let element of actionStatusNames"
+        [value]="element.id"
+      >
+        {{ element.commonRefValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="search-class ml-2">
+    <mat-label>Unit Belongs To</mat-label>
+    <mat-select
+      (selectionChange)="onUnitTypeBelongsChange($event)"
+      [(ngModel)]="typeId"
+    >
+      <mat-option *ngFor="let element of companyType" [value]="element.id">
+        {{ element.commonRefValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="applicantInfoData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerName">
+          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <td mat-cell *matCellDef="let charge">
+            {{ charge.firstApplicantName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectName">
+          <th mat-header-cell *matHeaderCellDef>Project Name</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.projectName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerPhoneNumber">
+          <th mat-header-cell *matHeaderCellDef>Phone Number</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.firstApplicantPhoneNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unitName">
+          <th mat-header-cell *matHeaderCellDef>Unit</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.unitName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="finalPrice">
+          <th mat-header-cell *matHeaderCellDef>
+            Total Unit Cost (Including GST)
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let applicationInfo"
+            [ngClass]="{
+              'blue-amount': applicationInfo.formattedTotalUnitCost
+            }"
+          >
+            {{ applicationInfo.formattedTotalUnitCost }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="receivedAmount">
+          <th mat-header-cell *matHeaderCellDef>Received Amount</th>
+          <td
+            mat-cell
+            *matCellDef="let applicationInfo"
+            [ngClass]="{
+              'green-amount': applicationInfo.formattedReceivedAmount
+            }"
+          >
+            {{ applicationInfo.formattedReceivedAmount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="approvedStatus">
+          <th mat-header-cell *matHeaderCellDef>Action Status</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.saleAgreementStatus }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="landOwnerOrBuilder">
+          <th mat-header-cell *matHeaderCellDef>Unit Belongs To</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.landOwnerOrBuilder }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="bookingDate">
+          <th mat-header-cell *matHeaderCellDef>Booking Date</th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            {{ applicationInfo.bookingDate }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let applicationInfo">
+            <div class="icons">
+              <mat-icon
+                *ngIf="
+                  applicationInfo.saleAgreementStatus !== 'Pending' &&
+                  applicationInfo.saleAgreementStatus !== 'Approved' &&
+                  applicationInfo.saleAgreementStatus !== 'Waiting For Approval'
+                "
+                class="action-icon"
+                matTooltip="Upload Sale Agreement"
+                (click)="openUploadModal(applicationInfo)"
+              >
+                attach_file
+              </mat-icon>
+              <mat-icon
+                *ngIf="
+                  applicationInfo.saleAgreementStatus == 'Approved' &&
+                  !applicationInfo.signedSaleAgreementUrl
+                "
+                class="action-icon"
+                matTooltip="Upload Signed Sale Agreement"
+                (click)="openUploadModalForSignedSaleAgreement(applicationInfo)"
+              >
+                attach_file
+              </mat-icon>
+              <mat-icon
+                *ngIf="
+                  applicationInfo.saleAgreementStatus !== 'Pending' &&
+                  applicationInfo.saleAgreementStatus !== 'Approved' &&
+                  applicationInfo.saleAgreementStatus !== 'Waiting For Approval'
+                "
+                class="action-icon"
+                (click)="generateReport(applicationInfo)"
+                matTooltip="Generate Sale Agreement"
+                >description</mat-icon
+              >
+              <mat-icon
+                *ngIf="
+                  applicationInfo.salesAgreementUrl &&
+                  !applicationInfo.signedSaleAgreementUrl
+                "
+                class="action-icon"
+                (click)="
+                  downloadUploadedSalesAgreement(
+                    applicationInfo.salesAgreementUrl
+                  )
+                "
+                matTooltip="Download Sale Agreement"
+              >
+                download
+              </mat-icon>
+              <mat-icon
+                *ngIf="applicationInfo.signedSaleAgreementUrl"
+                class="action-icon"
+                (click)="
+                  downloadUploadedSalesAgreement(
+                    applicationInfo.signedSaleAgreementUrl
+                  )
+                "
+                matTooltip="Download Signed Sale Agreement"
+              >
+                download
+              </mat-icon>
+              <mat-icon
+                matTooltip="View Sale Agreement"
+                (click)="viewDocument(applicationInfo.salesAgreementUrl)"
+                class="action-icon"
+                *ngIf="
+                  applicationInfo.salesAgreementUrl &&
+                  !applicationInfo.signedSaleAgreementUrl
+                "
+              >
+                visibility
+              </mat-icon>
+              <mat-icon
+                matTooltip="View Signed Sale Agreement"
+                (click)="viewDocument(applicationInfo.signedSaleAgreementUrl)"
+                class="action-icon"
+                *ngIf="applicationInfo.signedSaleAgreementUrl"
+              >
+                visibility
+              </mat-icon>
+              <mat-icon
+                class="action-icon"
+                matTooltip="Send For Approve"
+                (click)="sendForApproval(applicationInfo)"
+                *ngIf="applicationInfo.saleAgreementStatus == 'Create'"
+                >send</mat-icon
+              >
+              <mat-icon
+                class="action-icon"
+                matTooltip="Send For Approve"
+                (click)="sendForApprovalAfterRework(applicationInfo)"
+                *ngIf="applicationInfo.saleAgreementStatus == 'Rework'"
+                >send</mat-icon
+              >
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          class="table-row"
+          mat-row
+          *matRowDef="let charge of paymentDetails; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <b>
+    <hr style="margin: 0" />
+  </b>
+  <mat-card-footer class="pagination-sec">
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator"
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>
+<div
+  *ngIf="isModalOpen"
+  class="modal fade show"
+  style="display: block; background: rgba(0, 0, 0, 0.5)"
+  id="uploadModal"
+  tabindex="-1"
+  aria-labelledby="uploadModalLabel"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Upload Sale Agreement</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- File Input -->
+        <div class="mb-3">
+          <input
+            type="file"
+            id="fileInput"
+            (change)="onFileChange($event)"
+            class="form-control"
+            accept=".pdf,.docx,.xlsx"
+          />
+          <div *ngIf="fileTypeError" class="error-message">
+            {{ fileSizeDisplay }}
+          </div>
+          <div *ngIf="selectedFile" class="file-name">
+            Selected: {{ fileSizeDisplay }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="uploadsSaleAgreement()"
+          [disabled]="!selectedFile"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

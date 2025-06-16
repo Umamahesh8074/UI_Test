@@ -1,0 +1,41 @@
+/* .mat-50 {
+  width: 100%;
+}
+
+.header {
+  font-size: 120%;
+  font-weight: bold;
+  text-align: center;
+  margin: 3%;
+}
+.card {
+  margin: 2%;
+  text-align: left;
+  width: 70%;
+  margin-left: 15%;
+} 
+/* .button {
+  margin: 0%;
+} */
+/* .mat-content {
+  margin-top: 20px;
+}
+.btn-class {
+  margin-left: 5px;
+}
+.form_heading {
+  justify-content: center;
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+} */
+
+.cmn-mat-card-content {
+  height: 100px;
+}
+.mat-mdc-card{
+  margin-top: 100px;
+}
+
+
+

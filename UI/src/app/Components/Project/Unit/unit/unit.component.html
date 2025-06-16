@@ -1,0 +1,367 @@
+<h4 class="header">
+  <div class="cmn-mat-card-header">
+    <b>{{ isAdding ? "ADD UNIT" : "EDIT UNIT" }}</b>
+  </div>
+</h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="container">
+    <mat-card class="card">
+      <mat-card-content class="cmn-mat-card-content">
+        <div
+          style="
+            position: sticky;
+            top: 0;
+            z-index: 9;
+            padding-top: 15px;
+            background: #fff;
+          "
+        >
+          <mat-form-field
+            appearance="outline"
+            class="units-mat-form-field-width"
+          >
+            <mat-label>Select Project</mat-label>
+            <mat-select formControlName="projectId">
+              <mat-option
+                *ngFor="let option of projects"
+                [value]="option.projectId"
+                [disabled]="!isAdding && !option.enabled"
+                (click)="
+                  isAdding && !option.enabled
+                    ? selectProject(option.projectId)
+                    : null
+                "
+              >
+                {{ option.projectName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="units-mat-form-field-width"
+          >
+            <mat-label>Select Block</mat-label>
+            <mat-select formControlName="blockId">
+              <mat-option
+                *ngFor="let option of blocks"
+                [value]="option.id"
+                [disabled]="!isAdding && !option.enabled"
+                (click)="
+                  isAdding && !option.enabled ? selectBlock(option.id) : null
+                "
+              >
+                {{ option.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field
+            appearance="outline"
+            class="units-mat-form-field-width"
+          >
+            <mat-label>Select Level</mat-label>
+            <mat-select formControlName="levelId">
+              <mat-option
+                *ngFor="let option of levels"
+                [value]="option.levelId"
+                [disabled]="!isAdding && !option.enabled"
+                (click)="
+                  isAdding && !option.enabled
+                    ? selectLevel(option.levelId)
+                    : null
+                "
+              >
+                {{ option.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="noOfUnits" class="unit-mat-card-content-child">
+          <div formArrayName="units" class="units">
+            <div *ngFor="let unit of units.controls; let i = index">
+              <h3 class="heading-unit">UNIT {{ i + 1 }}</h3>
+              <div [formGroupName]="i" class="unitdiv">
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>Unit Type</mat-label>
+                  <mat-select formControlName="unitTypeId">
+                    <mat-option
+                      *ngFor="let item of unitTypeNames"
+                      [value]="item.id"
+                    >
+                      {{ item.commonRefValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>Unit Name</mat-label>
+                  <input matInput formControlName="unitName" />
+                  <mat-error
+                    *ngIf="formData.get('unitName')?.hasError('required')"
+                  >
+                    Unit Name is required.
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field
+                  class="unit-mat-form-field-width"
+                  appearance="outline"
+                >
+                  <mat-label>EAST</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    [value]="selectedBoundaryEast?.commonRefValue"
+                    (input)="onBoundaryValueChange($event, 'east', i)"
+                    [formControl]="boundaryControlEast"
+                    (blur)="onBoundaryValueChange($event, 'east', i)"
+                    [matAutocomplete]="autoEast"
+                  />
+                  <mat-autocomplete
+                    #autoEast="matAutocomplete"
+                    (optionSelected)="onBoundariesSelect($event, 'east', i)"
+                    [displayWith]="displayBoundaries"
+                  >
+                    <mat-option
+                      *ngFor="let boundary of boundaries"
+                      [value]="boundary"
+                    >
+                      {{ boundary.commonRefValue }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <!-- West Boundary Search/Select -->
+                <mat-form-field
+                  class="unit-mat-form-field-width"
+                  appearance="outline"
+                >
+                  <mat-label>WEST</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    [value]="selectedBoundaryWest?.commonRefValue"
+                    (input)="onBoundaryValueChange($event, 'west', i)"
+                    (blur)="onBoundaryValueChange($event, 'west', i)"
+                    [formControl]="boundaryControlWest"
+                    [matAutocomplete]="autoWest"
+                  />
+                  <mat-autocomplete
+                    #autoWest="matAutocomplete"
+                    (optionSelected)="onBoundariesSelect($event, 'west', i)"
+                    [displayWith]="displayBoundaries"
+                  >
+                    <mat-option
+                      *ngFor="let boundary of boundaries"
+                      [value]="boundary"
+                    >
+                      {{ boundary.commonRefValue }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <!-- North Boundary Search/Select -->
+                <mat-form-field
+                  class="unit-mat-form-field-width"
+                  appearance="outline"
+                >
+                  <mat-label>NORTH</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    [value]="selectedBoundaryNorth?.commonRefValue"
+                    (input)="onBoundaryValueChange($event, 'north', i)"
+                    (blur)="onBoundaryValueChange($event, 'north', i)"
+                    [formControl]="boundaryControlNorth"
+                    [matAutocomplete]="autoNorth"
+                  />
+                  <mat-autocomplete
+                    #autoNorth="matAutocomplete"
+                    (optionSelected)="onBoundariesSelect($event, 'north', i)"
+                    [displayWith]="displayBoundaries"
+                  >
+                    <mat-option
+                      *ngFor="let boundary of boundaries"
+                      [value]="boundary"
+                    >
+                      {{ boundary.commonRefValue }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <!-- South Boundary Search/Select -->
+                <mat-form-field
+                  class="unit-mat-form-field-width"
+                  appearance="outline"
+                >
+                  <mat-label>SOUTH</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    [value]="selectedBoundarySouth?.commonRefValue"
+                    (input)="onBoundaryValueChange($event, 'south', i)"
+                    (blur)="onBoundaryValueChange($event, 'south', i)"
+                    [formControl]="boundaryControlSouth"
+                    [matAutocomplete]="autoSouth"
+                  />
+                  <mat-autocomplete
+                    #autoSouth="matAutocomplete"
+                    (optionSelected)="onBoundariesSelect($event, 'south', i)"
+                    [displayWith]="displayBoundaries"
+                  >
+                    <mat-option
+                      *ngFor="let boundary of boundaries"
+                      [value]="boundary"
+                    >
+                      {{ boundary.commonRefValue }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>Unit Facing</mat-label>
+                  <mat-select formControlName="unitFacingId">
+                    <mat-option
+                      *ngFor="let item of unitFaces"
+                      [value]="item.id"
+                    >
+                      {{ item.commonRefValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>Carpet Area In Sq.Ft</mat-label>
+                  <input
+                    matInput
+                    formControlName="carpetArea"
+                    (keydown)="restrictToNumbers($event)"
+                  />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>Balcony Area In Sq.Ft</mat-label>
+                  <input
+                    matInput
+                    formControlName="balconyArea"
+                    (keydown)="restrictToNumbers($event)"
+                  />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>UDS Area In Sq.Ft</mat-label>
+                  <input
+                    matInput
+                    formControlName="udsArea"
+                    (keydown)="restrictToNumbers($event)"
+                  />
+                </mat-form-field>
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>SBA Area In Sq.Ft</mat-label>
+                  <input
+                    matInput
+                    formControlName="sbaArea"
+                    (keydown)="restrictToNumbers($event)"
+                  />
+                </mat-form-field>
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                >
+                  <mat-label>Select Block</mat-label>
+                  <mat-select formControlName="projectDetailsId">
+                    <mat-option
+                      *ngFor="let option of projectDetails"
+                      [value]="option.id"
+                    >
+                      {{ option.companyName }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="unit-mat-form-field-width"
+                  *ngIf="!isAdding"
+                >
+                  <mat-label>Status</mat-label>
+                  <mat-select formControlName="status">
+                    <mat-option value="">Select Status</mat-option>
+                    <mat-option
+                      *ngFor="let element of statuses"
+                      [value]="element.commonRefKey"
+                    >
+                      {{ element.commonRefValue }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="formData.get('status')?.hasError('required')"
+                  >
+                    Please select one option
+                  </mat-error>
+                </mat-form-field>
+
+                <!-- <mat-form-field appearance="outline" class="unit-mat-form-field-width">
+                  <mat-label>Location</mat-label>
+                  <mat-select formControlName="locationId">
+                    <mat-option
+                      *ngFor="let item of locations"
+                      [value]="item.id"
+                    >
+                      {{ item.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoUnits()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

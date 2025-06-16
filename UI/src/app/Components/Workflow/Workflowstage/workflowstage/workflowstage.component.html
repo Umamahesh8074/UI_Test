@@ -1,0 +1,81 @@
+<h4 class="header">WORKFLOW STAGE</h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header class="cmn-mat-card-header"
+        ><b>{{
+          isAdding ? "ADD WORKFLOWSTAGE" : "EDIT WORKFLOWSTAGE"
+        }}</b></mat-card-header
+      >
+
+      <!-- <mat-card-content class="mat-content">
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>WorkflowType Name</mat-label>
+          <input matInput formControlName="workflowTypeId" />
+        </mat-form-field>
+      </mat-card-content> -->
+
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label> WorkflowType Name</mat-label>
+          <mat-select formControlName="workflowTypeId">
+            <mat-option value="">Select WorkflowType</mat-option>
+            <mat-option
+              *ngFor="let workflowtype of workflowTypes"
+              [value]="workflowtype.id"
+            >
+              {{ workflowtype.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Workflowstage Name</mat-label>
+          <input matInput formControlName="workflowStageName" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Description</mat-label>
+          <input matInput formControlName="description" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50">
+          <mat-label>Order Index</mat-label>
+          <input matInput formControlName="orderIndex" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="mat-50" *ngIf="!isAdding">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="">Select Status</mat-option>
+            <mat-option
+              *ngFor="let element of statuses"
+              [value]="element.commonRefKey"
+            >
+              {{ element.commonRefValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formData.get('status')?.hasError('required')">
+            Please select one option
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            accent
+            class="btn-class accent"
+            (click)="gotoWorkflowstages()"
+          >
+            BACK
+          </button>
+          <button mat-flat-button class="btn-class warn" (click)="clearForm()">
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

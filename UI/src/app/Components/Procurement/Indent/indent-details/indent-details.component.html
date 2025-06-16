@@ -1,0 +1,97 @@
+<div class="pac-header">PREVIEW INDENT</div>
+<form [formGroup]="formData">
+  <div>
+    <mat-card class="indent-details-card">
+      <mat-card-content class="cmn-card-content">
+        <div class="tab-head">
+          <div class="row sub-details-div" *ngIf="!this.isFromQuotation">
+            <div class="column1">
+              <div *ngIf="indentsArray?.projecName">
+                <b class="column-div">PROJECT NAME:</b>
+                {{ indentsArray.projecName }}
+              </div>
+              <div *ngIf="indentsArray?.createdBy">
+                <b class="column-div">CREATED BY:</b>
+                {{ indentsArray.createdBy }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="indentsArray?.indentCode">
+                <b class="column-div">INDENT CODE</b>
+                {{ indentsArray.indentCode }}
+              </div>
+              <div *ngIf="indentsArray?.createdDate">
+                <b class="column-div">CREATED DATE:</b>
+                {{ indentsArray.createdDate | date : "MMM d, yyyy" }}
+              </div>
+            </div>
+
+            <div class="column2">
+              <div *ngIf="indentsArray?.requiredDate">
+                <b class="column-div">REQUIRED DATE:</b>
+                {{ indentsArray.requiredDate | date : "MMM d, yyyy" }}
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0rem 1rem" *ngIf="indentItems.length > 0">
+            <div class="radio-button-id">INDENT ITEMS</div>
+            <app-indent-items [indentItems]="indentItems"></app-indent-items>
+            <mat-paginator
+              [length]="totalItems"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="[5, 10, 15, 20, 25]"
+              (page)="onPageChange($event)"
+              showFirstLastButtons
+              class="custom-paginator"
+              style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+            ></mat-paginator>
+          </div>
+
+          <div
+            *ngIf="!isLoading && stages.length > 0"
+            style="padding: 0rem 1rem"
+          >
+            <div class="radio-button-id">STAGE DETAILS</div>
+            <ng-container>
+              <app-workorder-stage [stagesDto]="stages"></app-workorder-stage>
+            </ng-container>
+          </div>
+
+          <div
+            style="padding: 0rem 1rem"
+            *ngIf="previousIndentItems.length > 0"
+          >
+            <div class="radio-button-id">PREVIOUS INDENT ITEMS</div>
+            <app-indent-items
+              [indentItems]="previousIndentItems"
+            ></app-indent-items>
+            <mat-paginator
+              [length]="previousTotalItems"
+              [pageSize]="previousPageSize"
+              [pageSizeOptions]="[5, 10, 15, 20, 25]"
+              (page)="onPreviousIndentPageChange($event)"
+              showFirstLastButtons
+              class="custom-paginator"
+              style="border-bottom: 1px solid #999; background-color: #f8f9fa"
+            ></mat-paginator>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            type="button"
+            (click)="gotoIndent()"
+          >
+            BACK
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

@@ -1,0 +1,11 @@
+.mat-card-scroll {
+    max-height: 98vh;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+  
+  .mat-45 {
+    width: 50%;
+  }
+
+ 

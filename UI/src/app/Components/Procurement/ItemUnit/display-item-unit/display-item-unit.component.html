@@ -1,0 +1,199 @@
+<!-- <h4 class="header" style="margin-left:50%"><b>ITEM-UNIT</b></h4> -->
+
+<div class="pac-header">MATERIAL CODE</div>
+
+<div class="filters-div">
+  <div class="iu-search-container-div">
+    <mat-form-field appearance="outline" class="sub-cat-serach-class">
+      <mat-label>Select Category Type</mat-label>
+      <mat-select
+        [(ngModel)]="workTypeId"
+        (selectionChange)="onWorkTypeChange($event)"
+      >
+        <mat-option value="All">All</mat-option>
+        <mat-option *ngFor="let element of options" [value]="element.id">
+          {{ element.commonRefValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="iu-serach-class iu-ml-div-2">
+      <mat-label> Search/Select Category </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="onSearchItemCategories($event)"
+        [formControl]="category"
+        [matAutocomplete]="categoryAuto"
+      />
+      <mat-autocomplete
+        #categoryAuto="matAutocomplete"
+        (optionSelected)="onCategorySelectionChange($event)"
+        [displayWith]="displayFn"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let item of itemCategories" [value]="item">
+          {{ item.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="iu-serach-class iu-ml-div-2">
+      <mat-label> Search/Select Sub Category </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="onSearchItemSubCategory($event)"
+        [formControl]="subCategory"
+        [matAutocomplete]="subCategoryAuto"
+      />
+      <mat-autocomplete
+        #subCategoryAuto="matAutocomplete"
+        (optionSelected)="onSubCategorySelectionChange($event)"
+        [displayWith]="displayFn"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let item of itemSubCategoryData" [value]="item">
+          {{ item.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="iu-serach-class iu-ml-div-2">
+      <mat-label> Search/Select Specification </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="onSearchItemSpecification($event)"
+        [formControl]="specification"
+        [matAutocomplete]="specificationAuto"
+      />
+      <mat-autocomplete
+        #specificationAuto="matAutocomplete"
+        (optionSelected)="onSpecificationSelectionChange($event)"
+        [displayWith]="displayFn"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let item of itemSpecifications" [value]="item">
+          {{ item.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="iu-serach-class iu-ml-div-2">
+      <mat-label>Search Material Code</mat-label>
+      <input [(ngModel)]="materialCode" matInput (input)="onSearch($event)" />
+    </mat-form-field>
+
+    <mat-icon
+      matTooltip="Clear Filters"
+      (click)="resetForm()"
+      class="iu-clear-date-div"
+      >filter_list_off</mat-icon
+    >
+  </div>
+
+  <div class="button-container">
+    <button mat-flat-button (click)="addItemUnit()" class="btn-class primary">
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="itemUnitData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="workTypeName">
+          <th mat-header-cell *matHeaderCellDef>Category Type</th>
+          <td mat-cell *matCellDef="let itemunit">
+            {{ itemunit.workTypeName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="materialCode">
+          <th mat-header-cell *matHeaderCellDef>Material Code</th>
+          <td mat-cell *matCellDef="let itemunit">
+            {{ itemunit.materialCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let itemunit">
+            {{ itemunit.itemCategoryName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="subCategory">
+          <th mat-header-cell *matHeaderCellDef>Material Name</th>
+          <td mat-cell *matCellDef="let itemunit">
+            {{ itemunit.itemSubCategoryName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="itemSpecificationName">
+          <th mat-header-cell *matHeaderCellDef>Specification</th>
+          <td mat-cell *matCellDef="let itemunit">
+            {{ itemunit.itemSpecificationName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="itemUnitName">
+          <th mat-header-cell *matHeaderCellDef>Unit</th>
+          <td mat-cell *matCellDef="let itemunit">
+            {{ itemunit.inventoryUnitName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let itemunit">{{ itemunit.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let itemunit">
+            <mat-icon
+              matTooltip="Edit"
+              (click)="editItemUnit(itemunit)"
+              class="font icon-spacing icon"
+              style="color: #004869"
+              >edit</mat-icon
+            >
+            <mat-icon
+              matTooltip="Delete"
+              (click)="openConfirmDialog(itemunit.unitId)"
+              class="font icon-spacing icon"
+              style="color: #d3493f"
+            >
+              delete_forever</mat-icon
+            >
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

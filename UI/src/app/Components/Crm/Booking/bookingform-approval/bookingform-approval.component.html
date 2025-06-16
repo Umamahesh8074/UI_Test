@@ -1,0 +1,116 @@
+<div class="pac-header">Booking Form Approval</div>
+<mat-card class="cmn-card">
+    <mat-card-content class="cmn-card-content">
+      <div class="tab-head">
+        <table
+          matSort
+          mat-table
+          [dataSource]="applicantInfoDetails"
+          class="mat-elevation-z8"
+        >
+          <ng-container matColumnDef="rowNumber">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let i = index">
+              {{ pageIndex * pageSize + i + 1 }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="customerName">
+            <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.firstApplicantName }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="createdDate">
+            <th mat-header-cell *matHeaderCellDef>Created Date</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.createdDate | date : "dd-MMM-yyyy" }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="customerPhoneNumber">
+            <th mat-header-cell *matHeaderCellDef>Phone Number</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.firstApplicantPhoneNumber }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="projectName">
+            <th mat-header-cell *matHeaderCellDef>Project Name</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.projectName }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="unitName">
+            <th mat-header-cell *matHeaderCellDef>Unit</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.unitName }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="approvalStatus">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.approvalStatus }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="levelName">
+            <th mat-header-cell *matHeaderCellDef>Level</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.levelName }}
+            </td>
+          </ng-container>
+  
+          
+          <ng-container matColumnDef="actionsBy">
+            <th mat-header-cell *matHeaderCellDef>Action By</th>
+            <td mat-cell *matCellDef="let charge">
+              {{ charge.crmUserName }}
+            </td>
+          </ng-container>
+          
+          <ng-container matColumnDef="actions">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              style="background-color: #004869; color: white"
+            >
+              Actions
+            </th>
+            <td mat-cell *matCellDef="let element" class="actions-div">
+              <!-- Approve/Reject Icon -->
+              <mat-icon
+                matTooltip="View Booking Form "
+                (click)="goToBookingForm(element)"
+                class="font icon-spacing work-order-icon"
+              >
+                rule
+              </mat-icon>
+              </td>
+              </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            class="table-row"
+            mat-row
+            *matRowDef="let charge of paymentDetails; columns: displayedColumns"
+          ></tr>
+        </table>
+      </div>
+    </mat-card-content>
+    <b>
+      <hr style="margin: 0" />
+    </b>
+    <mat-card-footer class="pagination-sec">
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+        class="custom-paginator"
+      ></mat-paginator>
+    </mat-card-footer>
+  </mat-card>

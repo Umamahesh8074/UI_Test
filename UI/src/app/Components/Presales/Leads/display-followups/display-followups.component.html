@@ -1,0 +1,207 @@
+<div class="header">FOLLOWUP</div>
+<div class="example-button-row">
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Enter Customer Name</mat-label>
+      <input
+        matInput
+        (input)="onSearch($any($event).target?.value)"
+        placeholder="Enter Customer Name"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="display-followup-add-back-btn">
+    <div>
+      <button mat-flat-button class="btn-class accent" (click)="backToLeads()">
+        <mat-icon>keyboard_return</mat-icon>
+        BACK
+      </button>
+    </div>
+    <div>
+      <button mat-flat-button class="btn-class primary" (click)="addFollowup()">
+        <mat-icon class="font">add</mat-icon> ADD
+      </button>
+    </div>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div>
+      <table
+        matSort
+        mat-table
+        [dataSource]="followups"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            #
+          </th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="leadName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Customer Name
+          </th>
+          <td mat-cell *matCellDef="let followup">{{ followup.leadName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="opportunityId">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Opportunity Id
+          </th>
+          <td mat-cell *matCellDef="let followup">
+            {{ followup.opportunityId }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="followupDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Followup Date
+          </th>
+          <td mat-cell *matCellDef="let followup">
+            {{ followup.followupDate | date : "medium" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Type
+          </th>
+          <td mat-cell *matCellDef="let followup">
+            {{ followup.type || "N/A" }}
+          </td>
+        </ng-container>
+        <!-- <ng-container matColumnDef="remarks">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="column-remarks"
+            style="background-color: #004869; color: white"
+          >
+            Remarks
+          </th>
+          <td mat-cell *matCellDef="let followup">
+            <div class="remarks-cell">{{ followup.remarks }}</div>
+          </td>
+        </ng-container> -->
+        <!-- HTML Template -->
+        <ng-container matColumnDef="presalesMember">
+          <th mat-header-cell *matHeaderCellDef>Presales Member</th>
+          <td mat-cell *matCellDef="let followup">
+            {{
+              followup.assignedPresalesUserName == null
+                ? "N/A"
+                : followup.assignedPresalesUserName
+            }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="salesMember">
+          <th mat-header-cell *matHeaderCellDef>Sales Member</th>
+          <td mat-cell *matCellDef="let followup">
+            <!-- Show 'NA' if assignedSalesUserName is null, otherwise show the name -->
+            {{
+              followup.assignedSalesUserName == null
+                ? "N/A"
+                : followup.assignedSalesUserName
+            }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="remarks">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="column-remarks"
+            style="background-color: #004869; color: white"
+          >
+            Remarks
+          </th>
+          <td mat-cell *matCellDef="let followup" class="column-remarks">
+            <div class="remarks-cell">{{ followup.remarks || "N/A" }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Status
+          </th>
+          <td mat-cell *matCellDef="let followup">
+            {{ followup.status || "N/A" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+
+          <td mat-cell *matCellDef="let followup">
+            <!-- <div class="column-action"  *ngIf="followup.assignedToSales==0"> -->
+            <div class="column-action">
+              <!--  <mat-icon
+                matTooltip="Edit"
+                (click)="updateFollowup(followup.id)"
+                class="font"
+                >edit</mat-icon
+              > -->
+
+              <mat-icon
+                matTooltip="Edit"
+                (click)="updateFollowup(followup.id)"
+                class="font"
+                *ngIf="isFollowupEditVisible(followup)"
+              >
+                edit
+              </mat-icon>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          class="pf-row"
+          *matRowDef="let followup of followups; columns: displayedColumns"
+          (click)="updateFollowup(followup.id)"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

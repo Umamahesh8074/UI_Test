@@ -1,0 +1,362 @@
+<div class="head">Lead Source Analysis Report</div>
+<div style="display: flex">
+  <div style="padding-left: 20px">
+    <mat-form-field appearance="outline" style="margin-top: 16px">
+      <input
+        type="text"
+        placeholder="Select Projects"
+        aria-label="Select projects"
+        matInput
+        [matAutocomplete]="projectAuto"
+        [formControl]="project"
+        (input)="searchProject($event)"
+      />
+
+      <mat-autocomplete #projectAuto="matAutocomplete">
+        <mat-option>
+          <mat-checkbox
+            #allProjectSelected
+            (click)="onAllSelectProject()"
+            [checked]="isProjectAllSelected()"
+            >All</mat-checkbox
+          ></mat-option
+        >
+        <mat-option
+          *ngFor="let project of projects"
+          (click)="$event.preventDefault()"
+        >
+          <div (click)="$event.stopPropagation()">
+            <mat-checkbox
+              [checked]="isSelectedProject(project.projectId)"
+              (change)="onProjectSelect(project, $event)"
+              (click)="$event.stopPropagation()"
+            >
+              {{ project.projectName }}
+            </mat-checkbox>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="onProjectSelectButtonClick()"
+      type="button"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <span style="padding-left: 10px">
+    <mat-form-field class="mat-50" appearance="outline">
+      <mat-label>Lead Source</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="leadSource"
+        [matAutocomplete]="leadSourceAuto"
+      />
+      <mat-autocomplete
+        #leadSourceAuto="matAutocomplete"
+        (optionSelected)="onLeadSourceSelect($event)"
+        [displayWith]="displayLeadSubSource"
+      >
+        <mat-option [value]="">All</mat-option>
+        <mat-option *ngFor="let option of leadSources" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </span>
+
+  <span style="padding-left: 10px">
+    <mat-form-field class="mat-50" appearance="outline">
+      <mat-label>Lead Sub Source</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="leadSubSource"
+        [matAutocomplete]="leadSubSourceAuto"
+      />
+      <mat-autocomplete
+        #leadSubSourceAuto="matAutocomplete"
+        (optionSelected)="onLeadSubSourceSelect($event)"
+        [displayWith]="displayLeadSubSource"
+      >
+        <mat-option [value]="">All</mat-option>
+        <mat-option *ngFor="let option of leadSubSources" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </span>
+  <span style="padding-left: 10px">
+    <mat-form-field appearance="outline" class="mat-50">
+      <mat-label>Digital Partner</mat-label>
+      <mat-select
+        (selectionChange)="handleDigitalParterSelection($event.value)"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option
+          *ngFor="let element of digitalPartner"
+          [value]="element.commonRefValue"
+        >
+          {{ element.commonRefValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </span>
+
+  <div
+    id="selectDayRange"
+    class="day-selector"
+    [formGroup]="formData"
+    style="text-align: center; display: inline-flex"
+  >
+    <span style="padding-left: 10px; padding-top: 15px">
+      <mat-form-field appearance="outline" style="margin-right: 15px">
+        <mat-label id="selectDay">Select Day</mat-label>
+        <mat-select
+          [(value)]="selectedDay"
+          (selectionChange)="handleDaySelection($event.value)"
+          id="days"
+        >
+          <mat-option *ngFor="let day of days" [value]="day">
+            {{ day.commonRefValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+    <span style="padding-left: 10px; padding-top: 15px">
+      <mat-form-field
+        *ngIf="showDateRangePicker"
+        class="time-picker"
+        appearance="outline"
+      >
+        <mat-label>Select Date Range</mat-label>
+        <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="customStartDate"
+            (focus)="picker.open()"
+          />
+          <input
+            matEndDate
+            placeholder="End date"
+            formControlName="customEndDate"
+            (focus)="picker.open()"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </span>
+  </div>
+</div>
+<mat-card>
+  <table class="tree-table" id="leadSourceTable">
+    <thead>
+      <tr>
+        <th class="row-heads">Leads</th>
+        <th class="row-heads">Sources</th>
+        <th class="row-heads">Sub-Sources</th>
+        <th class="row-heads">Total</th>
+        <th class="row-heads">New Lead</th>
+        <th class="row-heads">Unassigned Leads</th>
+        <th class="row-heads">Junk</th>
+        <th class="row-heads">Non Contactable</th>
+        <th class="row-heads">SV Done</th>
+        <th class="row-heads">Sales Follow-Up</th>
+        <th class="row-heads">Sales Lost</th>
+        <th class="row-heads">Sales Non-Contactable</th>
+        <th class="row-heads">Sales Junk</th>
+        <th class="row-heads">Sales DND</th>
+        <th class="row-heads">Booked</th>
+        <th class="row-heads">Cancelled Booking</th>
+        <th class="row-heads">Lost</th>
+        <th class="row-heads">follow-up</th>
+        <th class="row-heads">Qualified</th>
+        <th class="row-heads">SV Confirm</th>
+        <th class="row-heads">Visit Prospect</th>
+        <th class="row-heads">Revisit Proposed</th>
+        <th class="row-heads">Revisit Done</th>
+        <th class="row-heads">EOI Received</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let node of treeData; let i = index">
+        <!-- Parent Node (Leads) -->
+        <tr
+          [ngClass]="{ 'main-row-active': isActive(getUniqueId(node, i)) }"
+          style="cursor: cell"
+        >
+          <td (click)="toggle(getUniqueId(node, i))" style="display: flex">
+            <mat-icon
+              class="menu-icon"
+              *ngIf="node.children && node.children.length > 0"
+            >
+              {{ isExpanded(getUniqueId(node, i)) ? "remove" : "add" }}
+            </mat-icon>
+            {{ node.name }}
+          </td>
+          <td></td>
+          <!-- Placeholder for Sources -->
+          <td></td>
+          <!-- Placeholder for Sub-Sources -->
+          <td>{{ node.totalLead ? node.totalLead : "0" }}</td>
+          <td>{{ node.newLead ? node.newLead : "0" }}</td>
+          <td>{{ node.unassignedLeads ? node.unassignedLeads : "0" }}</td>
+          <td>{{ node.junk ? node.junk : "0" }}</td>
+          <td>{{ node.nonContactable ? node.nonContactable : "0" }}</td>
+          <td>{{ node.siteVisitDone ? node.siteVisitDone : "0" }}</td>
+          <td>{{ node.salesFollowUp || "0" }}</td>
+          <td>{{ node.salesLost || "0" }}</td>
+          <td>{{ node.salesNoncontactable || "0" }}</td>
+          <td>{{ node.salesDND || "0" }}</td>
+          <td>{{node.salesJunk || "0" }}</td>
+          <td>{{ node.booked ? node.booked : "0" }}</td>
+          <td>{{ node.cancelledBooking ? node.cancelledBooking : "0" }}</td>
+          <td>{{ node.lost ? node.lost : "0" }}</td>
+          <td>{{ node.followUp ? node.followUp : "0" }}</td>
+          <td>{{ node.qualified ? node.qualified : "0" }}</td>
+          <td>{{ node.siteVisitConfirm ? node.siteVisitConfirm : "0" }}</td>
+          <td>{{ node.visitProspect ? node.visitProspect : "0" }}</td>
+          <td>{{ node.reVisitProposed ? node.reVisitProposed : "0" }}</td>
+          <td>{{ node.reVisitDone ? node.reVisitDone : "0" }}</td>
+          <td>{{ node.eoiReceived ? node.eoiReceived : "0" }}</td>
+        </tr>
+        <!-- Child Nodes (Sources) -->
+        <ng-container *ngIf="node.children && isExpanded(getUniqueId(node, i))">
+          <ng-container *ngFor="let child of node.children; let j = index">
+            <tr
+              [ngClass]="{
+                'child-row-active': isActive(getUniqueId(child, i, j))
+              }"
+              style="cursor: cell"
+            >
+              <td></td>
+              <!-- Empty cell for Leads -->
+              <td
+                (click)="toggle(getUniqueId(child, i, j))"
+                style="display: flex"
+              >
+                <mat-icon
+                  class="menu-icon"
+                  *ngIf="child.children && child.children.length > 0"
+                >
+                  {{ isExpanded(getUniqueId(child, i, j)) ? "remove" : "add" }}
+                </mat-icon>
+                {{ child.name }}
+              </td>
+              <td></td>
+              <!-- Placeholder for Sub-Sources -->
+              <td>{{ child.totalLead ? child.totalLead : "0" }}</td>
+              <td>{{ child.newLead ? child.newLead : "0" }}</td>
+              <td>{{ child.unassignedLeads ? child.unassignedLeads : "0" }}</td>
+              <td>{{ child.junk ? child.junk : "0" }}</td>
+              <td>{{ child.nonContactable ? child.nonContactable : "0" }}</td>
+              <td>{{ child.siteVisitDone ? child.siteVisitDone : "0" }}</td>
+              <td>{{ child.salesFollowUp || "0" }}</td>
+              <td>{{ child.salesLost || "0" }}</td>
+              <td>{{ child.salesNoncontactable || "0" }}</td>
+              <td>{{ child.salesDND || "0" }}</td>
+              <td>{{child.salesJunk || "0" }}</td>
+              <td>{{ child.booked ? child.booked : "0" }}</td>
+              <td>
+                {{ child.cancelledBooking ? child.cancelledBooking : "0" }}
+              </td>
+              <td>{{ child.lost ? child.lost : "0" }}</td>
+              <td>{{ child.followUp ? child.followUp : "0" }}</td>
+              <td>{{ child.qualified ? child.qualified : "0" }}</td>
+
+              <td>
+                {{ child.siteVisitConfirm ? child.siteVisitConfirm : "0" }}
+              </td>
+
+              <td>{{ child.visitProspect ? child.visitProspect : "0" }}</td>
+
+              <td>
+                {{ child.reVisitProposed ? child.reVisitProposed : "0" }}
+              </td>
+              <td>{{ child.reVisitDone ? child.reVisitDone : "0" }}</td>
+              <td>{{ child.eoiReceived ? child.eoiReceived : "0" }}</td>
+            </tr>
+            <!-- Sub-child Nodes (Sub-Sources) -->
+            <ng-container
+              *ngIf="child.children && isExpanded(getUniqueId(child, i, j))"
+            >
+              <ng-container
+                *ngFor="let subchild of child.children; let k = index"
+              >
+                <tr>
+                  <td></td>
+                  <!-- Empty cell for Leads -->
+                  <td></td>
+                  <!-- Empty cell for Sources -->
+                  <td (click)="toggle(getUniqueId(subchild, i, j, k))">
+                    {{ subchild.name }}
+                  </td>
+                  <td>{{ subchild.totalLead ? subchild.totalLead : "0" }}</td>
+                  <td>{{ subchild.newLead ? subchild.newLead : "0" }}</td>
+                  <td>
+                    {{
+                      subchild.unassignedLeads ? subchild.unassignedLeads : "0"
+                    }}
+                  </td>
+                  <td>{{ subchild.junk ? subchild.junk : "0" }}</td>
+                  <td>
+                    {{
+                      subchild.nonContactable ? subchild.nonContactable : "0"
+                    }}
+                  </td>
+                  <td>
+                    {{ subchild.siteVisitDone ? subchild.siteVisitDone : "0" }}
+                  </td>
+                  <td>{{ subchild.salesFollowUp || "0" }}</td>
+                  <td>{{ subchild.salesLost || "0" }}</td>
+                  <td>{{ subchild.salesNoncontactable || "0" }}</td>
+                  <td>{{ subchild.salesDND || "0" }}</td>
+                  <td>{{subchild.salesJunk || "0" }}</td>
+                  <td>{{ subchild.booked ? subchild.booked : "0" }}</td>
+                  <td>
+                    {{
+                      subchild.cancelledBooking
+                        ? subchild.cancelledBooking
+                        : "0"
+                    }}
+                  </td>
+                  <td>{{ subchild.lost ? subchild.lost : "0" }}</td>
+
+                  <td>{{ subchild.followUp ? subchild.followUp : "0" }}</td>
+                  <td>{{ subchild.qualified ? subchild.qualified : "0" }}</td>
+
+                  <td>
+                    {{
+                      subchild.siteVisitConfirm
+                        ? subchild.siteVisitConfirm
+                        : "0"
+                    }}
+                  </td>
+                  <td>
+                    {{ subchild.visitProspect ? subchild.visitProspect : "0" }}
+                  </td>
+                  <td>
+                    {{
+                      subchild.reVisitProposed ? subchild.reVisitProposed : "0"
+                    }}
+                  </td>
+                  <td>
+                    {{ subchild.reVisitDone ? subchild.reVisitDone : "0" }}
+                  </td>
+                  <td>
+                    {{ subchild.eoiReceived ? subchild.eoiReceived : "0" }}
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+</mat-card>

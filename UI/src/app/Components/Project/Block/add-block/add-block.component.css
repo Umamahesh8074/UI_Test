@@ -1,0 +1,16 @@
+.block-mat-50 {
+  width: 97%;
+  margin-left: 1%;
+}
+.block-mat-40 {
+  width: 48%;
+  margin-left: 1%;
+}
+
+.card {
+  margin: 0px;
+  text-align: left;
+  width: 80%;
+  margin: auto;
+  padding: 10px;
+}

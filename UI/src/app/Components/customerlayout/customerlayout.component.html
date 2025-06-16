@@ -1,0 +1,65 @@
+<div class="head-div">
+  <div class="heading">
+    <h2 class="heading-h2">
+      <img
+        src="https://sbrgroup.in/img/logo.png"
+        alt="NOt Found"
+        class="me-2 head-logo"
+      />
+    </h2>
+    <button
+      mat-button
+      class="menu-text"
+      *ngIf="showHomeButton"
+      (click)="navigateToHome()"
+    >
+      Home
+    </button>
+  </div>
+
+  <!-- Right Section -->
+  <div class="user-div">
+    <button mat-button [matMenuTriggerFor]="menu" class="user">
+      <img
+        *ngIf="imageUrl"
+        [src]="imageUrl"
+        alt="Profile Picture"
+        class="user-img"
+      />
+      <img
+        *ngIf="!imageUrl"
+        class="user-img"
+        src="../../../../assets/user.jpg"
+        alt="not found"
+      />
+      <span class="user-name">{{ this.user.userName | uppercase }}</span>
+      <!-- <mat-icon class="person-profile">account_circle</mat-icon> -->
+      <span class="bi bi-chevron-down ms-1 usericon" style="color: #fff"></span>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="profile()">
+        <img
+          *ngIf="imageUrl"
+          [src]="imageUrl"
+          alt="Profile Picture"
+          class="user-img"
+        />
+        <img
+          *ngIf="!imageUrl"
+          class="user-img"
+          src="../../../../assets/user.jpg"
+          alt="not found"
+        />
+        Profile
+      </button>
+      <button mat-menu-item (click)="logOut()">
+        <mat-icon>exit_to_app</mat-icon>
+        Logout
+      </button>
+    </mat-menu>
+  </div>
+</div>
+<div>
+  <router-outlet></router-outlet>
+</div>

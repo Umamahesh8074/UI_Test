@@ -1,0 +1,143 @@
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+
+.green-amount {
+  color: green;
+  font-weight: bold;
+}
+
+.blue-amount {
+  color: rgb(34, 34, 164);
+  font-weight: bold;
+}
+
+.action-icon {
+  margin-right: 10px;
+  cursor: pointer;
+  color: #2d2c2c;
+  opacity: 0.6;
+}
+
+/* mat-menu-item {
+  font-size: 14px; 
+  display: flex;
+  align-items: center;
+  padding: 8px 12px; 
+} */
+
+.menu-icon {
+  font-size: 18px;
+  margin-right: 8px;
+  color: #555;
+}
+
+/* Styling for labels inside the menu */
+.menu-label {
+  font-size: 13px;
+  color: #333;
+}
+
+::ng-deep .custom-menu.mat-mdc-menu-panel {
+  min-width: 200px !important;
+  max-width: 200px !important;
+  width: 100px !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  align-items: center !important;
+  margin-bottom: -8px !important;
+  margin-top: -15px !important;
+}
+
+.email-btn[disabled] {
+  opacity: 0.5; /* Make the button look slightly disabled */
+  pointer-events: none; /* Prevent clicks */
+}
+
+/* Apply a light "blurred" effect */
+.blurred-button {
+  opacity: 0.6; /* Make the button look faded, but still clickable */
+  pointer-events: auto; /* Allow clicking, but you can check if you want to prevent the action */
+}
+
+/* Optionally, you can also add a different background color or change the cursor */
+.blurred-button:hover {
+  cursor: not-allowed; /* Make it look like it can't be clicked even though it's technically clickable */
+}
+
+.status-text {
+  margin-left: 2px;
+  font-weight: bold;
+}
+
+.done {
+  color: green;
+}
+
+.not-done {
+  color: red;
+}
+
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  /* gap: 8px; */
+}
+.action-icon {
+  margin-right: 1px;
+  cursor: pointer;
+  color: #2d2c2c;
+  opacity: 0.6;
+  font-size: 20px;
+}
+
+.side-by-side-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Makes it responsive */
+}
+
+.side-by-side-container > div {
+  flex: 1 1 300px; /* Ensures responsiveness */
+}
+
+.cancel-date {
+  top: 14px;
+  position: relative;
+}
+
+.side-by-side-container > div {
+  flex: 1 1 300px; /* Ensures responsiveness */
+}
+
+.cancel-date {
+  top: 14px;
+  position: relative;
+}
+
+.context-menu {
+  position: fixed; /* or absolute */
+  z-index: 10000;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  width: 150px;
+}
+
+.context-menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 0;
+}
+.context-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.context-menu li:hover {
+  background-color: #eee;
+}

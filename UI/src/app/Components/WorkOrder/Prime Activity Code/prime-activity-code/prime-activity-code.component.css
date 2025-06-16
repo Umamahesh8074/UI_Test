@@ -1,0 +1,45 @@
+.mat-card-scroll {
+  max-height: 50vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.mat-45 {
+  width: 50%;
+}
+.serach-class{
+  padding-left: 10px;
+}
+/* *********Responsive CSS Start************* */
+@media screen and (max-device-width: 480px) {
+  .mat-card-scroll {
+    max-height: inherit;
+    overflow: unset;
+    overflow-y: unset;
+  }
+  .mat-45 {
+    width: 97%;
+    margin-top: 0px;
+    padding-top: 0px;
+  }
+}
+
+.cmn-mat-content {
+  margin-top: 3% !important;
+  height: 300px;
+  overflow-y: auto;
+}
+.error-message {
+  color: red;
+}
+
+.error-label {
+  color: red;
+}
+
+.pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}

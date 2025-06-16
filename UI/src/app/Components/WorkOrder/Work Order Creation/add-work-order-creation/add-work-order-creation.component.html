@@ -1,0 +1,1060 @@
+<div class="pac-header">
+  {{ title }}
+</div>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div>
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="woc-cmn-mat-content mat-card-scroll">
+        <div class="upload-doc-div">
+          <mat-form-field appearance="outline" class="mat-25">
+            <mat-label>Select Work Order Category</mat-label>
+            <mat-select
+              formControlName="workOrderCategory"
+              (selectionChange)="workOrderCategoryChange($event)"
+            >
+              <mat-option *ngFor="let element of woStatus" [value]="element">
+                {{ element }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="mat-25"
+            *ngIf="selectedWorkOrderCategory === 'OLD'"
+          >
+            <mat-label>Work Order Number</mat-label>
+            <input matInput formControlName="workOrderNumber" type="text" />
+          </mat-form-field>
+
+          <b *ngIf="totalAmount > 0" style="color: rgb(34, 34, 164)">
+            TOTAL AMOUNT : {{ totalAmount | number }}
+          </b>
+
+          <button
+            mat-flat-button
+            class="btn-class primary"
+            (click)="viewDownLoads()"
+            type="button"
+          >
+            Attach Documents
+          </button>
+
+          <!-- <button
+            mat-flat-button
+            class="btn-class primary"
+            (click)="viewStageDetails()"
+            type="button"
+            *ngIf="!isAdding && !title.toLowerCase().includes('amendment')"
+          >
+            View Rework Reason
+          </button> -->
+
+          <button
+            mat-flat-button
+            class="btn-class primary"
+            (click)="viewStageDetails()"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#stageModal"
+            *ngIf="
+              workOrderDto?.actionStatus &&
+              (workOrderDto.actionStatus === 'Rework' ||
+                workOrderDto.actionStatus === 'Reworking')
+            "
+          >
+            View Rework Reason
+          </button>
+        </div>
+
+        <div class="row" style="padding: 0 30px">
+          <mat-form-field class="mat-27" appearance="outline">
+            <mat-label [ngClass]="{ 'error-label': showPlantCodeError }">
+              Search/Select Plant Code
+            </mat-label>
+            <input
+              type="text"
+              matInput
+              (input)="searchProject($event)"
+              [formControl]="project"
+              [matAutocomplete]="projectAuto"
+              [readonly]="isForView"
+            />
+            <mat-autocomplete
+              #projectAuto="matAutocomplete"
+              (optionSelected)="onProjectSelect($event)"
+              [displayWith]="displayProject"
+            >
+              <mat-option *ngFor="let option of projects" [value]="option">
+                {{ option.displayProjectName }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <div *ngIf="showPlantCodeError" class="error-message">
+              Select project
+            </div>
+
+            <mat-error
+              *ngIf="formData.get('project')?.hasError('invalidProject')"
+            >
+              Please select a valid project.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field
+            class="example-full-width"
+            appearance="outline"
+            class="mat-25"
+          >
+            <mat-label [ngClass]="{ 'error-label': showVendorError }">
+              Search/Select Vendor
+            </mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedVendor.vendorCode ? selectedVendor.vendorCode : ''
+              "
+              (input)="searchVendorCode($event)"
+              [formControl]="vendor"
+              [matAutocomplete]="vendorCodeAuto"
+              [readonly]="isForView"
+            />
+            <mat-autocomplete
+              #vendorCodeAuto="matAutocomplete"
+              (optionSelected)="onVendorCodeSelect($event)"
+              [displayWith]="displayVendorCode"
+            >
+              <mat-option *ngFor="let option of vendors" [value]="option">
+                {{ option.vendorCode }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <div *ngIf="showVendorError" class="error-message">
+              Select Vendor
+            </div>
+          </mat-form-field>
+
+          <mat-form-field
+            class="example-full-width"
+            appearance="outline"
+            class="mat-25"
+          >
+            <mat-label> Search/Select Vendor Name </mat-label>
+            <input
+              type="text"
+              matInput
+              [value]="
+                selectedVendor.vendorName ? selectedVendor.vendorName : ''
+              "
+              (input)="searchVendorName($event)"
+              [formControl]="vendor"
+              [matAutocomplete]="vendorNameAuto"
+              [readonly]="isForView"
+            />
+            <mat-autocomplete
+              #vendorNameAuto="matAutocomplete"
+              (optionSelected)="onVendorNameSelect($event)"
+              [displayWith]="displayVendorName"
+            >
+              <mat-option *ngFor="let option of vendors" [value]="option">
+                {{ option.vendorName }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <mat-error
+              *ngIf="formData.get('vendor')?.hasError('invalidVendorName')"
+            >
+              Invalid vendor
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="mat-25">
+            <mat-label>Vendor Gst Number</mat-label>
+            <input
+              matInput
+              formControlName="vendorGst"
+              type="text"
+              [readonly]="true"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="mat-25">
+            <mat-label>Person Name At Site</mat-label>
+            <input matInput formControlName="contactPersonName" type="text" />
+
+            <!-- [readonly]="isForView" -->
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="mat-25">
+            <mat-label>Person Number At Site</mat-label>
+            <input matInput formControlName="personContactNumber" type="text" />
+            <!-- [readonly]="isForView" -->
+            <mat-error
+              *ngIf="formData.get('personContactNumber')?.hasError('required')"
+            >
+              Phone number is required.
+            </mat-error>
+            <mat-error
+              *ngIf="formData.get('personContactNumber')?.hasError('pattern')"
+            >
+              Number must be 10 digits and start with 6, 7, 8, or 9.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-radio-group
+            aria-label="Select an option"
+            formControlName="mobilizationIn"
+            class="radio-but"
+          >
+            <label class="radio-button1">Mobilization In</label>
+            <mat-radio-button value="1">Amount</mat-radio-button>
+            <mat-radio-button value="2">Percentage</mat-radio-button>
+          </mat-radio-group>
+
+          <mat-form-field
+            appearance="outline"
+            class="mat-25"
+            *ngIf="isAmountSelected"
+          >
+            <mat-label> Mobilization In Amount </mat-label>
+            <input
+              matInput
+              formControlName="mobilizationInAmount"
+              (input)="formatRate($event)"
+              (keydown)="restrictToNumbers($event)"
+            />
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="mat-25"
+            *ngIf="isPercentageSelected"
+          >
+            <mat-label> Mobilization In Percentage </mat-label>
+            <input
+              matInput
+              formControlName="mobilizationInPercentage"
+              (keydown)="restrictToNumbers($event)"
+            />
+            <mat-error
+              *ngIf="
+                formData.get('mobilizationInPercentage')?.hasError('required')
+              "
+              >Mobilization Percentage Required</mat-error
+            >
+            <mat-error
+              *ngIf="formData.get('mobilizationInPercentage')?.hasError('min')"
+              >Mobilization Percentage Minimum 0</mat-error
+            >
+            <mat-error
+              *ngIf="formData.get('mobilizationInPercentage')?.hasError('max')"
+              >Mobilization Percentage Maximum 100</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <div formArrayName="workOrderQuantities" style="padding: 10px 30px">
+          <div
+            *ngFor="
+              let items of workOrderQuantities.controls;
+              let i = index;
+              trackBy: trackByIndex
+            "
+            [formGroupName]="i"
+            class="woQuantities"
+          >
+            <div class="mat-27 woc-servicecode">
+              <div class="servicecode-form-filed">
+                <mat-form-field appearance="outline" style="width: 100%">
+                  <mat-label
+                    [ngClass]="{ 'error-label': serviceCodeErrors[i] }"
+                  >
+                    Search/Select Service Code
+                  </mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    (input)="searchServiceCode($event, i)"
+                    [formControlName]="'serviceCodeId'"
+                    [matAutocomplete]="serviceCodeAuto"
+                    [readonly]="items?.get('id')?.value > 0 && isForView"
+                  />
+                  <mat-autocomplete
+                    #serviceCodeAuto="matAutocomplete"
+                    (optionSelected)="onServiceCodeSelectionChange($event, i)"
+                    [displayWith]="displayServiceCode"
+                  >
+                    <mat-option
+                      *ngFor="let option of getFilteredServiceCodes(i)"
+                      [value]="option"
+                    >
+                      {{ option.serviceCode }}
+                    </mat-option>
+                  </mat-autocomplete>
+
+                  <div *ngIf="serviceCodeErrors[i]" class="error-message">
+                    Select Service Code
+                  </div>
+                  <!-- <div
+                      *ngIf="duplicateServiceCodeErrors[i]"
+                      class="error-message"
+                    >
+                      Duplicate service Code
+                    </div> -->
+                </mat-form-field>
+              </div>
+              <div
+                class="servicecode-mat_icon"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#serviceCodeSearchModal"
+                (click)="setServiceCodeIndexForModal(i)"
+                *ngIf="!(items?.get('id')?.value > 0 && isForView)"
+              >
+                <mat-icon matTooltip="Search" class="font"> search </mat-icon>
+              </div>
+              <mat-icon
+                matTooltip="Refresh Service Codes"
+                class="font1"
+                (click)="refreshServicecodes()"
+              >
+                sync
+              </mat-icon>
+            </div>
+
+            <div appearance="outline" class="mat-100">
+              <mat-label>Service Code Description</mat-label>
+              <!-- <textarea
+                matInput
+                formControlName="serviceDescription"
+                rows="1"
+                placeholder="Service Description"
+                style="flex: 1; width: 100%; padding: 5px 10px"
+                (input)="autoResizeServiceDescription(i)"
+                [readonly]="true"
+                #serviceDescriptionTextarea
+              ></textarea> -->
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  width: 100%;
+                "
+              >
+                <quill-editor
+                  [readOnly]="true"
+                  [modules]="{ toolbar: false }"
+                  formControlName="serviceDescription"
+                  id="quill-editor"
+                  style="width: 100%; min-width: 0"
+                ></quill-editor>
+              </div>
+            </div>
+
+            <mat-form-field appearance="outline" class="mat-27">
+              <mat-label>Service UOM</mat-label>
+              <input
+                matInput
+                formControlName="serviceUom"
+                type="text"
+                readonly
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mat-27">
+              <mat-label>Service Group Code</mat-label>
+              <input
+                matInput
+                formControlName="serviceGroup"
+                type="text"
+                readonly
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mat-23">
+              <mat-label>Prime Activity</mat-label>
+              <input
+                matInput
+                formControlName="primeActivity"
+                type="text"
+                readonly
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mat-27">
+              <mat-label>Select Quantity/RO</mat-label>
+              <mat-select
+                (selectionChange)="onQuantityOrROChange($event, i)"
+                formControlName="quantityOrRo"
+              >
+                <mat-option
+                  *ngFor="let element of options"
+                  [value]="element.id"
+                >
+                  {{ element.commonRefValue }}
+                </mat-option>
+              </mat-select>
+
+              <!-- Validation Error -->
+              <mat-error
+                *ngIf="
+                  workOrderQuantities
+                    .at(i)
+                    .get('quantityOrRo')
+                    ?.hasError('required')
+                "
+              >
+                Quantity/RO is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-27"
+              *ngIf="isQuantityExists[i]"
+            >
+              <mat-label>Budget Quantity</mat-label>
+              <input
+                matInput
+                formControlName="budgetQuantity"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+                [readonly]="isForView"
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-23"
+              *ngIf="isQuantityExists[i]"
+            >
+              <mat-label>Quantity</mat-label>
+              <input
+                matInput
+                formControlName="quantity"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+                [readonly]="isForView"
+              />
+              <mat-error
+                *ngIf="
+                  workOrderQuantities
+                    .at(i)
+                    .get('quantity')
+                    ?.hasError('required') &&
+                  workOrderQuantities.at(i).get('quantityOrRo')?.value ===
+                    'Quantity'
+                "
+              >
+                Quantity is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mat-27">
+              <mat-label>Rate</mat-label>
+
+              <input
+                matInput
+                formControlName="rate"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+              />
+              <!-- [readonly]="
+                  items?.get('id')?.value > 0 &&
+                  isForView &&
+                  this.workOrderDto?.workOrderQuantitiesDto[0]
+                    ?.workOrderQuantityStatus !== 'New Amendment'
+                " -->
+              <mat-error
+                *ngIf="
+                  workOrderQuantities.at(i).get('rate')?.hasError('required')
+                "
+                >Rate Required</mat-error
+              >
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-27"
+              *ngIf="isQuantityExists[i]"
+            >
+              <mat-label>Value</mat-label>
+              <input matInput formControlName="value" type="text" readonly />
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-gst"
+              *ngIf="isFromKarnatakaGst"
+            >
+              <mat-label>Select SGST</mat-label>
+
+              <mat-select
+                (selectionChange)="onSgstChange($event.value, i)"
+                formControlName="sgst"
+              >
+                <mat-option
+                  *ngFor="let element of gstFromKarnataka"
+                  [value]="element.id"
+                >
+                  {{ element.gstPercentage }}
+                </mat-option>
+              </mat-select>
+
+              <mat-error *ngIf="items.get('sgst')?.hasError('required')">
+                SGST is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-gst"
+              *ngIf="isFromKarnatakaGst"
+            >
+              <mat-label>Select CGST</mat-label>
+              <mat-select
+                (selectionChange)="onCgstChange($event.value, i)"
+                formControlName="cgst"
+              >
+                <mat-option
+                  *ngFor="let element of gstFromKarnataka"
+                  [value]="element.id"
+                >
+                  {{ element.gstPercentage }}
+                </mat-option>
+              </mat-select>
+
+              <mat-error *ngIf="items.get('cgst')?.hasError('required')">
+                CGST is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-23"
+              *ngIf="!isFromKarnatakaGst"
+            >
+              <mat-label>Select GST</mat-label>
+              <mat-select
+                (selectionChange)="onGstChange($event.value, i)"
+                formControlName="gst"
+              >
+                <mat-option
+                  *ngFor="let element of gstOutOfKarnataka"
+                  [value]="element.id"
+                >
+                  {{ element.gstPercentage }}
+                </mat-option>
+              </mat-select>
+
+              <!-- <input
+                  matInput
+                  formControlName="gst"
+                  type="text"
+                  [readonly]="items?.get('id')?.value > 0 && isForView"
+                /> -->
+
+              <mat-error *ngIf="items.get('gst')?.hasError('required')">
+                GST is required.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-27"
+              *ngIf="isQuantityExists[i]"
+            >
+              <mat-label>GST With Amount</mat-label>
+              <input
+                matInput
+                formControlName="gstWithAmount"
+                type="text"
+                readonly
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-27"
+              *ngIf="isForView"
+            >
+              <mat-label>Amendment Quantity</mat-label>
+              <input
+                matInput
+                formControlName="amendmentQuantity"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-23"
+              *ngIf="isForView"
+            >
+              <mat-label>Amendment Budget Quantity</mat-label>
+              <input
+                matInput
+                formControlName="amendmentBudgetQuantity"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-27"
+              *ngIf="isForView"
+            >
+              <mat-label>Amendment Amount</mat-label>
+              <input
+                matInput
+                formControlName="amendmentAmount"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+                readonly
+              />
+            </mat-form-field>
+
+            <mat-form-field
+              appearance="outline"
+              class="mat-27"
+              *ngIf="isForView"
+            >
+              <mat-label>Amendment Amount With Gst</mat-label>
+              <input
+                matInput
+                formControlName="gstWithAmountAfterAmendment"
+                type="text"
+                (input)="formatRate($event)"
+                (keydown)="restrictToNumbers($event)"
+                readonly
+              />
+            </mat-form-field>
+
+            <div appearance="outline" class="mat-90">
+              <label>WBS Elements:</label>
+              <textarea
+                matInput
+                formControlName="wbsElements"
+                rows="1"
+                placeholder="WBS Elements"
+                style="flex: 1; width: 100%; padding: 5px 10px; font-size: 13px"
+                (input)="autoResizeWbsElements()"
+                #wbsElementsTextarea
+                [readonly]="items?.get('id')?.value > 0 && isForView"
+              ></textarea>
+            </div>
+
+            <span style="margin-top: 3.5%; margin-right: 5px">
+              <i
+                *ngIf="workOrderQuantities.length > 1"
+                style="
+                  color: red;
+                  cursor: pointer;
+                  border: 1px solid #333;
+                  height: 24px !important;
+                  font-size: 13px;
+                  background: #fff;
+                  padding: 4px 5px;
+                "
+                class="bi bi-trash text-danger"
+                (click)="removeIcons(i)"
+              ></i
+            ></span>
+            <span style="margin-top: 3.5%">
+              <i
+                class="bi bi-plus h5"
+                *ngIf="
+                  !isAdding &&
+                  workOrderQuantities.length > 1 &&
+                  i !== workOrderQuantities.length - 1
+                "
+                (click)="addServiceCodes(i)"
+                style="
+                  cursor: pointer;
+                  border: 1px solid #333;
+                  height: 24px !important;
+                  font-size: 15px;
+                  background: #fff;
+                  padding: 3px 4px;
+                "
+              ></i
+            ></span>
+
+            <span style="margin-top: 3.5%">
+              <i
+                class="bi bi-plus h5"
+                *ngIf="isAdding"
+                (click)="addServiceCodes(i)"
+                style="
+                  cursor: pointer;
+                  border: 1px solid #333;
+                  height: 24px !important;
+                  font-size: 15px;
+                  background: #fff;
+                  padding: 3px 4px;
+                "
+              ></i
+            ></span>
+          </div>
+        </div>
+
+        <div class="row" style="padding: 0 20px">
+          <mat-label class="ter-con">Subject :</mat-label>
+
+          <div
+            class="sub-editor-div"
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-left: 2%;
+              width: 90%;
+            "
+          >
+            <quill-editor
+              formControlName="subject"
+              id="quill-editor"
+            ></quill-editor>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoWorkOrderCreation()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>
+
+<!-- Bootstrap Modal -->
+<div
+  class="modal fade modal-xl"
+  id="serviceCodeSearchModal"
+  tabindex="-1"
+  aria-labelledby="serviceCodeSearchModalLabel"
+  aria-hidden="true"
+  (hidden.bs.modal)="clearModalFilters()"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="serviceCodeSearchModalLabel">
+          Select a Service Code
+        </h2>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-search-fields">
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search service Code</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalServiceCode"
+            (input)="modalServiceCodeSearch()"
+          />
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search SC description</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalSCDescription"
+            (input)="modalSCDescriptionSearch()"
+          />
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search SC UOM</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalSCUom"
+            (input)="modalSCUomSearch()"
+          />
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search Group Code</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalSGCode"
+            (input)="modalSGCodeSearch()"
+          />
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search Group Name</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalSGDescription"
+            (input)="modalSGDescriptionSearch()"
+          />
+        </mat-form-field>
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search Prime Activity code</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalPACode"
+            (input)="modalPACodeSearch()"
+          />
+        </mat-form-field>
+
+        <mat-form-field
+          class="example-full-width"
+          appearance="outline"
+          class="mat-25"
+        >
+          <mat-label>Search PA Desc..</mat-label>
+          <input
+            type="text"
+            matInput
+            [(ngModel)]="modalPADescription"
+            (input)="modalPADescriptionSearch()"
+          />
+        </mat-form-field>
+        <div>
+          <button
+            type="button"
+            (click)="btnModalClear()"
+            class="btn btn-primary clr-btn"
+            type="button"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+      <div class="modal-body wo-modal-body">
+        <table class="table table-striped">
+          <thead>
+            <tr class="modal-table-header">
+              <th>Select</th>
+              <th>Service Code</th>
+              <th>Description</th>
+              <th>UOM</th>
+              <th>Group Code</th>
+              <th>Group Name</th>
+              <th>Prime Activity Code</th>
+              <th>Prime Activity Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let serviceCode of serviceCodeDtos">
+              <td>
+                <input
+                  type="radio"
+                  name="serviceCodeRadio"
+                  #radioButton
+                  (change)="onServiceCodeSelect(serviceCode)"
+                />
+              </td>
+              <td>{{ serviceCode.serviceCode }}</td>
+              <td>{{ serviceCode.serviceDescription }}</td>
+              <td>{{ serviceCode.scUomRefValue }}</td>
+              <td>{{ serviceCode.serviceGroupCode }}</td>
+              <td>{{ serviceCode.serviceGroupName }}</td>
+              <td>{{ serviceCode.primeActivityNumber }}</td>
+              <td>{{ serviceCode.primeActivityDescription }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          (click)="selectServiceCode()"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="openDialog"
+  class="modal fade show"
+  tabindex="-1"
+  style="display: block"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="radio-button">REWORK STAGE DETAILS</div>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="onClose()"
+        ></button>
+      </div>
+      <div class="modal-body1">
+        <table
+          matSort
+          mat-table
+          [dataSource]="stagesData"
+          class="mat-elevation-z8"
+        >
+          <ng-container matColumnDef="stageId">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ pageIndex * pageSize + i + 1 }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stageName">
+            <th mat-header-cell *matHeaderCellDef>Stage Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.stageName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stageOrder">
+            <th mat-header-cell *matHeaderCellDef>Stage Order</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.stageOrder }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actionDoneBy">
+            <th mat-header-cell *matHeaderCellDef>Action By</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.actionDoneBy }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="woReceivedDate">
+            <th mat-header-cell *matHeaderCellDef>WO ReceivedDate</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.woReceivedDate | date : "medium" }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actionDate">
+            <th mat-header-cell *matHeaderCellDef>Action Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.actionDate | date : "medium" }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="stageStatus">
+            <th mat-header-cell *matHeaderCellDef>Stage Status</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.stageStatus }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actionComments">
+            <th mat-header-cell *matHeaderCellDef>Reason</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.actionComments }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedStageColumns"></tr>
+          <tr
+            class="table-row"
+            mat-row
+            *matRowDef="let row; columns: displayedStageColumns"
+          ></tr>
+        </table>
+      </div>
+
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="stageTotalItems"
+            [pageSize]="stagePageSize"
+            [pageSizeOptions]="stagePageSizeOptions"
+            (page)="onStagePageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<h1 style="text-align: center; padding-top: 20px; color: #295389">
+  Clone User
+</h1>
+<mat-card class="card">
+  <mat-card-header class="form_heading">
+    <form class="example-form" style="display: flex; direction: row">
+      <mat-form-field class="example-full-width" style="margin: 10px">
+        <mat-label>Search/Select User</mat-label>
+        <input
+          type="text"
+          matInput
+          aria-label="Number"
+          (input)="onUserSerach($any($event).target?.value)"
+          [formControl]="source"
+          [matAutocomplete]="auto1"
+        />
+
+        <mat-autocomplete
+          #auto1="matAutocomplete"
+          (optionSelected)="onSourceSelete($event)"
+          [displayWith]="displayUser"
+        >
+          <mat-option *ngFor="let user of sourceUsersList" [value]="user">
+            {{ user.userName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width" style="margin: 10px">
+        <mat-label>Search/Select User</mat-label>
+        <input
+          type="text"
+          matInput
+          aria-label="Number"
+          (input)="onUserSerach($any($event).target?.value)"
+          [formControl]="target"
+          [matAutocomplete]="auto"
+        />
+
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="onTargetSelete($event)"
+          [displayWith]="displayUser"
+        >
+          <mat-option *ngFor="let user of targetUsersList" [value]="user">
+            {{ user.userName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+  </mat-card-header>
+  <mat-card-footer>
+    <div style="text-align: right" class="button">
+      <button
+        mat-flat-button
+        style="color: white; background-color: #004869"
+        class="btn-class"
+        (click)="onClone()"
+      >
+        Clone
+      </button>
+      <button
+        mat-flat-button
+        style="color: white; background-color: red"
+        class="btn-class"
+        (click)="clearForm()"
+        *ngIf="isAdding"
+      >
+        RESET
+      </button>
+      <button
+        mat-flat-button
+        style="color: white; background-color: rgb(97, 97, 38)"
+        class="btn-class"
+        (click)="gotoCloneUser()"
+      >
+        BACK
+      </button>
+    </div>
+  </mat-card-footer>
+</mat-card>

@@ -1,0 +1,161 @@
+<h4 class="header">
+  <div class="cpr-mat-card-header">
+    <b>{{ "UPDATE CHANNEL PARTNER" }}</b>
+  </div>
+</h4>
+
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-content class="cpr-mat-card-content scrollable-content">
+        <br />
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Owner Name</mat-label>
+          <input matInput formControlName="name" readonly />
+          <mat-error *ngIf="formData.get('name')?.hasError('required')">
+            Owner Name is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" readonly />
+          <mat-error *ngIf="formData.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="formData.get('email')?.hasError('email')">
+            Invalid Email
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Owner Phone Number</mat-label>
+          <input matInput formControlName="phoneNumber" readonly />
+          <mat-error *ngIf="formData.get('phoneNumber')?.hasError('required')">
+            Phone Number is required
+          </mat-error>
+          <mat-error *ngIf="formData.get('phoneNumber')?.hasError('pattern')">
+            Invalid Number
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Office Number</mat-label>
+          <input matInput formControlName="officeNumber" readonly />
+          <mat-error *ngIf="formData.get('officeNumber')?.hasError('required')">
+            Office Number is required
+          </mat-error>
+          <mat-error *ngIf="formData.get('officeNumber')?.hasError('pattern')">
+            Invalid Number
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>RERA Expire date</mat-label>
+          <input matInput formControlName="reraExpDate" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Id Proof Number</mat-label>
+          <input matInput formControlName="idProofNumber" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Company Name</mat-label>
+          <input matInput formControlName="companyName" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Company Website</mat-label>
+          <input matInput formControlName="companyWebsite" readonly />
+        </mat-form-field>
+
+        <!-- <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Page Url</mat-label>
+          <input matInput formControlName="pageUrl" />
+        </mat-form-field> -->
+        <mat-form-field appearance="outline" class="cpr-mat-50">
+          <mat-label>Enter Bulk Upload Limit </mat-label>
+          <input matInput type="number" formControlName="bulkUploadLimit" />
+        </mat-form-field>
+        <mat-checkbox
+          formControlName="isCanBulkUpload"
+          [aria-checked]="formData.value['isCanBulkUpload'] === 'Yes'"
+        >
+          Permission To Bulk Upload
+        </mat-checkbox>
+
+        <!-- <mat-checkbox formControlName="showAdditionalFields">
+          Behalf of Owner
+        </mat-checkbox>
+
+         Conditionally render additional fields based on the checkbox value 
+        <div *ngIf="formData.get('showAdditionalFields')?.value">
+          <mat-card-header class="cpr-mat-card-header">
+            <b>Person Details</b>
+          </mat-card-header>
+          <br />
+          <mat-form-field appearance="outline" class="cpr-mat-50">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="personName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="cpr-mat-50">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="personemail" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="cpr-mat-50">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="personPhoneNumber" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="cpr-mat-50">
+            <mat-label>Person Aadhar</mat-label>
+            <input
+              matInput
+              [attr.placeholder]="'Choose File'"
+              [attr.type]="'text'"
+              [attr.readonly]="true"
+              (click)="personAadharFileInput.click()"
+              [value]="fileNames.personAadhar || 'No file chosen'"
+            />
+            <input
+              type="file"
+              #personAadharFileInput
+              (change)="onPersonAadharFileChange($event)"
+              style="display: none"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="personAadharFileInput.click()"
+              type="button"
+            >
+              <mat-icon>attach_file</mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="cpr-mat-50">
+            <mat-label>Designation</mat-label>
+            <input matInput formControlName="designation" />
+          </mat-form-field>
+        </div> -->
+      </mat-card-content>
+      <mat-card-footer>
+        <div style="text-align: right" class="button">
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoCpRegister()"
+          >
+            Back
+          </button>
+          <!-- <button mat-flat-button class="btn-class warn" (click)="clearForm()">
+            RESET
+          </button> -->
+          <button mat-flat-button class="btn-class primary">
+            {{ "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

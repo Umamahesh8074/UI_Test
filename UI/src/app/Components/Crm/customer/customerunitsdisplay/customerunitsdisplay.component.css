@@ -1,0 +1,141 @@
+.booking-container {
+  padding: 20px;
+  width: 80%;
+  margin: auto;
+  /* background: rgba(0, 0, 0, 0.8); */
+}
+
+.units-heading {
+  text-align: center;
+  /* margin-bottom: 20px; */
+  color: #fff;
+  padding: 10px;
+}
+.units-heading-txt {
+  font-size: 28px !important;
+  font-weight: bold !important;
+}
+.units-body {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 72%;
+  border: 1px solid #999;
+  margin-bottom: 15px;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.booking-details {
+  display: flex;
+  /* flex-direction: column; */
+  padding: 10px;
+  /* background-color: #f9f9f9; */
+  border-radius: 8px;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  color: #fff;
+}
+.details-col-left {
+  width: 60%;
+}
+.details-col-right {
+  width: 40%;
+}
+.details-row {
+  /* display: flex; */
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.details-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  width: 100%;
+  /* max-width: 45%;  */
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.details-item .label {
+  margin-right: 5px;
+  color: #fff;
+  width: 40%;
+}
+
+.details-item .value {
+  color: #fff;
+  /* width: 70%; */
+}
+
+.details-item strong {
+  font-size: 1.1em;
+}
+
+mat-expansion-panel-header {
+  /* background-color: #333; */
+  /* border-radius: 8px; */
+  padding: 10px;
+}
+
+mat-panel-title {
+  font-weight: normal;
+  font-size: 18px;
+  color: #fff;
+}
+
+.mat-expansion-panel-content {
+  padding: 0;
+  border-top: 1px solid #999;
+}
+
+.mat-expansion-panel-header-title {
+  color: #fff !important;
+}
+.mat-expansion-indicator::after {
+  color: #fff !important;
+}
+.mat-expansion-panel-body {
+  padding: 0 24px !important;
+}
+.mat-expansion-panel-header.mat-expanded {
+  height: 54px;
+  padding: 0px 30px;
+}
+
+@media screen and (max-device-width: 480px) {
+  .units-heading-txt {
+    font-size: 18px !important;
+  }
+  .booking-container {
+    padding: 0px;
+    width: 100%;
+  }
+  .units-body {
+    width: 90%;
+  }
+  mat-panel-title {
+    font-size: 14px;
+  }
+  .mat-expansion-panel-header.mat-expanded {
+    height: 44px;
+    padding: 0px 20px;
+  }
+  .booking-details {
+    display: block;
+  }
+  .details-col-left {
+    width: 100%;
+  }
+  .details-col-right {
+    width: 100%;
+    text-align: center;
+  }
+  .details-item .label {
+    width: 42%;
+  }
+  .mat-expansion-panel-body {
+    padding: 0 12px !important;
+  }
+}

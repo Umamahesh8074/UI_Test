@@ -1,0 +1,155 @@
+<!-- added -->
+<h4 class="header">
+  <b>UPLOAD DOCUMENTS</b>
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container" *ngIf="!isAdding && documentsArray.length > 0">
+    <mat-card class="card-documents">
+      <mat-card-content class="cmn-card-content">
+        <div class="tab-head">
+          <table
+            matSort
+            mat-table
+            [dataSource]="documentsArray"
+            class="mat-elevation-z8"
+          >
+            <ng-container matColumnDef="fileName">
+              <th mat-header-cell *matHeaderCellDef>File Name</th>
+              <td mat-cell *matCellDef="let document">
+                {{ document.documentName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdDate">
+              <th mat-header-cell *matHeaderCellDef>Created Date</th>
+              <td mat-cell *matCellDef="let document">
+                {{ document.createdDate | date : "medium" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon
+                  matTooltip="Download"
+                  (click)="downloadDocument(element)"
+                  class="font icon-spacing icon"
+                  style="color: #004869"
+                  >download</mat-icon
+                >
+                <mat-icon
+                  matTooltip="Delete"
+                  (click)="deleteDocument(element)"
+                  class="font icon-spacing icon"
+                  style="color: #d3493f"
+                  >delete_forever</mat-icon
+                >
+              </td>
+            </ng-container>
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumnsDocuments"
+            ></tr>
+            <tr
+              class="table-row"
+              mat-row
+              *matRowDef="let row; columns: displayedColumnsDocuments"
+            ></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="example-container">
+    <mat-card class="card1">
+      <mat-card-header>
+        <b></b>
+      </mat-card-header>
+      <mat-card-content>
+        <div formArrayName="documents">
+          <div *ngFor="let items of documents.controls; let i = index">
+            <div [formGroupName]="i">
+              <div class="row" style="padding: 0 15px">
+                <mat-form-field appearance="outline" class="mat-45">
+                  <mat-label>Document Name</mat-label>
+                  <input matInput formControlName="documentName" />
+                </mat-form-field>
+
+                <div class="mat-45 file-div">
+                  <mat-form-field appearance="outline" style="width: 85%">
+                    <mat-label>Upload Document</mat-label>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      (change)="onFileSelected($event, i)"
+                      style="display: none"
+                      #fileInput
+                    />
+                    <input
+                      matInput
+                      [attr.placeholder]="'Choose File'"
+                      [attr.readonly]="true"
+                      [value]="
+                        documents.at(i).get('file')?.value || 'No file chosen'
+                      "
+                      (click)="fileInput.click()"
+                    />
+                    <button
+                      mat-icon-button
+                      matSuffix
+                      (click)="fileInput.click()"
+                      type="button"
+                    >
+                      <mat-icon class="small-icon">attach_file</mat-icon>
+                    </button>
+                  </mat-form-field>
+
+                  <div style="width: 15%">
+                    <span class="ms-2">
+                      <i
+                        *ngIf="documents.length > 1"
+                        style="color: red; cursor: pointer; margin-left: 1%"
+                        class="bi bi-trash text-danger"
+                        (click)="removeIcons(i)"
+                      ></i
+                    ></span>
+                    <span *ngIf="i === documents.length - 1" class="ms-2">
+                      <i class="bi bi-plus h5" (click)="addDocuments()"></i
+                    ></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- </div> -->
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="goBack()"
+            type="button"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            type="button"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

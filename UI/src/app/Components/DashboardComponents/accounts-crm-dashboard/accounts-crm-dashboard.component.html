@@ -1,0 +1,148 @@
+<div style="width: 100%; height: 100%; overflow: auto">
+  <div class="main-head">
+    <div class="header-div">
+      <div class="header-cont">
+        <h1 class="head-text">Dashboard</h1>
+        <p class="date-txt" style="margin: 0">{{ today }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="search">
+    <div class="dropdown-container">
+      <!-- <mat-form-field class="dropdown-item mat-45" appearance="outline">
+        <mat-label>Project</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchProject($event)"
+          [formControl]="project"
+          [matAutocomplete]="projectAuto"
+        />
+        <mat-autocomplete
+          #projectAuto="matAutocomplete"
+          (optionSelected)="onProjectSelect($event)"
+          [displayWith]="displayProject"
+        >
+          <mat-option *ngFor="let option of projectsData" [value]="option">
+            {{ option.projectName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field> -->
+
+      <mat-form-field appearance="outline" class="dropdown-item mat-45">
+        <mat-label>Search/Select Block</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchBlock($event)"
+          [formControl]="block"
+          [matAutocomplete]="blockAuto"
+        />
+        <mat-autocomplete
+          #blockAuto="matAutocomplete"
+          (optionSelected)="onBlockSelect($event)"
+          [displayWith]="displayBlock"
+        >
+          <mat-option *ngFor="let option of blocks" [value]="option">
+            {{ option.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="dropdown-item mat-45">
+        <mat-label>Search/Select Unit</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchUnit($event)"
+          [formControl]="unit"
+          [matAutocomplete]="unitAuto"
+        />
+        <mat-autocomplete
+          #unitAuto="matAutocomplete"
+          (optionSelected)="onUnitSelect($event)"
+          [displayWith]="displayUnit"
+        >
+          <mat-option *ngFor="let option of units" [value]="option">
+            {{ option.unitName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <!-- Payment Plan Selection -->
+
+      <mat-form-field
+        class="example-full-width"
+        class="mat-45"
+        id="proxy"
+        appearance="outline"
+        style="padding-left: 10px"
+      >
+        <mat-label>Proxy Login</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchUser($event)"
+          [formControl]="User"
+          [matAutocomplete]="userAuto"
+        />
+        <mat-autocomplete
+          #userAuto="matAutocomplete"
+          (optionSelected)="onUserSelect($event)"
+          [displayWith]="displayUser"
+        >
+          <mat-option *ngFor="let option of UserDetails" [value]="option">
+            {{ option.userName | titlecase }}
+            <span style="font-weight: bold">
+              -
+              {{
+                option.roleName.split(" ").length > 1
+                  ? (option.roleName | titlecase)
+                  : (option.roleName | uppercase)
+              }}
+            </span>
+            <span>
+              <ng-container *ngIf="option.companyName">
+                ({{ option.companyName | titlecase }})
+              </ng-container>
+            </span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-icon
+        matTooltip="Clear Filters"
+        (click)="resetAutoInput(blockAuto,unitAuto)"
+        class="clear-filter"
+        >filter_list_off</mat-icon
+      >
+    </div>
+  </div>
+  <div class="cards">
+    <div class="row">
+      <h2 class="row-head" style="margin-top: 0px">Customer Payment Details</h2>
+      <mat-card
+        class="mat-card bg-nine"
+        (click)="navigateToWaitingForApprovalAmount('Waiting For Approval')"
+      >
+        <div class="mat-card-hdiv">
+          <h3 class="cardtitle">Approval Amount Without TDS</h3>
+        </div>
+        <div class="mat-card-countdiv">
+          <div class="mat-card-count">
+            <h2 class="total">
+              {{
+                formattedWaitingForApprovalAmount != null
+                  ? formattedWaitingForApprovalAmount
+                  : 0
+              }}
+            </h2>
+          </div>
+          <div class="mat-card-icondiv">
+            <mat-icon
+              class="dashboard-icon notranslate menu-icon material-icons mat-ligature-font mat-icon-no-color"
+              >currency_rupee</mat-icon
+            >
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

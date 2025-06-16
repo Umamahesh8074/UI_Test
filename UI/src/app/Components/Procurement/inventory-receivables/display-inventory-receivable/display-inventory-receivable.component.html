@@ -1,0 +1,241 @@
+<h4 class="ir-pac-header">APPROVED PURCHASE ORDERS</h4>
+<div class="ir-filters-div">
+  <div class="ir-search-container">
+    <mat-form-field appearance="outline" class="ir-serach-class">
+      <mat-label>Search/Select Project Name</mat-label>
+      <input
+        type="text"
+        matInput
+        [value]="
+          selectedProject.displayProjectName
+            ? selectedProject.displayProjectName
+            : ''
+        "
+        (input)="searchProject($event)"
+        [formControl]="projectFc"
+        [matAutocomplete]="projectAuto"
+      />
+      <mat-autocomplete
+        #projectAuto="matAutocomplete"
+        (optionSelected)="onProjectSelect($event)"
+        [displayWith]="displayProject"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let option of project" [value]="option">
+          {{ option.displayProjectName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="ir-serach-class ir-ml-2">
+      <mat-label>Search/Select Purchase Order</mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchPurchaseOrder($event)"
+        [formControl]="purchaseOrderFc"
+        [matAutocomplete]="purchaseOrderAuto"
+      />
+      <mat-autocomplete
+        #purchaseOrderAuto="matAutocomplete"
+        (optionSelected)="onPurchaseOrderSelect($event)"
+        [displayWith]="displayPurchaseOrder"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let po of purchaseOrder" [value]="po">
+          {{ po.poCode }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="ir-serach-class ir-ml-2">
+      <mat-label> Search/Select Vendor </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchVendorCode($event)"
+        [formControl]="vendor"
+        [matAutocomplete]="vendorCodeAuto"
+      />
+      <mat-autocomplete
+        #vendorCodeAuto="matAutocomplete"
+        (optionSelected)="onVendorCodeSelect($event)"
+        [displayWith]="displayVendorCode"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let option of vendors" [value]="option">
+          {{ option.vendorName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="ir-serach-class ir-ml-2">
+      <mat-label>Select Date Range</mat-label>
+      <mat-date-range-input
+        [formGroup]="formData"
+        [rangePicker]="picker"
+        (click)="picker.open()"
+      >
+        <input
+          matStartDate
+          placeholder="Start date"
+          formControlName="customStartDate"
+          (focus)="picker.open()"
+          (dateChange)="onDateChange()"
+        />
+        <input
+          matEndDate
+          placeholder="End date"
+          formControlName="customEndDate"
+          (focus)="picker.open()"
+          (dateChange)="onDateChange()"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+    <mat-icon
+      style="margin-left: 0.5rem"
+      matTooltip="Clear Date"
+      (click)="clearDateRange()"
+      class="clear-date-div-ir"
+      >sync</mat-icon
+    >
+
+    <mat-icon
+      style="margin-left: 1.5rem"
+      matTooltip="Clear Filters"
+      (click)="resetForm()"
+      class="clear-date-div-ir"
+      >filter_list_off</mat-icon
+    >
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="getInventoryReceivableData"
+        class="mat-elevation-z8"
+      >
+        <!-- Row Number -->
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- Project Name -->
+        <ng-container matColumnDef="projectName">
+          <th mat-header-cell *matHeaderCellDef>Project Name</th>
+          <td mat-cell *matCellDef="let inventoryReceivable">
+            {{ inventoryReceivable.projectName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="indentCode">
+          <th mat-header-cell *matHeaderCellDef>Indent Code</th>
+          <td mat-cell *matCellDef="let inventoryReceivable">
+            {{ inventoryReceivable.indentCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quotationCode">
+          <th mat-header-cell *matHeaderCellDef>Quotation Code</th>
+          <td mat-cell *matCellDef="let inventoryReceivable">
+            {{ inventoryReceivable.quotationCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="poCode">
+          <th mat-header-cell *matHeaderCellDef>PO Code</th>
+          <td mat-cell *matCellDef="let inventoryReceivable">
+            {{ inventoryReceivable.purchaseOrderCode }}
+          </td>
+        </ng-container>
+
+        <!-- Vendor Name -->
+        <ng-container matColumnDef="vendorName">
+          <th mat-header-cell *matHeaderCellDef>Vendor</th>
+          <td mat-cell *matCellDef="let inventoryReceivable">
+            {{ inventoryReceivable.vendorName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="invoiceReceivableStatus">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td
+            mat-cell
+            *matCellDef="let inventoryReceivable"
+            [ngClass]="
+              getStatusClass(inventoryReceivable.invoiceReceivableStatus)
+            "
+          >
+            {{ inventoryReceivable.invoiceReceivableStatus || "NOT RECEIVED" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="actions-column"
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+
+          <td
+            mat-cell
+            *matCellDef="let inventoryReceivable"
+            class="actions-column"
+          >
+            <!-- <mat-icon
+              matTooltip="Send For Approve"
+              class="font icon-spacing icon"
+              style="color: green"
+              >send</mat-icon
+            > -->
+            <mat-icon
+              matTooltip="View Inventory Items"
+              (click)="goToInventoryItems(inventoryReceivable)"
+              class="font icon-spacing icon"
+              style="color: purple"
+              >rule</mat-icon
+            >
+
+            <mat-icon
+              matTooltip="Add Inventory Receivable"
+              class="font icon-spacing icon"
+              (click)="addInventoryReceivable()"
+              *ngIf="inventoryReceivable.invoiceReceivableStatus !== 'RECEIVED'"
+              >add</mat-icon
+            >
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          class="table-row"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

@@ -1,0 +1,295 @@
+<h1 style="text-align: center; padding-top: 20px; color: #295389">
+  Role Permission
+</h1>
+<form class="example-form" style="display: flex; direction: row">
+  <ng-container *ngIf="organizationId == 0">
+    <mat-form-field class="example-full-width" style="margin: 10px">
+      <mat-label>Search/Select Organization</mat-label>
+      <input
+        type="text"
+        matInput
+        aria-label="Number"
+        (input)="onOrganizationSerach($any($event).target?.value)"
+        [formControl]="organization"
+        [matAutocomplete]="auto"
+      />
+
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="onOrganizationSelete($event)"
+        [displayWith]="displayOrganization"
+      >
+        <mat-option *ngFor="let option of organizations" [value]="option">
+          {{ option.organizationName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </ng-container>
+  <mat-form-field class="example-full-width" style="margin: 10px">
+    <mat-label>Search/Select Role</mat-label>
+    <input
+      type="text"
+      matInput
+      aria-label="Number"
+      (input)="onRoleSerach($any($event).target?.value)"
+      [formControl]="role"
+      [matAutocomplete]="auto"
+    />
+
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="onRoleSelete($event)"
+      [displayWith]="displayRole"
+    >
+      <mat-option *ngFor="let option of roles" [value]="option">
+        {{ option.roleName }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+
+<mat-card style="padding: 20px; margin: 20px">
+  <div style="display: flex; direction: row; justify-content: center">
+    <div style="width: 35%">
+      <h2 style="text-align: center; color: #295389">Available Menu Items</h2>
+      <mat-card
+        style="
+          height: 400px;
+          padding-top: 0px;
+          overflow: auto;
+          border: 1px solid rgb(0 0 0 / 18%);
+        "
+      >
+        <mat-form-field appearance="outline" class="search-role">
+          <mat-label>Search</mat-label>
+          <input
+            matInput
+            (input)="getMatchedMenu($any($event).target?.value)"
+          />
+        </mat-form-field>
+
+        <ng-container *ngIf="!searchText">
+          <div>
+            <mat-accordion
+              class="example-headers-align"
+              *ngFor="let menu of menuItems"
+              multi
+            >
+              <mat-expansion-panel
+                (opened)="togglePanelState(menu)"
+                (closed)="togglePanelState(menu)"
+              >
+                <mat-expansion-panel-header style="height: 40px">
+                  <mat-panel-title>
+                    {{ menu.menuName }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                  <ng-container *ngFor="let menuItem of menu.menuItems">
+                    <mat-list-item
+                      *ngIf="menuItem.menuItemName"
+                      class="menuItemList"
+                    >
+                      <ng-container *ngIf="menu.menuName">
+                        <mat-checkbox
+                          [checked]="menuItem.accessiable === 1 ? true : false"
+                          (click)="onOptionChecked(menuItem)"
+                        ></mat-checkbox>
+                      </ng-container>
+                      {{ menuItem.menuItemName }}
+                    </mat-list-item>
+                  </ng-container>
+                </mat-list>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="searchText">
+          <mat-card
+            style="
+              width: 100%;
+              overflow: auto;
+              padding-left: 10px;
+              padding-top: 10px;
+            "
+          >
+            <div>
+              <section *ngFor="let menu of matchedMenus">
+                {{ menu.menuName }}
+
+                <div *ngFor="let menuItem of menu.menuItems">
+                  <ng-container *ngIf="menuItem.menuItemName">
+                    <h5 style="margin-bottom: 0">
+                      <mat-checkbox
+                        [checked]="menuItem.accessiable === 1 ? true : false"
+                        (click)="onOptionChecked(menuItem)"
+                        >{{ menuItem.menuItemName }}</mat-checkbox
+                      >
+                    </h5>
+                  </ng-container>
+                </div>
+              </section>
+            </div>
+          </mat-card>
+        </ng-container>
+      </mat-card>
+    </div>
+    <div
+      style="width: 10%; font-size: 2rem; margin: auto 0; text-align: center"
+    >
+      <i class="bi bi-arrow-left-right"></i>
+    </div>
+
+    <div style="width: 35%">
+      <h2 style="text-align: center; color: #295389">Selected Menu Items</h2>
+      <!-- <mat-card
+        style="
+          height: 400px;
+          padding-top: 0px;
+          overflow: auto;
+          border: 1px solid rgb(0 0 0 / 18%);
+        "
+      >
+        <mat-form-field appearance="outline" class="search-role">
+          <mat-label>Search</mat-label>
+          <input
+            matInput
+            (input)="getMatchedMenu($any($event).target?.value)"
+          />
+        </mat-form-field>
+        <div>
+          <mat-accordion
+            class="example-headers-align"
+            *ngFor="let menu of menuItems"
+            multi
+          >
+            <ng-container *ngIf="hasAccessibleItems(menu)">
+              <mat-expansion-panel [expanded]="menu.expanded">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{ menu.menuName }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                  <ng-container *ngFor="let menuItem of menu.menuItems">
+                    <mat-list-item
+                      *ngIf="
+                        menuItem.menuItemName && menuItem.accessiable === 1
+                      "
+                      class="custom-mat-list-item"
+                      class="menuItemList"
+                    >
+                      <span style="width: 0px; padding: 0; margin: 0">
+                        <mat-checkbox
+                          [checked]="menuItem.accessiable === 1"
+                          (click)="onOptionChecked(menuItem)"
+                          class="custom-mat-checkbox"
+                        ></mat-checkbox>
+                        {{ menuItem.menuItemName }}
+                      </span>
+                    </mat-list-item>
+                  </ng-container>
+                </mat-list>
+              </mat-expansion-panel>
+            </ng-container>
+          </mat-accordion>
+        </div>
+      </mat-card> -->
+
+      <mat-card
+        style="
+          height: 400px;
+          padding-top: 0px;
+          overflow: auto;
+          border: 1px solid rgb(0 0 0 / 18%);
+        "
+      >
+        <mat-form-field appearance="outline" class="search-role">
+          <mat-label>Search</mat-label>
+          <input
+            matInput
+            (input)="getSelectedMenuMatched($any($event).target?.value)"
+          />
+        </mat-form-field>
+
+        <ng-container *ngIf="!selectedSearchText">
+          <div>
+            <mat-accordion
+              class="example-headers-align"
+              *ngFor="let menu of selectedMenu"
+              multi
+            >
+              <mat-expansion-panel [expanded]="menu.expanded">
+                <mat-expansion-panel-header style="height: 40px">
+                  <mat-panel-title>
+                    {{ menu.menuName }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-list>
+                  <ng-container *ngFor="let menuItem of menu.menuItems">
+                    <mat-list-item
+                      *ngIf="menuItem.menuItemName"
+                      class="menuItemList"
+                    >
+                      <ng-container *ngIf="menu.menuName">
+                        <mat-checkbox
+                          [checked]="menuItem.accessiable === 1 ? true : false"
+                          (click)="onOptionChecked(menuItem)"
+                        ></mat-checkbox>
+                      </ng-container>
+                      {{ menuItem.menuItemName }}
+                    </mat-list-item>
+                  </ng-container>
+                </mat-list>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedSearchText">
+          <mat-card
+            style="
+              width: 100%;
+              overflow: auto;
+              padding-left: 10px;
+              padding-top: 10px;
+            "
+          >
+            <div>
+              <section *ngFor="let menu of selectedMatchedMenus">
+                {{ menu.menuName }}
+
+                <div *ngFor="let menuItem of menu.menuItems">
+                  <ng-container *ngIf="menuItem.menuItemName">
+                    <h5 style="margin-bottom: 0">
+                      <mat-checkbox
+                        [checked]="menuItem.accessiable === 1 ? true : false"
+                        (click)="onOptionChecked(menuItem)"
+                        >{{ menuItem.menuItemName }}</mat-checkbox
+                      >
+                    </h5>
+                  </ng-container>
+                </div>
+              </section>
+            </div>
+          </mat-card>
+        </ng-container>
+      </mat-card>
+    </div>
+  </div>
+
+  <ng-container *ngIf="roleId">
+    <div
+      style="
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        padding-top: 20px;
+      "
+    >
+      <button mat-raised-button color="primary" (click)="onSubmit()">
+        Update
+      </button>
+    </div>
+  </ng-container>
+</mat-card>

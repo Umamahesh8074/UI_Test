@@ -1,0 +1,209 @@
+<h4 class="header">Asset Management Details</h4>
+
+<div class="example-button-row">
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="input-field-33">
+      <mat-label>Asset Category</mat-label>
+      <mat-select
+        formControlName="assetCategory"
+        (selectionChange)="onSelectAssetCategory($event)"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option
+          *ngFor="let item of assetCategoryList"
+          [value]="item.commonRefValue"
+          [disabled]="isView"
+        >
+          {{ item.commonRefValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      class="input-field-33"
+      style="margin-left: 30px"
+    >
+      <mat-label>Asset Name</mat-label>
+      <mat-select
+        formControlName="assetName"
+        (selectionChange)="onSelectAssetName($event)"
+      >
+        <mat-option value="">All</mat-option>
+        <mat-option
+          *ngFor="let item of assetsDataEmp"
+          [value]="item.assetName"
+          [disabled]="isView"
+        >
+          {{ item.assetName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="button-container">
+    <button
+      mat-flat-button
+      class="btn-class-add"
+      (click)="addAssetDetails()"
+      style="background-color: #075477; color: white"
+    >
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="assetsData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="assetCategory">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Asset Category
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.assetCategory }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assetName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Asset Name
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.assetName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assetSerialNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Asset Serial Number
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.assetSerialNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="purchaseDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Purchase Date
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.purchaseDate | date : "yyyy-MM-dd" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="warrantyExpiryDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Warranty Expiry Date
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.warrantyExpiryDate | date : "yyyy-MM-dd" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="purchasePrice">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Purchase Price
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.purchasePrice | currency : "INR" : "symbol" : "1.2-2" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="supplierName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Supplier Name
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.supplierName }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="damageType">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Damage Type
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            {{ asset.damageType }}
+          </td>
+        </ng-container> -->
+
+        <!-- Actions (Example of edit icon) -->
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let asset">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editAssets(asset)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
+            <!-- Delete Icon -->
+            <i
+              class="bi bi-trash text-danger"
+              style="cursor: pointer"
+              (click)="openConfirmDialog(asset.assetId)"
+              *ngIf="asset.assetStatus == 'A'"
+            ></i>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

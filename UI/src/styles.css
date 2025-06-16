@@ -1,0 +1,1083 @@
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+/* If ag-grid.css and ag-theme-alpine.css are in the same directory */
+@import "../node_modules/ag-grid-community/styles/ag-grid.css";
+@import "../node_modules/ag-grid-community/styles/ag-theme-alpine.css";
+@import "node_modules/ngx-toastr/toastr.css";
+
+html,
+body {
+  height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: black;
+  overflow: auto;
+}
+.mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+}
+
+.mat-mdc-form-field-infix {
+  min-height: 30px !important;
+}
+.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  top: 13px !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #fff;
+}
+
+.mat-mdc-checkbox.mat-accent {
+  --mdc-checkbox-selected-focus-icon-color: #064969;
+  --mdc-checkbox-selected-focus-icon-color: #064969;
+  --mdc-checkbox-selected-hover-icon-color: #064969;
+  --mdc-checkbox-selected-icon-color: #064969;
+  --mdc-checkbox-selected-pressed-icon-color: #064969;
+}
+.mat-mdc-checkbox
+  .mdc-checkbox
+  .mdc-checkbox__native-control:enabled:checked
+  ~ .mdc-checkbox__background,
+.mat-mdc-checkbox
+  .mdc-checkbox
+  .mdc-checkbox__native-control:enabled:indeterminate
+  ~ .mdc-checkbox__background,
+.mat-mdc-checkbox
+  .mdc-checkbox
+  .mdc-checkbox__native-control[data-indeterminate="true"]:enabled
+  ~ .mdc-checkbox__background {
+  border-color: var(
+    --mdc-checkbox-selected-icon-color,
+    var(--mdc-theme-secondary, #064969)
+  );
+  background-color: var(
+    --mdc-checkbox-selected-icon-color,
+    var(--mdc-theme-secondary, #064969)
+  );
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.customer-dashboard-bg {
+  background: url("assets/sbr-one-residence.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #333;
+}
+.customer-dashboard-bg-light {
+  background: url("assets/sbr-one-residence-light.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #333;
+}
+.customer-dashboard-bg::after {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.customer-bg-color {
+  background-color: #333;
+}
+.customer-component-bg {
+  background: url("assets/sbr-one-residence.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.customer-component-bg-color {
+  background-color: rgba(213, 216, 220, 0.9);
+  height: 100%;
+  padding-bottom: 30px;
+}
+
+.mat-expansion-panel-body {
+  padding: 0px !important;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+.mat-mdc-select-trigger {
+  line-height: 26px !important;
+}
+.mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
+  line-height: 56px !important;
+}
+.mat-date-range-input-container {
+  line-height: 27px;
+}
+/* ********Calendar CSS Start******** */
+.fc .fc-button-primary {
+  background: #fff !important;
+  border-color: rgb(40, 113, 224) !important;
+  color: #495057 !important;
+}
+.fc .fc-toolbar-title {
+  font-size: 16px !important;
+}
+.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+  border-bottom-left-radius: 6px;
+  border-top-left-radius: 6px;
+  margin-left: 8px;
+}
+.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
+  border-bottom-right-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.fc .fc-button {
+  padding: 0.3em 0.85em !important;
+}
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid table {
+  width: 100% !important;
+}
+.fc .fc-col-header-cell-cushion {
+  padding: 5px;
+  text-decoration: none;
+  color: #495057 !important;
+}
+.fc th {
+  background: #fff;
+}
+.fc .fc-button:disabled {
+  opacity: 1.25;
+}
+.fc .fc-daygrid-body {
+  width: 100% !important;
+}
+.fc .fc-daygrid-day-number {
+  text-decoration: none;
+  padding: 5px 8px;
+  color: #495057;
+}
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 1px solid var(--fc-border-color);
+  background: #fff;
+}
+/* ********Organization CSS Start******** */
+.orgchart {
+  background-image: none !important;
+}
+.orgchart orgchart-node {
+  align-items: normal !important;
+}
+.orgchart orgchart-node::before {
+  width: 14px !important;
+  border-color: rgba(13, 13, 13, 0.8) !important;
+  height: 80px !important;
+  top: -25px !important;
+}
+.orgchart .oc-groups .oc-group:first-child {
+  padding-left: 80px !important;
+}
+.orgchart .oc-node::after {
+  bottom: -12px !important;
+  height: 0px !important;
+  background-color: rgba(13, 13, 13, 0.8) !important;
+}
+.oc-group:not(:last-child)::before {
+  left: 70px !important;
+  width: calc(100% - 59px) !important;
+}
+.oc-node {
+  width: 210px !important;
+  top: 24px;
+  z-index: 9;
+}
+.oc-node .oc-node-heading {
+  width: 200px !important;
+  height: 30px !important;
+  background-color: #4793af !important;
+  font-size: 0.8rem !important;
+  line-height: 30px;
+}
+.oc-node .oc-node-content {
+  width: 200px !important;
+  height: 30px !important;
+  border: 1px solid #4793af !important;
+  font-size: 0.8rem !important;
+  line-height: 30px;
+}
+:not(:last-child)::after {
+  border-color: rgba(13, 13, 13, 0.8) !important;
+}
+:not(:last-child)::before {
+  border-color: rgba(13, 13, 13, 0.8) !important;
+}
+.oc-node .oc-toggle-btn {
+  background: none !important;
+  left: 7px !important;
+  bottom: 13px !important;
+  width: 140px !important;
+  height: 44px !important;
+}
+.oc-icon {
+  display: inline-block;
+  line-height: 5rem !important;
+  text-align: left !important;
+  color: #000 !important;
+  font-size: 22px !important;
+}
+.oc-icon-minus::before {
+  padding: 0 2px;
+  /* background: #16a6b6; */
+  color: #cc3533 !important;
+}
+.oc-icon-plus::before {
+  padding: 0 4px;
+  /* background: #16a6b6; */
+  color: #cc3533 !important;
+}
+.oc-group {
+  padding-left: 80px !important;
+  padding-top: 10px !important;
+}
+.oc-group:not(:last-child)::before {
+  width: 0 !important;
+}
+.oc-groups {
+  flex-direction: column !important;
+}
+
+/* Display or Show component styles */
+table {
+  width: 100%;
+}
+.header {
+  font-weight: bold !important;
+  text-align: center;
+  margin: 1rem !important;
+}
+.header-div {
+  background: #fff;
+}
+/* .mat-mdc-form-field {
+  font-size: 10px;
+} */
+.example-button-row {
+  padding: 0 2%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.cmn-card {
+  margin-left: 2%;
+  margin-right: 2%;
+  height: 68vh;
+}
+.cmn-card-account-total {
+  margin-left: 2%;
+  margin-right: 2%;
+  height: auto;
+  margin-bottom: 20px;
+}
+.cmn-card-content {
+  height: 90%;
+}
+.tab-head {
+  height: 100% !important;
+  overflow: auto;
+}
+.search-option {
+  width: 10% !important;
+}
+
+/* Add or Edit Component styles */
+.mat-50 {
+  padding-top: 1rem;
+  width: 100%;
+}
+
+.mat-45 {
+  padding-top: 1rem;
+  width: 90%;
+}
+.mat-30 {
+  padding-top: 1rem;
+  width: 70%;
+}
+.mat-100 {
+  width: 99%;
+  margin-bottom: 15px;
+}
+.main-row-active {
+  background-color: #c6ebc5;
+}
+.child-row-active {
+  background-color: #aad7d9 !important;
+}
+.sub-child-row-active {
+  background-color: #f4edcc;
+}
+
+.column-div {
+  color: #004869;
+  font-size: 15px;
+  text-align: center;
+  font-weight: bold;
+  margin: 2%;
+}
+.modal-body-div {
+  margin: 2%;
+}
+.card {
+  text-align: left;
+  width: 70%;
+  margin: auto;
+  padding: 20px;
+}
+/* Add Lead Page CSS Start */
+.add-lead-main .card {
+  text-align: left;
+  width: 96% !important;
+  margin: auto;
+  padding: 20px;
+  background-color: inherit !important;
+  border: 0px solid #b9b8b8;
+  box-shadow: none;
+}
+.add-lead-main .cmn-mat-card-content {
+  margin-top: 10px !important;
+}
+
+/* Add Lead Page CSS End */
+.button {
+  margin: 2%;
+}
+/* .mat-content {
+  margin-top: 20px;
+} */
+.btn-class {
+  margin-left: 5px;
+}
+/* .header {
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem !important;
+} */
+/* .cmn-mat-card-header {
+  margin-left: 1% !important;
+} */
+.cmn-mat-card-content {
+  margin-top: 3% !important;
+  /* min-height: 400px;
+  overflow-y: auto; */
+}
+.btn-class.primary {
+  color: white !important;
+  background-color: #004869 !important;
+}
+
+.btn-class.warn {
+  color: white !important;
+  background-color: red !important;
+  margin-right: 15px;
+}
+
+.btn-class.success {
+  color: white !important;
+  background-color: rgb(45, 100, 24) !important;
+  margin-right: 15px;
+}
+
+.btn-class.accent {
+  color: white !important;
+  background-color: rgb(97, 97, 38) !important;
+  margin-right: 15px;
+}
+.add-mat-card-footer {
+  margin: 10px 25px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* btn-class.primary  btn-class.warn  btn-class.accent */
+.toast-top-center {
+  position: fixed;
+  top: 60px; /* Adjust this value to move the toast up or down from the top */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+::ng-deep .toast.toast-success {
+  background-color: #28a745 !important;
+  color: #fff;
+  width: 300px !important;
+}
+.cdk-overlay-connected-position-bounding-box {
+  /* top: 57px !important; */
+  padding-left: 10px;
+}
+.mat-mdc-menu-panel.mat-mdc-menu-panel {
+  min-width: 250px !important;
+  max-width: 374px !important;
+}
+.mat-datepicker-content .mat-calendar {
+  width: 296px;
+  min-height: 380px !important;
+}
+
+.home-dropdown .cdk-overlay-pane {
+  top: 116px !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  background: #fff;
+  height: 26px !important;
+}
+/* Dropdown Background change css in customerstagesdisplay */
+.stages-mdc-text-field .mat-mdc-text-field-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dropdown top change css in customerstagesdisplay and CSS Change In Particular Component */
+.customerstages-overlay-class .cdk-overlay-pane {
+  min-width: 190px !important;
+  top: 414px !important;
+}
+.customerstages-overlay-class .mdc-menu-surface {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+.customerstages-overlay-class .mdc-list-item__primary-text {
+  color: #333 !important;
+}
+.customerstages-overlay-class .mat-mdc-menu-item .mat-icon-no-color,
+.mat-mdc-menu-submenu-icon {
+  color: #333;
+}
+/* Dropdown top change css in displaycustomerpayment and CSS Change In Particular Component */
+.customerpayment-overlay-class .cdk-overlay-pane {
+  min-width: 120px !important;
+  top: 147px !important;
+}
+.customerpayment-overlay-class .mdc-menu-surface {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+.customerpayment-overlay-class .mdc-list-item__primary-text {
+  color: #333 !important;
+}
+.customerpayment-overlay-class .mat-mdc-menu-item .mat-icon-no-color,
+.mat-mdc-menu-submenu-icon {
+  color: #333;
+}
+.customerpayment-overlay-class tr:nth-child(even) {
+  background-color: none !important;
+}
+@media screen and (max-device-width: 480px) {
+  .customerpayment-overlay-class .cdk-overlay-pane {
+    top: 212px !important;
+    left: -220px !important;
+  }
+}
+/* Dropdown top change css in customerdocuments and CSS Change In Particular Component */
+.customerdocuments-overlay-class .cdk-overlay-pane {
+  min-width: 120px !important;
+  top: 166px !important;
+}
+.customerdocuments-overlay-class .mdc-menu-surface {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+.customerdocuments-overlay-class .mdc-list-item__primary-text {
+  color: #333 !important;
+}
+.customerdocuments-overlay-class .mat-mdc-menu-item .mat-icon-no-color,
+.mat-mdc-menu-submenu-icon {
+  color: #333;
+}
+.mdc-button {
+  font-size: 12px;
+}
+.mat-mdc-form-field,
+.mat-mdc-floating-label {
+  font-size: 13px;
+}
+.mat-mdc-icon-button.mat-mdc-button-base {
+  width: 38px !important;
+  height: 30px !important;
+  padding: 0px !important;
+  /* margin-bottom: 5px; */
+}
+.mat-mdc-text-field-wrapper:not(.mdc-text-field--outlined)
+  .mat-mdc-form-field-infix {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+/* leads table css */
+
+.mdc-data-table__header-cell {
+  background-color: #b8e6fb !important;
+  font-size: 12px;
+  position: sticky;
+  top: 0;
+  color: #000 !important;
+}
+.mdc-data-table__cell {
+  font-size: 12px;
+}
+.mdc-notched-outline {
+  height: 26px !important;
+}
+.mat-mdc-button.mat-mdc-button-base,
+.mat-mdc-raised-button.mat-mdc-button-base,
+.mat-mdc-unelevated-button.mat-mdc-button-base,
+.mat-mdc-outlined-button.mat-mdc-button-base {
+  height: 30px !important;
+}
+.mat-mdc-paginator-container {
+  min-height: 40px !important;
+  border-top: 1px solid #dadada;
+}
+.mat-mdc-table .mdc-data-table__row {
+  height: 30px !important;
+}
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+  padding: 0 0 0 8px !important;
+}
+.mat-mdc-form-field
+  .mdc-text-field--outlined
+  .mdc-notched-outline--upgraded
+  .mdc-floating-label--float-above {
+  font-size: 12px;
+}
+
+/* .mdc-data-table__content:nth-child(even){
+  background-color: Lightgreen;
+} */
+tr:nth-child(even) {
+  background-color: rgb(251, 251, 251);
+}
+tr:hover {
+  background-color: rgb(245, 233, 229) !important;
+}
+.pagination-sec .custom-paginator .mat-paginator {
+  top: 50px !important; /* Adjust this value as needed */
+}
+.search-container .leads-dropdown .cdk-overlay-pane {
+  top: 75px !important;
+}
+.leads-dropdown .mat-mdc-card-content {
+  padding: 0 !important;
+}
+.leads-dropdown .cdk-overlay-connected-position-bounding-box {
+  top: 0px !important;
+}
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  line-height: 24px !important;
+}
+.mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+.mat-elevation-z8,
+.mat-mdc-elevation-specific.mat-elevation-z8 {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1),
+    0px 0px 16px 0px rgba(0, 0, 0, 0.1), 0px 0px 20px 0px rgba(0, 0, 0, 0.1) !important;
+}
+.mat-mdc-table .mdc-data-table__header-row {
+  height: 32px !important;
+}
+
+.mat-mdc-menu-panel {
+  width: 600px !important;
+}
+/* background color */
+.bg-one {
+  background: #a5af81 !important;
+}
+.bg-one:hover {
+  box-shadow: 0 0 8px #a5af81 !important;
+  text-shadow: 0 0 4px #a5af81 !important;
+}
+.bg-two {
+  background: #ebc04a !important;
+}
+.bg-two:hover {
+  box-shadow: 0 0 8px #eec759 !important;
+  text-shadow: 0 0 4px #eec759 !important;
+}
+.bg-three {
+  background: #3fca79 !important;
+}
+.bg-three:hover {
+  box-shadow: 0 0 8px #3fca79 !important;
+  text-shadow: 0 0 4px #3fca79 !important;
+}
+.bg-four {
+  background: #80bcbd !important;
+}
+.bg-four:hover {
+  box-shadow: 0 0 8px #80bcbd !important;
+  text-shadow: 0 0 4px #80bcbd !important;
+}
+.bg-five {
+  background: #30bacc !important;
+}
+.bg-five:hover {
+  box-shadow: 0 0 8px #30bacc !important;
+  text-shadow: 0 0 4px #30bacc !important;
+}
+.bg-six {
+  background: #258fe6 !important;
+}
+.bg-six:hover {
+  box-shadow: 0 0 8px #258fe6 !important;
+  text-shadow: 0 0 4px #258fe6 !important;
+}
+.bg-seven {
+  background: #29adb2 !important;
+}
+.bg-seven:hover {
+  box-shadow: 0 0 8px #29adb2 !important;
+  text-shadow: 0 0 4px #29adb2 !important;
+}
+.bg-eight {
+  background: #2977b2 !important;
+}
+.bg-eight:hover {
+  box-shadow: 0 0 8px #2977b2 !important;
+  text-shadow: 0 0 4px #2977b2 !important;
+}
+.bg-nine {
+  background: #c1aefc !important;
+}
+.bg-nine:hover {
+  box-shadow: 0 0 8px #c1aefc !important;
+  text-shadow: 0 0 4px #c1aefc !important;
+}
+.bg-ten {
+  background: #6b8a7a !important;
+}
+.bg-ten:hover {
+  box-shadow: 0 0 8px #6b8a7a !important;
+  text-shadow: 0 0 4px #6b8a7a !important;
+}
+.bg-twelve {
+  background: #ca4f98 !important;
+}
+.bg-twelve:hover {
+  box-shadow: 0 0 8px #ca4f98 !important;
+  text-shadow: 0 0 4px #ca4f98 !important;
+}
+.bg-thirteen {
+  background: #d3de5f !important;
+}
+.bg-thirteen:hover {
+  box-shadow: 0 0 8px #d3de5f !important;
+  text-shadow: 0 0 4px #d3de5f !important;
+}
+.bg-eleven {
+  background: #b48e75 !important;
+}
+.bg-eleven:hover {
+  box-shadow: 0 0 8px #b48e75 !important;
+  text-shadow: 0 0 4px #b48e75 !important;
+}
+.bg-fifteen {
+  background: #f6c275 !important;
+}
+.bg-fifteen:hover {
+  box-shadow: 0 0 8px #f1bc6c !important;
+  text-shadow: 0 0 4px #f5ad42 !important;
+}
+.bg-sixteen {
+  background: #7b338f !important;
+}
+.bg-sixteen:hover {
+  box-shadow: 0 0 8px #7b338f !important;
+  text-shadow: 0 0 4px #7b338f !important;
+}
+.bg-seventeen {
+  background: #338f5e !important;
+}
+.bg-seventeen:hover {
+  box-shadow: 0 0 8px #338f5e !important;
+  text-shadow: 0 0 4px #338f5e !important;
+}
+
+.bg-eigthteen {
+  background: #c842f5 !important;
+}
+.bg-eigthteen:hover {
+  box-shadow: 0 0 8px #c842f5 !important;
+  text-shadow: 0 0 4px #c842f5 !important;
+}
+
+.bg-nineteen {
+  background: #f5b0c3 !important;
+}
+
+.bg-nineteen:hover {
+  box-shadow: 0 0 8px #f5b0c3 !important;
+  text-shadow: 0 0 4px #f5b0c3 !important;
+}
+
+.bg-Twenty {
+  background: #b8b291 !important;
+}
+
+.bg-Twenty:hover {
+  box-shadow: 0 0 8px #b8b291 !important;
+  text-shadow: 0 0 4px #b8b291 !important;
+}
+
+.bg-TwentyOne {
+  background: #44769c !important;
+}
+
+.bg-TwentyOne:hover {
+  box-shadow: 0 0 8px #44769c !important;
+  text-shadow: 0 0 4px #44769c !important;
+}
+
+.bg-TwentyTwo {
+  background: #a83e69 !important;
+}
+
+.bg-TwentyTwo:hover {
+  box-shadow: 0 0 8px #a83e69 !important;
+  text-shadow: 0 0 4px #a83e69 !important;
+}
+
+.bg-TwentyThree {
+  background: #8c6f9e !important;
+}
+
+.bg-TwentyThree:hover {
+  box-shadow: 0 0 8px #8c6f9e !important;
+  text-shadow: 0 0 4px #8c6f9e !important;
+}
+.bg-darkColor {
+  background: #d4aaa0 !important;
+  /* background: #05909c !important; */
+}
+/* .bg-darkColor {
+  background: linear-gradient(to bottom, #d4aaa0, #05909c) !important;
+} */
+
+.apexcharts-canvas {
+  margin: auto !important;
+}
+.mat-mdc-option {
+  font-size: 13px !important;
+  min-height: 36px !important;
+}
+.mdc-menu-surface.mat-mdc-select-panel {
+  max-height: 190px !important;
+}
+.mdc-menu-surface.mat-mdc-autocomplete-panel {
+  max-height: 190px !important;
+}
+.remarks-cell {
+  width: auto !important;
+}
+.add-stage .mat-mdc-select-value-text {
+  font-size: 13px;
+}
+.add-stage .mdc-text-field {
+  padding: 0px 5px !important;
+}
+.add-stage .mat-mdc-select-arrow {
+  top: 8px;
+}
+.add-stage .mat-mdc-form-field-infix {
+  min-width: 100px !important;
+  width: auto !important;
+}
+
+/* ***Booking form CSS Start*** */
+.mat-step-header {
+  background: #b8e6fb;
+  margin: 5px 0;
+  padding: 5px 24px;
+}
+
+.mat-step-header.cdk-keyboard-focused,
+.mat-step-header.cdk-program-focused,
+.mat-step-header:hover:not([aria-disabled]),
+.mat-step-header:hover[aria-disabled="false"] {
+  background-color: #428bca;
+}
+.mat-step-header .mat-step-label,
+.mat-step-header .mat-step-optional {
+  color: #fff;
+}
+.mat-step-header .mat-step-label.mat-step-label-active {
+  color: black;
+}
+.mat-step-header .mat-step-icon-selected,
+.mat-step-header .mat-step-icon-state-done,
+.mat-step-header .mat-step-icon-state-edit {
+  background-color: #3f51b5;
+  color: #fff;
+}
+.mat-step-header .mat-step-icon {
+  background-color: #2b6682;
+  color: #fff;
+}
+.mat-vertical-content {
+  padding: 15px 20px !important;
+}
+.mat-step:last-child .mat-vertical-content-container {
+  border: 0 !important;
+}
+.mat-stepper-vertical-line::before {
+  border-left-width: 2px !important;
+}
+.mdc-card::after {
+  border: 0px solid rgba(0, 0, 0, 0) !important;
+}
+.mat-mdc-select-trigger {
+  font-size: 13px;
+}
+/* *********Responsive CSS Start************* */
+
+@media screen and (max-device-width: 768px) {
+  .mat-mdc-text-field-wrapper {
+    width: 75% !important;
+  }
+  .units-container .mat-mdc-text-field-wrapper {
+    width: 100% !important;
+  }
+  .time-picker {
+    margin: 0 !important;
+  }
+  .home-dropdown .cdk-overlay-pane {
+    top: 132px !important;
+    right: 184px !important;
+  }
+
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    padding: 12px 6px 12px 0px !important;
+    width: 40px !important;
+  }
+  .cards {
+    padding: 0px !important;
+  }
+  .mat-mdc-option {
+    font-size: 14px !important;
+  }
+  .form-div .mat-mdc-text-field-wrapper {
+    width: 98% !important;
+  }
+  .search-container .leads-dropdown .search-class .mat-mdc-text-field-wrapper {
+    width: 98% !important;
+  }
+}
+
+@media screen and (max-device-width: 480px) {
+  .mat-typography h3 {
+    font-size: 12px;
+    overflow: hidden;
+  }
+  .time-picker {
+    margin: 0 !important;
+  }
+  .mat-mdc-form-field {
+    width: 100% !important;
+  }
+  .mdc-menu-surface.mat-mdc-select-panel {
+    margin-top: 25px;
+  }
+  .mdc-menu-surface.mat-mdc-select-panel {
+    margin-top: -18px !important;
+  }
+  .mat-datepicker-content {
+    margin-top: 54px;
+    margin-left: 238px;
+  }
+  .cards {
+    padding: 10px !important;
+  }
+  .header-div {
+    margin: 10px !important;
+  }
+  .mat-mdc-text-field-wrapper {
+    width: 97% !important;
+  }
+  .mdc-list-item {
+    padding-left: 10px !important;
+    padding-right: 14px !important;
+  }
+  .mat-card {
+    margin: 10px 0px !important;
+    flex: unset !important;
+  }
+  .mat-mdc-option {
+    font-size: 14px !important;
+  }
+  .card {
+    margin: 0px;
+    text-align: left;
+    width: 94%;
+    margin: auto;
+    padding: 10px;
+  }
+  .cmn-mat-card-content {
+    margin-top: 10px !important;
+    height: auto;
+  }
+  .mat-mdc-form-field-error-wrapper {
+    padding: 0px !important;
+  }
+  .mdc-data-table__header-cell {
+    font-size: 12px;
+  }
+  .mdc-data-table__cell {
+    font-size: var(--mdc-typography-body2-font-size, 12px);
+  }
+  .mat-45 {
+    padding-top: 0rem;
+  }
+  .apexcharts-legend {
+    width: 90%;
+  }
+  .mat-mdc-paginator-page-size-select {
+    width: 84px !important;
+    margin: 15px 4px !important;
+  }
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    padding: 2px 6px 12px 0px !important;
+  }
+}
+
+@media screen and (max-device-width: 1024px) {
+  .cards {
+    padding: 10px !important;
+  }
+}
+
+/* Customize the success toastr background color */
+.toast-success {
+  background-color: #4caf50; /* Green color for success */
+  color: white; /* Text color */
+}
+
+/* Customize the success toastr header */
+.toast-success .toast-title {
+  font-weight: normal;
+}
+
+/* Customize the toastr container */
+.toast-container {
+  top: 20px; /* Adjust the position if needed */
+  right: 20px; /* Adjust the position if needed */
+}
+
+.icon {
+  height: 18px !important;
+  width: 25px !important;
+  font-size: 18px !important;
+}
+.subitems-div {
+  border: 0.5px solid #004869;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem 1rem 0rem;
+  margin: 0.4% 0.6% 0.4% 0.6%;
+}
+
+.clear-date-div {
+  color: white;
+  cursor: pointer;
+  border: 1px solid #333;
+  height: 26px !important;
+  font-size: 25px;
+  background: #fff;
+  width: 30px;
+  margin-left: 4px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: #004869;
+}
+
+.text-color-div {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.toast-error .toast-title {
+  font-weight: normal;
+}
+.toast-progress {
+  background-color: white; /* Example color (orange) */
+}
+.sidenav + .content {
+  overflow: hidden; /* Hides the scrollbar */
+}
+
+/* .sidenav + .content:hover {
+  overflow-y: auto;
+  scrollbar-width: none; 
+} */
+
+.sidenav + .content::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar in WebKit browsers (Chrome, Safari, etc.) */
+}
+
+.sub-details-div {
+  border: 0.5px solid #004869;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+  margin: 0.8rem;
+}
+.header-div {
+  color: #004869;
+  font-size: 15px;
+  padding: 1rem;
+  /* text-align: center; */
+  font-weight: bold;
+}
+
+.cdk-overlay-container {
+  z-index: 1060 !important; /* Higher than the modal z-index (default 1055) */
+}
+
+/* Organization Chart CSS Start */
+.node-button-div div {
+  padding: 1px !important;
+}
+.node-button-div div span svg {
+  width: 5px !important;
+  height: 5px !important;
+}
+.node-button-div div span {
+  font-size: 6px;
+}
+.svg-chart-container {
+  cursor: grab;
+}
+/* Organization Chart CSS End */
+
+@import "~quill/dist/quill.snow.css";
+
+iframe {
+      width: 100% !important;
+      height: 100%;
+      border: none;
+    }

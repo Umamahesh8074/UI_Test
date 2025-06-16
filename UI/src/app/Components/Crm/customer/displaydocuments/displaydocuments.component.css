@@ -1,0 +1,241 @@
+/* General container styling */
+.customer-documents {
+  padding: 0px 30px;
+  /* font-family: "Arial", sans-serif; */
+  /* background-color: #f4f4f9; */
+  min-height: 78vh;
+}
+
+/* Header styling */
+.units-heading {
+  text-align: center;
+}
+
+.booking-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  padding-bottom: 20px;
+}
+
+/* Dropdown styling for unit selection */
+.example-button-row {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.mat-form-field {
+  width: 250px;
+  margin-right: 20px;
+}
+
+/* Document section styling */
+.documentmain {
+  display: flex;
+  justify-content: center;
+}
+
+.documentdev {
+  width: 80%;
+}
+
+/* Styling for download buttons and layout */
+.download-buttons {
+  display: flex;
+  width: 100%;
+}
+
+.button-group {
+  align-items: center;
+  /* background-color: #fff; */
+  width: 33%;
+  border: 1px solid #b6a9a9;
+  margin: 15px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 30px 0px;
+}
+
+.button-group span {
+  font-size: 16px;
+  font-weight: normal;
+  color: #333;
+  width: 180px;
+}
+
+button {
+  font-size: 14px;
+  background-color: #306e03;
+  color: #fff !important;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #25b3eb;
+}
+
+button i {
+  margin-right: 8px;
+}
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 12px;
+  border-radius: 10px;
+  width: 8%;
+  margin: 20px auto;
+}
+
+.pagination-controls div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.pagination-controls i {
+  font-size: 20px;
+  color: rgb(9, 1, 1);
+  transition: color 0.3s ease;
+  border: 1px solid #333;
+  border-radius: 50%;
+  padding: 6px;
+}
+
+.pagination-controls i:hover {
+  color: #0c0c0c;
+  transform: scale(1.2);
+}
+
+.pagination-controls div[hidden] {
+  display: none;
+}
+.pagination-controls i {
+  font-size: 22px; /* Increase the size of the icon */
+  font-weight: bold; /* Make the icon appear thicker */
+  color: rgb(17, 16, 16);
+  transition: color 0.3s ease;
+}
+
+.pagination-controls i:hover {
+  color: #111010;
+  transform: scale(1.2);
+}
+@media (max-width: 600px) {
+  .pagination-controls {
+    padding: 5px;
+  }
+
+  .pagination-controls i {
+    font-size: 16px;
+  }
+}
+/* Mobile responsiveness */
+@media screen and (max-device-width: 480px) {
+  .customer-documents {
+    padding: 0px;
+    min-height: 87vh;
+  }
+  .booking-header {
+    font-size: 20px;
+  }
+  .documentdev {
+    width: 100%;
+    padding: 0px;
+  }
+  .documentmain {
+    justify-content: inherit;
+  }
+  .download-buttons {
+    width: 94%;
+    display: block;
+    margin: auto;
+  }
+  .button-group {
+    width: 100%;
+    margin: 15px 0px;
+    padding: 20px 0px;
+  }
+  .example-button-row div {
+    width: 90%;
+  }
+  .example-button-row {
+    padding: 0px;
+  }
+  button {
+    font-size: 12px;
+  }
+  .button-group span {
+    font-weight: normal;
+  }
+  .pagination-controls {
+    width: 16%;
+    padding: 0px;
+    margin-right: 10px;
+  }
+}
+
+@media screen and (min-device-width: 481px) and (max-device-width: 768px) {
+  .example-button-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .documentdev {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .button-group span {
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+/* Styling for download buttons and layout */
+.download-buttons {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  width: 100%;
+}
+
+.button-group {
+  align-items: center;
+  width: 30%; /* 3 items per row */
+  border: 1px solid #b6a9a9;
+  margin: 15px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 30px 0px;
+  box-sizing: border-box;
+  border-radius: 15px; /* Add border-radius to round the corners */
+}
+
+
+.button-group span {
+  font-size: 16px;
+  font-weight: normal;
+  color: #333;
+  width: 180px;
+}

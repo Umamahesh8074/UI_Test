@@ -1,0 +1,15 @@
+/* styles.css or component CSS */
+.dashboard-container {
+    margin:20px;
+}
+.dashboard-wrapper {
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  margin:auto;
+}
+iframe {
+      width: 100% !important;
+      height: 100%;
+      border: none;
+    }

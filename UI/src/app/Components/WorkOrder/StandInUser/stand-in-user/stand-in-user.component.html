@@ -1,0 +1,48 @@
+<h4 class="header">
+  <b>{{ isAdding ? "ADD STAND IN USER" : "EDIT STAND IN USER" }}</b>
+</h4>
+<form [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card" style="padding: 0">
+      <mat-card-content class="cmn-mat-card-content mat-card-scroll">
+        <div class="row" style="padding: 0 15px">
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>managerId</mat-label>
+            <input matInput formControlName="managerId" type="text" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>userId</mat-label>
+            <input matInput formControlName="userId" type="text" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="mat-45">
+            <mat-label>status</mat-label>
+            <input matInput formControlName="status" type="text" />
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoStandInUsers()"
+          >
+            BACK
+          </button>
+          <button
+            *ngIf="isAdding"
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary" type="submit">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

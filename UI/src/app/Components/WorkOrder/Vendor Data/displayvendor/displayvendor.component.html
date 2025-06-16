@@ -1,0 +1,328 @@
+<div class="pac-header">VENDOR</div>
+
+<div class="filters-div">
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="serach-class">
+      <mat-label>Search On Vendor Name</mat-label>
+      <input matInput (input)="onSearch($any($event).target?.value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="serach-class-code ml-2">
+      <mat-label>Search On Vendor Code</mat-label>
+      <input
+        matInput
+        (input)="onSearchVendorCode($any($event).target?.value)"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="serach-class1 ml-2" appearance="outline">
+      <mat-label> Search/Select Project </mat-label>
+      <input
+        type="text"
+        matInput
+        (input)="searchProject($event)"
+        [formControl]="project"
+        [matAutocomplete]="projectAuto"
+      />
+      <mat-autocomplete
+        #projectAuto="matAutocomplete"
+        (optionSelected)="onProjectSelect($event)"
+        [displayWith]="displayProject"
+      >
+        <mat-option *ngFor="let option of projects" [value]="option">
+          {{ option.displayProjectName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="serach-class-phone ml-2">
+      <mat-label>Search Vendor Phone Number</mat-label>
+      <input
+        matInput
+        (input)="onSearchPhoneNumber($any($event).target?.value)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="serach-class ml-2">
+      <mat-label>Search On Company Name</mat-label>
+      <input
+        matInput
+        (input)="onSearchCompanyName($any($event).target?.value)"
+      />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addVendor()"
+      class="btn-class primary"
+    >
+      <mat-icon class="font">add</mat-icon> ADD
+    </button>
+  </div>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="vendorData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let i = index">
+            {{ pageIndex * pageSize + i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Vendor Name
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.vendorName }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="vendorCode">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Vendor Code
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ element.vendorCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="vendorType">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Vendor Type
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ element.vendorType }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Project Name
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.projectName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateOfJoining">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Date Of Joining
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.dateOfJoining | date : "medium" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="phonenumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Phone Number
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.contactNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Email
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.email }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="companyname">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Company Name
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.companyName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon
+              matTooltip="Edit"
+              (click)="editVendor(element)"
+              class="font icon-spacing work-order-icon"
+              style="color: #004869"
+              >edit</mat-icon
+            >
+
+            <mat-icon
+              matTooltip="Supported Files"
+              (click)="viewDownLoads(element)"
+              class="font icon-spacing work-order-icon"
+              data-bs-toggle="modal"
+              data-bs-target="#serviceCodeSearchModal"
+              style="color: rgb(34, 34, 164)"
+              >download</mat-icon
+            >
+
+            <mat-icon
+              matTooltip="Delete"
+              (click)="openConfirmDialog(element.id)"
+              class="font icon-spacing work-order-icon"
+              style="color: #d3493f"
+            >
+              delete_forever</mat-icon
+            >
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer class="pagination-sec">
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>
+
+<div
+  class="modal fade modal-xl"
+  id="serviceCodeSearchModal"
+  tabindex="-1"
+  aria-labelledby="serviceCodeSearchModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #004869">DOCUMENTS</h3>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body wo-modal-body">
+        <div *ngIf="!documents || documents.length === 0; else documentsTable">
+          <p>No documents available.</p>
+        </div>
+
+        <div class="tab-head">
+          <ng-template #documentsTable>
+            <table
+              matSort
+              mat-table
+              [dataSource]="documents"
+              class="mat-elevation-z8"
+            >
+              <ng-container matColumnDef="fileName">
+                <th mat-header-cell *matHeaderCellDef>File Name</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.documentName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.createdDate | date : "medium" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let document">
+                  <mat-icon
+                    matTooltip="Download"
+                    (click)="downloadDocument(document)"
+                    class="font icon-spacing work-order-icon"
+                    >download</mat-icon
+                  >
+                </td>
+              </ng-container>
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumnsDocuments"
+              ></tr>
+              <tr
+                class="table-row"
+                mat-row
+                *matRowDef="let row; columns: displayedColumnsDocuments"
+              ></tr>
+            </table>
+          </ng-template>
+        </div>
+      </div>
+      <div>
+        <mat-card-footer class="pagination-sec">
+          <mat-paginator
+            [length]="documentTotalItems"
+            [pageSize]="documentPageSize"
+            [pageSizeOptions]="documentPageSizeOptions"
+            (page)="onDocumentPageChange($event)"
+            showFirstLastButtons
+            class="custom-paginator"
+          ></mat-paginator>
+        </mat-card-footer>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

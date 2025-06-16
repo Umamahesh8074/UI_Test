@@ -1,0 +1,135 @@
+<h3 class="header"><b>COMMON REFERENCE DETAILS</b></h3>
+
+<div class="example-button-row">
+  <span>
+    <mat-form-field appearance="outline" class="search-class">
+      <mat-label>Search On Name</mat-label>
+      <input
+        matInput
+        (input)="getCommonReferenceDetailsByName($any($event).target?.value)"
+      />
+    </mat-form-field>
+  </span>
+  <span>
+    <button
+      mat-flat-button
+      style="color: white; background-color: #004869"
+      (click)="addCommonReferenceDetails()"
+      class="btn-class"
+    >
+      <i class="bi bi-sign-intersection-fill h6"></i> ADD
+    </button>
+  </span>
+</div>
+
+<mat-card class="cmn-card">
+  <mat-card-content class="cmn-card-content">
+    <div class="tab-head">
+      <table
+        matSort
+        mat-table
+        [dataSource]="commonReferenceDetailsData"
+        class="mat-elevation-z8"
+      >
+        <ng-container matColumnDef="name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Name
+          </th>
+          <td mat-cell *matCellDef="let commonReferenceDetails">
+            {{ commonReferenceDetails.name }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="commonRefKey">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Common Reference Key
+          </th>
+          <td mat-cell *matCellDef="let commonReferenceDetails">
+            {{ commonReferenceDetails.commonRefKey }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="commonRefValue">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Common Reference Value
+          </th>
+          <td mat-cell *matCellDef="let commonReferenceDetails">
+            {{ commonReferenceDetails.commonRefValue }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="refValue">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Ref Value
+          </th>
+          <td mat-cell *matCellDef="let commonReferenceDetails">
+            {{ commonReferenceDetails.refValue || "N/A" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="refOrder">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Order
+          </th>
+          <td mat-cell *matCellDef="let commonReferenceDetails">
+            {{ commonReferenceDetails.refOrder || "N/A" }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="background-color: #004869; color: white"
+          >
+            Actions
+          </th>
+          <td mat-cell *matCellDef="let commonReferenceDetails">
+            <i
+              class="bi bi-pencil"
+              style="cursor: pointer"
+              (click)="editCommonReferenceDetails(commonReferenceDetails)"
+            ></i>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <!-- <i (click)="openConfirmDialog(commonReferenceType.id)" style="color: red; cursor: pointer"
+              class="bi bi-trash text-danger"></i> -->
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="
+            let workflowType of workflowTypeData;
+            columns: displayedColumns
+          "
+        ></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </mat-card-footer>
+</mat-card>

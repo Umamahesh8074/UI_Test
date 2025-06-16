@@ -1,0 +1,130 @@
+<h2 class="header"><b>CUSTOMER CONSUMPTION</b></h2>
+
+<form [formGroup]="formData">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header
+        ><b>{{
+          isAdding ? "ADD CUSTOMER CONSUMPTION" : "EDIT CUSTOMERCONSUMPTION"
+        }}</b></mat-card-header
+      >
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field appearance="outline" class="customer-con-mat-50">
+          <mat-label>Customer</mat-label>
+          <mat-select
+            formControlName="customerId"
+            (selectionChange)="onCustomerChange($event)"
+          >
+            <mat-option
+              *ngFor="let item of customer"
+              [value]="item.customerId"
+              [disabled]="isView"
+            >
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="customer-con-mat-50">
+          <mat-label>Consumption Type</mat-label>
+          <mat-select
+            formControlName="consumptionType"
+            (selectionChange)="onConsumptionTypeChange($event)"
+          >
+            <mat-option
+              *ngFor="let item of consumptionTypeList"
+              [value]="item.commonRefValue"
+              [disabled]="isView"
+            >
+              {{ item.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="customer-con-mat-50">
+          <mat-label>Month</mat-label>
+          <mat-select formControlName="consumptionMonth">
+            <mat-option
+              *ngFor="let item of months"
+              [value]="item.id"
+              [disabled]="isView"
+            >
+              {{ item.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="customer-con-mat-50">
+          <mat-label>Year</mat-label>
+          <mat-select formControlName="consumptionYear">
+            <mat-option
+              *ngFor="let item of consumptionYearList"
+              [value]="item.commonRefValue"
+              [disabled]="isView"
+            >
+              {{ item.commonRefValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="customer-con-mat-50">
+          <mat-label>Current Consumption</mat-label>
+          <input matInput formControlName="currentConsumption" />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="customer-con-mat-50"
+          *ngIf="showElectricityFields"
+        >
+          <mat-label>Tl And Dl Charges</mat-label>
+          <input matInput formControlName="tlDl" />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="customer-con-mat-50"
+          *ngIf="showElectricityFields"
+        >
+          <mat-label>Fac Charges</mat-label>
+          <input matInput formControlName="fac" />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="customer-con-mat-50"
+          *ngIf="showElectricityFields"
+        >
+          <mat-label>Tod Charges</mat-label>
+          <input matInput formControlName="tod" />
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="outline"
+          class="customer-con-mat-50"
+          *ngIf="showElectricityFields"
+        >
+          <mat-label>Demand Charges</mat-label>
+          <input matInput formControlName="demandCharges" />
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button mat-flat-button class="btn-class primary" (click)="save()">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+          <button mat-flat-button class="btn-class warn" (click)="clearForm()">
+            RESET
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoCustomerconsumptions()"
+          >
+            BACK
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

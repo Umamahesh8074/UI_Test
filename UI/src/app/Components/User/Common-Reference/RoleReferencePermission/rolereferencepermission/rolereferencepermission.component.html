@@ -1,0 +1,63 @@
+<h4 class="header"><b>ROLE REFERENCE PERMISSIONS</b></h4>
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+<form  [class.blur-background]="isModalVisible"
+ [formGroup]="formData" (ngSubmit)="save()">
+  <div class="example-container">
+    <mat-card class="card">
+      <mat-card-header>
+        <b>{{
+          isAdding
+            ? "ADD ROLE REFERENCE PERMISSIONS"
+            : "EDIT ROLE REFERENCE PERMISSIONS"
+        }}</b>
+      </mat-card-header>
+      <mat-card-content class="cmn-mat-card-content">
+        <mat-form-field appearance="outline" class="input-field-50" style="margin-left: 50px;">
+          <mat-label> Common Reference Type Name</mat-label>
+          <mat-select formControlName="referenceTypeId">
+            <mat-option value="">Select CommonReferenceType</mat-option>
+            <mat-option
+              *ngFor="let commonReferenceType of commonReferenceTypes"
+              [value]="commonReferenceType.id"
+            >
+              {{ commonReferenceType.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="input-field-50" style="margin-left: 50px;">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="roleId">
+            <mat-option *ngFor="let role of roles" [value]="role.roleId">
+              {{ role.roleName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-footer class="add-mat-card-footer">
+        <div>
+          <button
+            mat-flat-button
+            class="btn-class accent"
+            (click)="gotoRoleReferencePermission()"
+          >
+            BACK
+          </button>
+          <button
+            mat-flat-button
+            class="btn-class warn"
+            (click)="clearForm()"
+            *ngIf="isAdding"
+          >
+            RESET
+          </button>
+          <button mat-flat-button class="btn-class primary">
+            {{ isAdding ? "ADD" : "UPDATE" }}
+          </button>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</form>

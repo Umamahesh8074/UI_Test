@@ -1,0 +1,302 @@
+<h4 class="header">
+  <b>Booking</b>
+</h4>
+<div>
+  <form [formGroup]="infoForm" (ngSubmit)="saveInfo()">
+    <div class="example-container">
+      <mat-card class="card" style="padding: 0">
+        <mat-card-content class="cmn-mat-card-content mat-card-scroll">
+          <div class="box">
+            <h4 class="text">
+              <b>Personal Information</b>
+            </h4>
+
+            <div class="row" style="padding: 0 15px; display: flex; gap: 10px">
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Name</mat-label>
+                <input
+                  matInput
+                  id="customerName"
+                  formControlName="customerName"
+                  type="text"
+                />
+                <mat-error
+                *ngIf="infoForm.get('customerName')?.hasError('required')"
+              >
+                Customer Name is required
+              </mat-error>
+              </mat-form-field>
+             
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Phone Number</mat-label>
+                <input
+                  matInput
+                  id="customerPhoneNo"
+                  formControlName="customerPhoneNo"
+                  type="text"
+                />
+                <mat-error
+                *ngIf="infoForm.get('customerPhoneNo')?.hasError('required')"
+              >
+                Phone Number is required
+              </mat-error>
+              </mat-form-field>
+             
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Email ID</mat-label>
+                <input
+                  matInput
+                  id="emailId"
+                  formControlName="emailId"
+                  type="email"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Address</mat-label>
+                <input
+                  matInput
+                  id="address"
+                  formControlName="address"
+                  type="text"
+                />
+                <mat-error
+                *ngIf="infoForm.get('address')?.hasError('required')"
+              >
+                Address is required
+              </mat-error>
+              </mat-form-field>
+              
+            </div>
+
+            <div
+              class="row"
+              style="padding: 0 15px; display: flex; gap: 15px"
+            ></div>
+          </div>
+          <div class="box">
+            <h4 class="text">
+              <b>Co-Applicant Details</b>
+            </h4>
+            <div class="row" style="padding: 0 15px; display: flex; gap: 15px">
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Co-Applicant Name</mat-label>
+                <input
+                  matInput
+                  id="coApplicantName"
+                  formControlName="coApplicantName"
+                  type="text"
+                />
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="flex-field"
+                style="margin-top: 2px"
+              >
+                <mat-label>Enter Co-Applicant Phone Number</mat-label>
+                <input
+                  matInput
+                  id="coApplicantPhoneNumber"
+                  formControlName="coApplicantPhoneNumber"
+                  type="text"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Co-Applicant Email ID</mat-label>
+                <input
+                  matInput
+                  id="coapplicantEmailid"
+                  formControlName="coapplicantEmailid"
+                  type="email"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Enter Co-Applicant Address</mat-label>
+                <input
+                  matInput
+                  id="coapplicantaddress"
+                  formControlName="coapplicantaddress"
+                  type="text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="box">
+            <h4 class="text">
+              <b>Project Details</b>
+            </h4>
+            <div class="row" style="padding: 0 15px; display: flex; gap: 15px">
+              <mat-form-field class="flex-field" appearance="outline">
+                <mat-label>Search/Select Project</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchProject($event)"
+                  [formControl]="project"
+                  [matAutocomplete]="projectAuto"
+                />
+                <mat-autocomplete
+                  #projectAuto="matAutocomplete"
+                  (optionSelected)="onProjectSelect($event)"
+                  [displayWith]="displayProject"
+                >
+                  <mat-option *ngFor="let option of projects" [value]="option">
+                    {{ option.projectName }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="project.hasError('required')">
+                  Project is required
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="flex-field" appearance="outline">
+                <mat-label>Search/Select UnitType</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchUnitType($event)"
+                  [formControl]="unitType"
+                  [matAutocomplete]="unitTypeAuto"
+                />
+                <mat-autocomplete
+                  #unitTypeAuto="matAutocomplete"
+                  (optionSelected)="onUnitTypeSelect($event)"
+                  [displayWith]="displayUnitType"
+                >
+                  <mat-option
+                    *ngFor="let option of unitTypeNames"
+                    [value]="option"
+                  >
+                    {{ option.unitTypeName }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="unitType.hasError('required')">
+                  Unit Type is required
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="flex-field" appearance="outline">
+                <mat-label>Search/Select Block</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchBlock($event)"
+                  [formControl]="blockFc"
+                  [matAutocomplete]="blockAuto"
+                />
+                <mat-autocomplete
+                  #blockAuto="matAutocomplete"
+                  (optionSelected)="onBlockSelect($event)"
+                  [displayWith]="displayBlock"
+                >
+                  <mat-option *ngFor="let option of blocks" [value]="option">
+                    {{ option.name }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="blockFc.hasError('required')">
+                 Block is required
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="flex-field" appearance="outline">
+                <mat-label>Search/Select Level</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchLevel($event)"
+                  [formControl]="levelFc"
+                  [matAutocomplete]="levelAuto"
+                />
+                <mat-autocomplete
+                  #levelAuto="matAutocomplete"
+                  (optionSelected)="onLevelSelect($event)"
+                  [displayWith]="displayLevel"
+                >
+                  <mat-option *ngFor="let option of levels" [value]="option">
+                    {{ option.name }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="levelFc.hasError('required')">
+                  Level is required
+                 </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="row" style="padding: 0 15px; display: flex; gap: 10px">
+              <mat-form-field
+                class="example-full-width"
+                class="mat-45"
+                appearance="outline"
+              >
+                <mat-label>Search/Select unit</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  (input)="searchUnit($event)"
+                  [formControl]="unitFc"
+                  [matAutocomplete]="unitAuto"
+                />
+                <mat-autocomplete
+                  #unitAuto="matAutocomplete"
+                  (optionSelected)="onUnitSelect($event)"
+                  [displayWith]="displayUnit"
+                >
+                  <mat-option *ngFor="let option of units" [value]="option">
+                    {{ option.unitName }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="unitFc.hasError('required')">
+                  Unit is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="box">
+            <h4 class="text">
+              <b>Unit Details</b>
+            </h4>
+            <div class="row" style="padding: 0 15px; display: flex; gap: 10px">
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Basic Price (Per Sq. Ft.)</mat-label>
+                <input
+                  matInput
+                  id="basicPrice"
+                  formControlName="basicPrice"
+                  type="text"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="flex-field">
+                <mat-label>Total Price</mat-label>
+                <input
+                  matInput
+                  id="finalPrice"
+                  formControlName="finalPrice"
+                  type="text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <mat-card-footer class="add-mat-card-footer">
+            <div style="text-align: right" class="button">
+              <button
+                mat-flat-button
+                class="btn-class accent"
+                (click)="gotoLeads()"
+              >
+                BACK
+              </button>
+
+              <button
+                mat-flat-button
+                class="btn-class warn"
+                (click)="clearForm()"
+              >
+                RESET
+              </button>
+              <button mat-flat-button class="btn-class primary">Submit</button>
+            </div>
+          </mat-card-footer>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </form>
+</div>

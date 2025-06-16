@@ -1,0 +1,196 @@
+<div class="tab-header-wrapper">
+  <!-- Booking Overview Header -->
+  <div class="pac-header">BOOKING OVERVIEW</div>
+
+  <div class="filters-div">
+    <!-- Applicant Name Field -->
+    <div class="filter-item">
+      <mat-form-field appearance="outline">
+        <mat-label>Search On Applicant Name</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchValue"
+          (input)="onSearch(searchValue)"
+          placeholder="Enter Applicant Name"
+        />
+      </mat-form-field>
+    </div>
+    <!-- Project Field (Conditional) -->
+    <div class="filter-item" *ngIf="!crmMemberRollName.includes(roleName)">
+      <mat-form-field appearance="outline">
+        <mat-label>Search/Select Project</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchProject($event)"
+          [formControl]="project"
+          [matAutocomplete]="projectAuto"
+        />
+        <mat-autocomplete
+          #projectAuto="matAutocomplete"
+          (optionSelected)="onProjectSelect($event)"
+          [displayWith]="displayProject"
+        >
+          <mat-option *ngFor="let option of projects" [value]="option">
+            {{ option.projectName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- Block Field -->
+    <div class="filter-item">
+      <mat-form-field appearance="outline">
+        <mat-label>Search/Select Block</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchBlock($event)"
+          [formControl]="block"
+          [matAutocomplete]="blockAuto"
+        />
+        <mat-autocomplete
+          #blockAuto="matAutocomplete"
+          (optionSelected)="onBlockSelect($event)"
+          [displayWith]="displayBlock"
+        >
+          <mat-option *ngFor="let option of blocks" [value]="option">
+            {{ option.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- Payment Plan Field -->
+    <div class="filter-item">
+      <mat-form-field appearance="outline">
+        <mat-label>Search/Select Payment Plan</mat-label>
+        <input
+          type="text"
+          matInput
+          [value]="selectedPaymentPlan.planName || ''"
+          (input)="searchPaymentPlan($event)"
+          [formControl]="paymentPlan"
+          [matAutocomplete]="paymentPlanAuto"
+        />
+        <mat-autocomplete
+          #paymentPlanAuto="matAutocomplete"
+          (optionSelected)="onPaymentPlanSelect($event)"
+          [displayWith]="displayPaymentPlan"
+        >
+          <mat-option *ngFor="let option of paymentPlans" [value]="option">
+            {{ option.planName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- Unit Field -->
+    <div class="filter-item">
+      <mat-form-field appearance="outline">
+        <mat-label>Search/Select Unit</mat-label>
+        <input
+          type="text"
+          matInput
+          (input)="searchUnit($event)"
+          [formControl]="unit"
+          [matAutocomplete]="unitAuto"
+        />
+        <mat-autocomplete
+          #unitAuto="matAutocomplete"
+          (optionSelected)="onUnitSelect($event)"
+          [displayWith]="displayUnit"
+        >
+          <mat-option *ngFor="let option of units" [value]="option">
+            {{ option.unitName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- Unit Belongs To Field -->
+    <div class="filter-item">
+      <mat-form-field appearance="outline">
+        <mat-label>Unit Belongs To</mat-label>
+        <mat-select
+          (selectionChange)="onUnitTypeBelongsChange($event)"
+          [(ngModel)]="typeId"
+        >
+          <!-- <mat-option value="All">All</mat-option> -->
+          <mat-option *ngFor="let element of companyType" [value]="element.id">
+            {{ element.commonRefValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    
+  </div>
+
+  <!-- Tab Group -->
+  <mat-tab-group
+    [(selectedIndex)]="selectedTabIndex"
+    class="tab-container mat-tab-button-style"
+  >
+    <mat-tab label="Customer Details">
+      <div class="tab-content">
+        <div class="move-form-lower">
+          <app-displayBookingForm
+            [projectId]="projectId"
+            [projectName]="projectName"
+            [name]="name"
+            [unitName]="unitName"
+            [firstApplicantName]="firstApplicantName"
+            [typeId]="typeId"
+            [blockId]="blockId"
+            [planId]="planId"
+            [pageIndex]="pageIndex"
+            [typeCommonReferenceDetailsId]="typeCommonReferenceDetailsId"
+            [roleName]="roleName"
+            [userId]="userId"
+            [unitId]="unitId"
+            [triggerRefresh]="triggerRefresh"
+            (goToCustomerStages)="onNavigateToCustomerStages($event)"
+          >
+          </app-displayBookingForm>
+        </div>
+      </div>
+    </mat-tab>
+    <!-- <mat-tab label="Booking Charges">
+      <div class="tab-content">
+        <div class="move-form-lower">
+          <app-displayBookingCharges
+            [projectId]="projectId"
+            [projectName]="projectName"
+            [firstApplicantFirstName]="firstApplicantFirstName"
+            [firstApplicantMiddleName]="firstApplicantMiddleName"
+            [firstApplicantLastName]="firstApplicantLastName"
+            [unitName]="unitName"
+          ></app-displayBookingCharges>
+        </div>
+      </div>
+    </mat-tab> -->
+    <mat-tab label="Customer Stages">
+      <div class="tab-content">
+        <div class="move-form-lower">
+          <app-displayCustomerStages
+            [projectId]="projectId"
+            [projectName]="projectName"
+            [firstApplicantName]="firstApplicantName"
+            [bookingId]="bookingId"
+            [unitName]="unitName"
+            [typeId]="typeId"
+            [blockId]="blockId"
+            [planId]="planId"
+            [typeCommonReferenceDetailsId]="typeCommonReferenceDetailsId"
+            [roleName]="roleName"
+            [userId]="userId"
+            [pageIndex]="pageIndex"
+            [pagination]="pagination"
+            (refreshRequired)="refreshChildComponent()"
+          ></app-displayCustomerStages>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

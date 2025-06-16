@@ -1,0 +1,24 @@
+<h2 mat-dialog-title *ngIf="data.title; else defaultTitle">{{ data.title }}</h2>
+<ng-template #defaultTitle>
+  <h2 mat-dialog-title>{{ data.isUpdate ? "Update File" : "Delete File" }}</h2>
+</ng-template>
+
+<mat-dialog-content>
+  Are you sure you want to {{ displayedData }}?
+</mat-dialog-content>
+<mat-dialog-actions class="mat-button">
+  <button
+    mat-button
+    (click)="onCancelDialog()"
+    style="background-color: #004869; color: white"
+  >
+    Cancel
+  </button>
+  <button
+    mat-button
+    (click)="onConfirmDialog()"
+    style="background-color: brown; color: white"
+  >
+    Confirm
+  </button>
+</mat-dialog-actions>

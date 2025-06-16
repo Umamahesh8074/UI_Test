@@ -1,0 +1,15 @@
+.inline-error {
+  color: red;
+  font-size: 10px;
+  margin-top: 2px;
+}
+.irc-pac-header {
+  font-weight: normal;
+  font-size: 20px;
+  text-align: center;
+  margin: 1% !important;
+}
+.ir-mat-25 {
+  width: 24%;
+  margin-left: 0.8%;
+}

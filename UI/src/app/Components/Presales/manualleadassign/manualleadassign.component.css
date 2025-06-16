@@ -1,0 +1,89 @@
+.example-form {
+  width: 70%;
+  margin-top: 20px;
+  margin: auto;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.mat-mdc-text-field-wrapper {
+  height: 30px !important;
+  flex: auto;
+}
+
+.mat-accordion .mat-expansion-panel:last-of-type {
+  border-bottom-right-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+.mat-expansion-panel:not([class*="mat-elevation-z"]) {
+  box-shadow: none !important;
+}
+.menuItemList {
+  height: 35px;
+  padding-left: 5px;
+}
+
+/* .example-section {
+      margin: 12px 0;
+    } */
+.search-role {
+  width: 22%;
+  padding-top: 20px;
+  margin-left: 0%;
+  position: fixed;
+  z-index: 9;
+  background: #fff;
+}
+.button-row {
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-container {
+  display: flex;
+  flex-grow: 1;
+}
+.button-container {
+  margin-right: 3%;
+}
+.serach-class {
+  width: 50%;
+}
+.font {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.head {
+  font-size: 120%;
+  font-weight: bold;
+  text-align: center;
+  margin: 1%;
+}
+.mat-content {
+  margin: 0% 3% 10px 3%;
+}
+mat-card {
+  margin-left: 2%;
+  margin-right: 2%;
+  height: 69vh;
+}
+mat-card-content {
+  height: 100%;
+}
+
+.tab-head {
+  height: 100% !important;
+  overflow: auto;
+}
+.table-row {
+  cursor: pointer;
+}
+.day-selector {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 20px;
+}

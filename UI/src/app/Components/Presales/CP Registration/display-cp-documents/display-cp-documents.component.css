@@ -1,0 +1,40 @@
+/* Header styling */
+.units-heading {
+  text-align: center;
+  padding: 20px;
+}
+.cmn-card {
+  height: auto;
+}
+.cp-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  padding-bottom: 20px;
+}
+.update-btn {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin: 10px;
+}
+/* Fix the Actions column width */
+td.mat-column-actions,
+th.mat-column-actions {
+  width: 500px;
+  /* max-width: 300px; */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Make sure the filename spans don't break the layout */
+.filename-preview {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
