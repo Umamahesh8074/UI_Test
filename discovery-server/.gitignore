@@ -1,0 +1,84 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Spring Boot
+target/
+!src/main/resources/static/
+!src/main/resources/public/
+!src/main/resources/templates/
+!src/main/resources/application*.properties
+!src/main/resources/application*.yml
+.factorypath
+# Eclipse
+.metadata/
+*.classpath
+*.project
+*.settings/
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.swp
+
+# Maven
+.mvn/
+target/
+!.mvn/wrapper/maven-wrapper.jar
+**/target/
+
+# Gradle
+.gradle/
+build/
+
+# Docker
+**/Dockerfile
+**/docker-compose*
+
+# Node
+node_modules/
+yarn.lock
+npm-debug.log
+
+# Other IDEs
+*.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables
+.env
+
+# Others
+**/build/

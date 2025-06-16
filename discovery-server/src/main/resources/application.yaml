@@ -1,0 +1,4 @@
+spring:
+  profiles:
+   active: dev # Set the default profile to 'dev'. Change to 'prod' for production by default.
+
